@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
         if (!permissionToCamera){
-            Toast.makeText(this, "카메라 권한이 필요.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "설정에서 카메라 권한을 허용해주세요", Toast.LENGTH_LONG).show()
         }
         else{
             startActivity(Intent(this, CameraActivity::class.java))
@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
                 // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                Toast.makeText(this, "카메라 권한을 허용해주세요.", Toast.LENGTH_LONG).show()
                 ActivityCompat.requestPermissions(this@MainActivity, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE)
             }
         }
