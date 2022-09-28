@@ -3,6 +3,7 @@ package com.example.realtimebraillescanner
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
@@ -23,6 +24,7 @@ import android.provider.MediaStore
 
 import android.content.ContentValues
 import android.os.Build
+import android.view.ScaleGestureDetector
 import com.example.realtimebraillescanner.databinding.ActivityCameraBinding
 
 class CameraActivity : AppCompatActivity() {
@@ -51,6 +53,7 @@ class CameraActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
@@ -76,8 +79,22 @@ class CameraActivity : AppCompatActivity() {
                 cameraProvider.unbindAll()
 
                 // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
+                val cameraControl = cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
+
+                // Zoom settings
+                val scaleGestureDetector = ScaleGestureDetector(this, object : ScaleGestureDetector.SimpleOnScaleGestureListener(){
+                    override fun onScale(detector: ScaleGestureDetector): Boolean {
+                        val scale = cameraControl.cameraInfo.zoomState.value!!.zoomRatio * detector.scaleFactor
+                        cameraControl.cameraControl.setZoomRatio(scale)
+                        return true
+                    }
+                })
+
+                binding.viewFinder.setOnTouchListener { _, event ->
+                    scaleGestureDetector.onTouchEvent(event)
+                    return@setOnTouchListener true
+                }
 
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
