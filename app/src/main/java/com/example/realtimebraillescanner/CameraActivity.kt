@@ -79,13 +79,8 @@ class CameraActivity : AppCompatActivity() {
                 cameraProvider.unbindAll()
 
                 // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture)
-
-
                 val cameraControl = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture
-                )
+                    this, cameraSelector, preview, imageCapture)
 
                 // Zoom settings
                 val scaleGestureDetector = ScaleGestureDetector(this, object : ScaleGestureDetector.SimpleOnScaleGestureListener(){
