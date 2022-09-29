@@ -30,6 +30,10 @@ class MainActivity : AppCompatActivity() {
         binding.tvConverterMain.setOnClickListener {
             checkRunTimePermission()
         }
+
+        binding.tvSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
     }
 
     override fun onRequestPermissionsResult(
