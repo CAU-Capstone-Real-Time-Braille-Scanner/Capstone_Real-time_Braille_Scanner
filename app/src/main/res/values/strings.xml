@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Real Time Braille Scanner</string>
+
+    <!-- Preference Title -->
+    <string name="settings_header">설정</string>
+
+    <string name="speed_title">음성 속도</string>
+    <string name="font_size_title">글씨 크기</string>
 </resources>
