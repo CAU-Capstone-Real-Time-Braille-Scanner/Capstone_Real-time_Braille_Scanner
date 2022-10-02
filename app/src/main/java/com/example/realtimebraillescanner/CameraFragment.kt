@@ -39,8 +39,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.example.realtimebraillescanner.R
-import com.example.realtimebraillescanner.analyzer.TextAnalyzer
 import com.example.realtimebraillescanner.util.Language
 import com.example.realtimebraillescanner.util.ScopedExecutor
 import kotlinx.android.synthetic.main.camera_fragment.*
@@ -299,12 +297,12 @@ class CameraFragment : Fragment() {
         textPaint.color = Color.WHITE
         textPaint.textSize = 50F
 
-        val overlayText = getString(R.string.overlay_help)
+        val overlayText = "Center text in box"
         val textBounds = Rect()
         textPaint.getTextBounds(overlayText, 0, overlayText.length, textBounds)
         val textX = (surfaceWidth - textBounds.width()) / 2f
         val textY = rectBottom + textBounds.height() + 15f // put text below rect and 15f padding
-        canvas.drawText(getString(R.string.overlay_help), textX, textY, textPaint)
+        canvas.drawText("Center text in box", textX, textY, textPaint)
         holder.unlockCanvasAndPost(canvas)
     }
 

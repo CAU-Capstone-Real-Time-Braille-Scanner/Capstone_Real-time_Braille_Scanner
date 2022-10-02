@@ -26,7 +26,6 @@ import androidx.camera.core.ImageProxy
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import com.example.realtimebraillescanner.util.ImageUtils
-import com.example.realtimebraillescanner.util.ImageUtils.convertYuv420888ImageToBitmap
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.vision.common.InputImage
@@ -39,7 +38,6 @@ import java.lang.Exception
  * Analyzes the frames passed in from the camera and returns any detected text within the requested
  * crop region.
  */
-@Suppress("UNUSED_EXPRESSION")
 class TextAnalyzer(
     private val context: Context,
     private val lifecycle: Lifecycle,

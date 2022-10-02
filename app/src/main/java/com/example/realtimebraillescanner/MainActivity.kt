@@ -51,7 +51,9 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "설정에서 카메라 권한을 허용해주세요", Toast.LENGTH_LONG).show()
         }
         else{
-            startActivity(Intent(this, CameraFragment::class.java))
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, CameraFragment.newInstance())
+                .commitNow()
         }
     }
 
@@ -62,7 +64,9 @@ class MainActivity : AppCompatActivity() {
 
         if (hasCameraPermission == PackageManager.PERMISSION_GRANTED) {
             // 2. 이미 퍼미션을 가지고 있다면 액티비티 이동
-            startActivity(Intent(this, CameraFragment::class.java))
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, CameraFragment.newInstance())
+                .commitNow()
         } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
             // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우에는
             if (ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity, REQUIRED_PERMISSIONS.get(0))) {
