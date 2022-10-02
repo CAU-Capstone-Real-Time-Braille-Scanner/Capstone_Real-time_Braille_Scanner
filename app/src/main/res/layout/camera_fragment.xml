@@ -22,7 +22,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CameraActivity">
+    tools:context=".CameraFragment">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/viewfinder"
@@ -137,26 +137,11 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="4dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toTopOf="@id/imageView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/translatedTextScrollView" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="18dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        android:contentDescription="@string/content_description_google_translate_attribution"
-        android:scaleType="fitCenter"
-        android:src="@drawable/greyscale_regular_3x"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider2" />
 
     <ProgressBar
         android:id="@+id/progressBar"
