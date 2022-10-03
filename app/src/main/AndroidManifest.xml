@@ -55,6 +55,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".CameraActivity"
+            android:exported="true"
+            android:theme="@style/noActionBar" />
+
         <!-- Automatically download the text recognition model after app install -->
         <meta-data
             android:name="com.google.ml.vision.DEPENDENCIES"
