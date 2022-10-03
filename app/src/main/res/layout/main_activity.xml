@@ -10,7 +10,7 @@
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/container"
+        android:id="@+id/container_main_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity" />
@@ -36,8 +36,8 @@
         android:textSize="18sp"
         android:background="@drawable/converter_event"
         app:layout_constraintTop_toBottomOf="@id/iv_converter_main"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/iv_converter_main"
+        app:layout_constraintEnd_toEndOf="@id/iv_converter_main"
         android:paddingVertical="10dp"
         android:paddingHorizontal="15dp"
         android:layout_marginTop="15dp"/>
@@ -55,9 +55,10 @@
         android:text="설정"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_converter_main" />
+        app:layout_constraintEnd_toEndOf="@id/iv_setting_main"
+        app:layout_constraintStart_toStartOf="@id/iv_setting_main"
+        app:layout_constraintTop_toTopOf="@id/tv_converter_main"
+        app:layout_constraintBottom_toBottomOf="@id/tv_converter_main"/>
 
     <ImageView
         android:id="@+id/iv_converter_main"
@@ -65,9 +66,19 @@
         android:layout_height="100dp"
         android:src="@drawable/camera"
         app:layout_constraintTop_toBottomOf="@id/tv_title_main"
+        app:layout_constraintEnd_toStartOf="@id/iv_setting_main"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="100dp"/>
+
+    <ImageView
+        android:id="@+id/iv_setting_main"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/setting"
+        app:layout_constraintTop_toTopOf="@id/iv_converter_main"
+        app:layout_constraintBottom_toBottomOf="@id/iv_converter_main"
+        app:layout_constraintStart_toEndOf="@id/iv_converter_main"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
