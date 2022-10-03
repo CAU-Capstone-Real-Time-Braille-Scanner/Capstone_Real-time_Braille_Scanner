@@ -8,17 +8,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.realtimebraillescanner.databinding.ActivityMainBinding
+import com.example.realtimebraillescanner.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: MainActivityBinding
     private var REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     private val PERMISSIONS_REQUEST_CODE = 100
     private var permissionToCamera = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         initClickListener()
