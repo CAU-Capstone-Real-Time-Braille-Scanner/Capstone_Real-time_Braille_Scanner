@@ -169,17 +169,16 @@ class CameraFragment : Fragment() {
             holder.setFormat(PixelFormat.TRANSPARENT)
             holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceChanged(
-                    holder: SurfaceHolder?,
+                    p0: SurfaceHolder,
                     format: Int,
                     width: Int,
                     height: Int
-                ) {
+                ) = Unit
+
+                override fun surfaceDestroyed(p0: SurfaceHolder) {
                 }
 
-                override fun surfaceDestroyed(holder: SurfaceHolder?) {
-                }
-
-                override fun surfaceCreated(holder: SurfaceHolder?) {
+                override fun surfaceCreated(p0: SurfaceHolder) {
                     holder?.let { drawOverlay(it, DESIRED_HEIGHT_CROP_PERCENT, DESIRED_WIDTH_CROP_PERCENT) }
                 }
 
