@@ -77,7 +77,8 @@
         <TextView
             android:id="@+id/srcText"
             style="@style/SrcText"
-            android:textSize="15sp"
+            android:textSize="20sp"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -119,7 +120,8 @@
         <TextView
             android:id="@+id/translatedText"
             style="@style/TranslatedText"
-            android:textSize="15sp"
+            android:textSize="20sp"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

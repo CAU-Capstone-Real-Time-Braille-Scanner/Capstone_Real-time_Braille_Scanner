@@ -130,22 +130,22 @@ class CameraFragment : Fragment() {
             android.R.layout.simple_spinner_dropdown_item, viewModel.availableLanguages
         )
 
-        targetLangSelector.adapter = adapter
-        targetLangSelector.setSelection(adapter.getPosition(Language("en")))
-        targetLangSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                viewModel.targetLang.value = adapter.getItem(position)
-            }
+//        targetLangSelector.adapter = adapter
+//        targetLangSelector.setSelection(adapter.getPosition(Language("en")))
+//        targetLangSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(
+//                parent: AdapterView<*>,
+//                view: View?,
+//                position: Int,
+//                id: Long
+//            ) {
+//                viewModel.targetLang.value = adapter.getItem(position)
+//            }
+//
+//            override fun onNothingSelected(parent: AdapterView<*>) {}
+//        }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-
-        viewModel.sourceLang.observe(viewLifecycleOwner, Observer { srcLang.text = it.displayName })
+//        viewModel.sourceLang.observe(viewLifecycleOwner, Observer { srcLang.text = it.displayName })
         viewModel.translatedText.observe(viewLifecycleOwner, Observer { resultOrError ->
             resultOrError?.let {
                 if (it.error != null) {
@@ -155,14 +155,14 @@ class CameraFragment : Fragment() {
                 }
             }
         })
-        viewModel.modelDownloading.observe(viewLifecycleOwner, Observer { isDownloading ->
-            progressBar.visibility = if (isDownloading) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
-            }
-            progressText.visibility = progressBar.visibility
-        })
+//        viewModel.modelDownloading.observe(viewLifecycleOwner, Observer { isDownloading ->
+//            progressBar.visibility = if (isDownloading) {
+//                View.VISIBLE
+//            } else {
+//                View.INVISIBLE
+//            }
+//            progressText.visibility = progressBar.visibility
+//        })
 
         overlay.apply {
             setZOrderOnTop(true)
