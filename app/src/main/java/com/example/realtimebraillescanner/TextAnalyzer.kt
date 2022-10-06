@@ -55,7 +55,7 @@ class TextAnalyzer(
     // TODO: Add lifecycle observer to properly close ML Kit detectors
 
     @androidx.camera.core.ExperimentalGetImage
-    override fun analyze(imageProxy: ImageProxy) {
+    override fun analyze(imageProxy: ImageProxy) {  //camera frame rate 에 맞게 호출되어 이미지 분석
         val mediaImage = imageProxy.image ?: return
 
         val rotationDegrees = imageProxy.imageInfo.rotationDegrees
@@ -107,6 +107,7 @@ class TextAnalyzer(
     }
 
     private fun recognizeText(image: InputImage): Task<Text> {
+        // 매 frame 별 image 받아와 text 인식기 실행
         // TODO Use ML Kit's TextRecognition to analyze frames from the camera live feed.
         // Pass image to an ML Kit Vision API
         return detector.process(image)
@@ -127,7 +128,8 @@ class TextAnalyzer(
     private fun getErrorMessage(exception: Exception): String? {
         val mlKitException = exception as? MlKitException ?: return exception.message
         return if (mlKitException.errorCode == MlKitException.UNAVAILABLE) {
-            "Waiting for text recognition model to be downloaded"
+//            "Waiting for text recognition model to be downloaded"
+            "로딩중..."
         } else exception.message
     }
 
