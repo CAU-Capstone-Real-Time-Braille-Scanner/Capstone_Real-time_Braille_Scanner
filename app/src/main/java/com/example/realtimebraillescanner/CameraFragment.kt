@@ -18,15 +18,13 @@
 package com.example.realtimebraillescanner
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.SurfaceHolder
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -39,6 +37,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.example.realtimebraillescanner.databinding.CameraFragmentBinding
 import com.example.realtimebraillescanner.util.Language
 import com.example.realtimebraillescanner.util.ScopedExecutor
 import kotlinx.android.synthetic.main.camera_fragment.*
@@ -123,29 +122,29 @@ class CameraFragment : Fragment() {
             requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-        // Get available language list and set up the target language spinner
-        // with default selections.
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_dropdown_item, viewModel.availableLanguages
-        )
+//        // Get available language list and set up the target language spinner
+//        // with default selections.
+//        val adapter = ArrayAdapter(
+//            requireContext(),
+//            android.R.layout.simple_spinner_dropdown_item, viewModel.availableLanguages
+//        )
 
-        targetLangSelector.adapter = adapter
-        targetLangSelector.setSelection(adapter.getPosition(Language("en")))
-        targetLangSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                viewModel.targetLang.value = adapter.getItem(position)
-            }
+//        targetLangSelector.adapter = adapter
+//        targetLangSelector.setSelection(adapter.getPosition(Language("en")))
+//        targetLangSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(
+//                parent: AdapterView<*>,
+//                view: View?,
+//                position: Int,
+//                id: Long
+//            ) {
+//                viewModel.targetLang.value = adapter.getItem(position)
+//            }
+//
+//            override fun onNothingSelected(parent: AdapterView<*>) {}
+//        }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-
-        viewModel.sourceLang.observe(viewLifecycleOwner, Observer { srcLang.text = it.displayName })
+//        viewModel.sourceLang.observe(viewLifecycleOwner, Observer { srcLang.text = it.displayName })
         viewModel.translatedText.observe(viewLifecycleOwner, Observer { resultOrError ->
             resultOrError?.let {
                 if (it.error != null) {
@@ -155,14 +154,14 @@ class CameraFragment : Fragment() {
                 }
             }
         })
-        viewModel.modelDownloading.observe(viewLifecycleOwner, Observer { isDownloading ->
-            progressBar.visibility = if (isDownloading) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
-            }
-            progressText.visibility = progressBar.visibility
-        })
+//        viewModel.modelDownloading.observe(viewLifecycleOwner, Observer { isDownloading ->
+//            progressBar.visibility = if (isDownloading) {
+//                View.VISIBLE
+//            } else {
+//                View.INVISIBLE
+//            }
+//            progressText.visibility = progressBar.visibility
+//        })
 
         overlay.apply {
             setZOrderOnTop(true)
@@ -200,6 +199,7 @@ class CameraFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun bindCameraUseCases() {
         val cameraProvider = cameraProvider
             ?: throw IllegalStateException("Camera initialization failed.")
@@ -249,9 +249,24 @@ class CameraFragment : Fragment() {
             cameraProvider.unbindAll()
 
             // Bind use cases to camera
-            camera = cameraProvider.bindToLifecycle(
+            val camera = cameraProvider.bindToLifecycle(
                 this, cameraSelector, preview, imageAnalyzer
             )
+
+            //Zoom settings
+            val scaleGestureDetector = ScaleGestureDetector(requireContext(), object : ScaleGestureDetector.SimpleOnScaleGestureListener(){
+                override fun onScale(detector: ScaleGestureDetector): Boolean {
+                    val scale = camera.cameraInfo.zoomState.value!!.zoomRatio * detector.scaleFactor
+                    camera.cameraControl.setZoomRatio(scale)
+                    return true
+                }
+            })
+
+            viewFinder.setOnTouchListener { _, event ->
+                scaleGestureDetector.onTouchEvent(event)
+                return@setOnTouchListener true
+            }
+
             preview.setSurfaceProvider(viewFinder.createSurfaceProvider())
         } catch (exc: IllegalStateException) {
             Log.e(TAG, "Use case binding failed. This must be running on main thread.", exc)
