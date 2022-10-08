@@ -56,7 +56,7 @@ class CameraFragment : Fragment() {
         // We only need to analyze the part of the image that has text, so we set crop percentages
         // to avoid analyze the entire image from the live camera feed.
         const val DESIRED_WIDTH_CROP_PERCENT = 8
-        const val DESIRED_HEIGHT_CROP_PERCENT = 74
+        const val DESIRED_HEIGHT_CROP_PERCENT = 84
 
         // This is an arbitrary number we are using to keep tab of the permission
         // request. Where an app has multiple context for requesting permission,
@@ -296,10 +296,10 @@ class CameraFragment : Fragment() {
 
         val cornerRadius = 25f
         // Set rect centered in frame
-        val rectTop = surfaceHeight * heightCropPercent / 2 / 100f
+        val rectTop = surfaceHeight * 70 / 2 / 100f
         val rectLeft = surfaceWidth * widthCropPercent / 2 / 100f
         val rectRight = surfaceWidth * (1 - widthCropPercent / 2 / 100f)
-        val rectBottom = surfaceHeight * (1 - heightCropPercent / 2 / 100f)
+        val rectBottom = surfaceHeight * (1 - 70 / 2 / 100f)
         val rect = RectF(rectLeft, rectTop, rectRight, rectBottom)
         canvas.drawRoundRect(
             rect, cornerRadius, cornerRadius, rectPaint
@@ -311,12 +311,13 @@ class CameraFragment : Fragment() {
         textPaint.color = Color.WHITE
         textPaint.textSize = 50F
 
-        val overlayText = "Center text in box"
+        // Set text rect centered in frame
+        val overlayText = "텍스트를 박스에 비춰주세요"
         val textBounds = Rect()
         textPaint.getTextBounds(overlayText, 0, overlayText.length, textBounds)
         val textX = (surfaceWidth - textBounds.width()) / 2f
         val textY = rectBottom + textBounds.height() + 15f // put text below rect and 15f padding
-        canvas.drawText("Center text in box", textX, textY, textPaint)
+        canvas.drawText("텍스트를 박스에 비춰주세요", textX, textY, textPaint)
         holder.unlockCanvasAndPost(canvas)
     }
 
