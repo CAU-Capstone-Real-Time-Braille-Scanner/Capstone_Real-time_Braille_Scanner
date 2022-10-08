@@ -41,7 +41,8 @@ import java.lang.Exception
 class TextAnalyzer(
     private val context: Context,
     private val lifecycle: Lifecycle,
-    private val result: MutableLiveData<String>,
+    private val srcText: MutableLiveData<String>,
+    private val translatedText: MutableLiveData<String>,
     private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>
 ) : ImageAnalysis.Analyzer {
 
@@ -113,7 +114,9 @@ class TextAnalyzer(
         return detector.process(image)
             .addOnSuccessListener { text ->
                 // Task completed successfully
-                result.value = text.text
+                srcText.value = text.text
+
+                translateKorToBraille(translatedText, text.text)
             }
             .addOnFailureListener { exception ->
                 // Task failed with an exception
@@ -123,6 +126,12 @@ class TextAnalyzer(
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    private fun translateKorToBraille(translatedText: MutableLiveData<String>, text: String){
+
+        translatedText.value = text
+
     }
 
     private fun getErrorMessage(exception: Exception): String? {

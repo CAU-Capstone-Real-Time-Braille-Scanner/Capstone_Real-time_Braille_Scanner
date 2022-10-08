@@ -145,15 +145,15 @@ class CameraFragment : Fragment() {
 //        }
 
 //        viewModel.sourceLang.observe(viewLifecycleOwner, Observer { srcLang.text = it.displayName })
-        viewModel.translatedText.observe(viewLifecycleOwner, Observer { resultOrError ->
-            resultOrError?.let {
-                if (it.error != null) {
-                    translatedText.error = resultOrError.error?.localizedMessage
-                } else {
-                    translatedText.text = resultOrError.result
-                }
-            }
-        })
+//        viewModel.translatedText.observe(viewLifecycleOwner, Observer { resultOrError ->
+//            resultOrError?.let {
+//                if (it.error != null) {
+//                    translatedText.error = resultOrError.error?.localizedMessage
+//                } else {
+//                    translatedText.text = resultOrError.result
+//                }
+//            }
+//        })
 //        viewModel.modelDownloading.observe(viewLifecycleOwner, Observer { isDownloading ->
 //            progressBar.visibility = if (isDownloading) {
 //                View.VISIBLE
@@ -232,11 +232,13 @@ class CameraFragment : Fragment() {
                         requireContext(),
                         lifecycle,
                         viewModel.sourceText,
+                        viewModel.translatedText,
                         viewModel.imageCropPercentages
                     )
                 )
             }
         viewModel.sourceText.observe(viewLifecycleOwner, Observer { srcText.text = it })
+        viewModel.translatedText.observe(viewLifecycleOwner, Observer { translatedText.text = it })
         viewModel.imageCropPercentages.observe(viewLifecycleOwner,
             Observer { drawOverlay(overlay.holder, it.first, it.second) })
 
