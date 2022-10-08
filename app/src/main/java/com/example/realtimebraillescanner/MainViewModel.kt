@@ -53,9 +53,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         .apply { value = Pair(DESIRED_HEIGHT_CROP_PERCENT, DESIRED_WIDTH_CROP_PERCENT) }
     val translatedText = MediatorLiveData<ResultOrError>()
     private val translating = MutableLiveData<Boolean>()
-    val modelDownloading = SmoothedMutableLiveData<Boolean>(SMOOTHING_DURATION)
+//    val modelDownloading = SmoothedMutableLiveData<Boolean>(SMOOTHING_DURATION)
 
-    private var modelDownloadTask: Task<Void> = Tasks.forCanceled()
+//    private var modelDownloadTask: Task<Void> = Tasks.forCanceled()
 
     private val translators =
         object : LruCache<TranslatorOptions, Translator>(NUM_TRANSLATORS) {
@@ -140,7 +140,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 //        .map { Language(it) }
 
     init {
-        modelDownloading.setValue(false)
+//        modelDownloading.setValue(false)
         translating.value = false
         // Create a translation result or error object.
         val processTranslation =

@@ -56,7 +56,7 @@ class CameraFragment : Fragment() {
         // We only need to analyze the part of the image that has text, so we set crop percentages
         // to avoid analyze the entire image from the live camera feed.
         const val DESIRED_WIDTH_CROP_PERCENT = 8
-        const val DESIRED_HEIGHT_CROP_PERCENT = 74
+        const val DESIRED_HEIGHT_CROP_PERCENT = 84
 
         // This is an arbitrary number we are using to keep tab of the permission
         // request. Where an app has multiple context for requesting permission,
@@ -296,10 +296,10 @@ class CameraFragment : Fragment() {
 
         val cornerRadius = 25f
         // Set rect centered in frame
-        val rectTop = surfaceHeight * heightCropPercent / 2 / 100f
+        val rectTop = surfaceHeight * 70 / 2 / 100f
         val rectLeft = surfaceWidth * widthCropPercent / 2 / 100f
         val rectRight = surfaceWidth * (1 - widthCropPercent / 2 / 100f)
-        val rectBottom = surfaceHeight * (1 - heightCropPercent / 2 / 100f)
+        val rectBottom = surfaceHeight * (1 - 70 / 2 / 100f)
         val rect = RectF(rectLeft, rectTop, rectRight, rectBottom)
         canvas.drawRoundRect(
             rect, cornerRadius, cornerRadius, rectPaint
@@ -311,12 +311,13 @@ class CameraFragment : Fragment() {
         textPaint.color = Color.WHITE
         textPaint.textSize = 50F
 
-        val overlayText = "Center text in box"
+        // Set text rect centered in frame
+        val overlayText = "텍스트를 박스에 비춰주세요"
         val textBounds = Rect()
         textPaint.getTextBounds(overlayText, 0, overlayText.length, textBounds)
         val textX = (surfaceWidth - textBounds.width()) / 2f
         val textY = rectBottom + textBounds.height() + 15f // put text below rect and 15f padding
-        canvas.drawText("Center text in box", textX, textY, textPaint)
+        canvas.drawText("텍스트를 박스에 비춰주세요", textX, textY, textPaint)
         holder.unlockCanvasAndPost(canvas)
     }
 
@@ -377,96 +378,3 @@ class CameraFragment : Fragment() {
     }
 }
 
-
-
-
-
-//class CameraFragment : AppCompatActivity() {
-//    private lateinit var binding: ActivityCameraBinding
-//
-//    private var imageCapture: ImageCapture? = null
-//
-//    private lateinit var cameraExecutor: ExecutorService
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        binding = ActivityCameraBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        initClickListener()
-//
-//        startCamera()
-//
-//        cameraExecutor = Executors.newSingleThreadExecutor()
-//    }
-//
-//    private fun initClickListener(){
-//        // Set up the listeners for take photo and video capture buttons
-////        binding.imageCaptureButton.setOnClickListener { takePhoto() }
-////        binding.videoCaptureButton.setOnClickListener { captureVideo() }
-//    }
-//
-//
-//    @SuppressLint("ClickableViewAccessibility")
-//    private fun startCamera() {
-//        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-//
-//        cameraProviderFuture.addListener({
-//            // Used to bind the lifecycle of cameras to the lifecycle owner
-//            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-//
-//            // Preview
-//            val preview = Preview.Builder()
-//                .build()
-//                .also {
-//                    it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-//                }
-//
-//            imageCapture = ImageCapture.Builder()
-//                .build()
-//
-//            // Select back camera as a default
-//            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-//
-//            try {
-//                // Unbind use cases before rebinding
-//                cameraProvider.unbindAll()
-//
-//                // Bind use cases to camera
-//                val cameraControl = cameraProvider.bindToLifecycle(
-//                    this, cameraSelector, preview, imageCapture)
-//
-//                // Zoom settings
-//                val scaleGestureDetector = ScaleGestureDetector(this, object : ScaleGestureDetector.SimpleOnScaleGestureListener(){
-//                    override fun onScale(detector: ScaleGestureDetector): Boolean {
-//                        val scale = cameraControl.cameraInfo.zoomState.value!!.zoomRatio * detector.scaleFactor
-//                        cameraControl.cameraControl.setZoomRatio(scale)
-//                        return true
-//                    }
-//                })
-//
-//                binding.viewFinder.setOnTouchListener { _, event ->
-//                    scaleGestureDetector.onTouchEvent(event)
-//                    return@setOnTouchListener true
-//                }
-//
-//            } catch(exc: Exception) {
-//                Log.e(TAG, "Use case binding failed", exc)
-//            }
-//
-//        }, ContextCompat.getMainExecutor(this))
-//    }
-//
-//
-//
-//
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        cameraExecutor.shutdown()
-//    }
-//
-//    companion object {
-//        private const val TAG = "RealTimeBrailleScanner"
-//        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-//    }
-//}
