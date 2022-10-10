@@ -116,7 +116,7 @@ class TextAnalyzer(
                 // Task completed successfully
                 srcText.value = text.text
 
-                translateKorToBraille(translatedText, text.text)
+                translateKorToBraille(text.text)
             }
             .addOnFailureListener { exception ->
                 // Task failed with an exception
@@ -128,7 +128,10 @@ class TextAnalyzer(
             }
     }
 
-    private fun translateKorToBraille(translatedText: MutableLiveData<String>, text: String){
+    private fun translateKorToBraille(text: String){
+
+
+        
 
         translatedText.value = text
 
