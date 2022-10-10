@@ -1,5 +1,7 @@
 package com.example.realtimebraillescanner;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -88,9 +90,10 @@ public class KorToBrailleConverter {
         if (Pattern.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*", keys[0])){
 
             char_code = (int)(keys[0].charAt(0)) - BASE_CODE;
-            char1 = (char_code / CHOSUNG);
-            char2 = ((char_code - (CHOSUNG * char1)) / JUNGSUNG);
-            char3 = ((char_code - (CHOSUNG * char1) - (JUNGSUNG * char2)));
+            char1 = (int)(char_code / CHOSUNG);
+            char2 = (int)((char_code - (CHOSUNG * char1)) / JUNGSUNG);
+            char3 = (int)((char_code - (CHOSUNG * char1) - (JUNGSUNG * char2)));
+
             braille += mapping.CHOSUNG_letters.get(CHOSUNG_LIST[char1]);
             braille += mapping.JUNGSUNG_letters.get(JUNGSUNG_LIST[char2]);
             if (char3 != 0){

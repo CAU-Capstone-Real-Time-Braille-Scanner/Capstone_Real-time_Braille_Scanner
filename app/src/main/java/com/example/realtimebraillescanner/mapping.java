@@ -14,7 +14,7 @@ public class mapping {
 
 
     mapping(){
-        CHOSUNG_letters.put("ㄱ", String.valueOf((char)(10248)));
+        CHOSUNG_letters.put("ㄱ",String.valueOf((char)(10248)));
         CHOSUNG_letters.put("ㄲ",String.valueOf((char)(10272))+String.valueOf((char)(10248)));
         CHOSUNG_letters.put("ㄴ",String.valueOf((char)(10249)));
         CHOSUNG_letters.put("ㄷ",String.valueOf((char)(10250)));
@@ -80,6 +80,7 @@ public class mapping {
         JONGSUNG_letters.put("ㄼ",String.valueOf((char)(10240 + 4))+String.valueOf((char)(10240 + 2 + 1)));
         JONGSUNG_letters.put("ㄽ",String.valueOf((char)(10240 + 4))+String.valueOf((char)(10240 + 4)));
         JONGSUNG_letters.put("ㄾ",String.valueOf((char)(10240 + 4))+String.valueOf((char)(10240 + 32 + 4 + 2)));
+        JONGSUNG_letters.put("ㄿ",String.valueOf((char)(10240 + 4))+String.valueOf((char)(10240 + 32 + 16 + 2)));
         JONGSUNG_letters.put("ㅀ",String.valueOf((char)(10240 + 4))+String.valueOf((char)(10240 + 32 + 16 + 4)));
         JONGSUNG_letters.put("ㅄ",String.valueOf((char)(10240 + 2 + 1))+String.valueOf((char)(10240 + 4)));
         JONGSUNG_letters.put("ㅆ",String.valueOf((char)(10240 + 8 + 4)));
@@ -137,7 +138,7 @@ public class mapping {
         numbers.put("2",String.valueOf((char)(10240 + 16 + 8)));
         numbers.put("3",String.valueOf((char)(10240 + 8 + 1)));
         numbers.put("4",String.valueOf((char)(10240 + 8 + 2 + 1)));
-        numbers.put("5",String.valueOf((char)(10240 + 8) + 2));
+        numbers.put("5",String.valueOf((char)(10240 + 8 + 2)));
         numbers.put("6",String.valueOf((char)(10240 + 16 + 8 + 1)));
         numbers.put("7",String.valueOf((char)(10240 + 16 + 8 + 2 + 1)));
         numbers.put("8",String.valueOf((char)(10240 + 16 + 8 + 2)));
