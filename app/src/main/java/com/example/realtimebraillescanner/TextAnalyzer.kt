@@ -32,7 +32,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
-import java.lang.Exception
+import java.util.regex.Pattern
 
 /**
  * Analyzes the frames passed in from the camera and returns any detected text within the requested
@@ -114,7 +114,7 @@ class TextAnalyzer(
         return detector.process(image)
             .addOnSuccessListener { text ->
                 // Task completed successfully
-                srcText.value = text.text
+                leaveOnlyKorean(text.text)
 
                 translateKorToBraille(text.text)
             }
@@ -128,13 +128,22 @@ class TextAnalyzer(
             }
     }
 
-    private fun translateKorToBraille(text: String){
+    private fun leaveOnlyKorean(text : String){
+        var result = ""
 
+        for(i in 0 until text.length){
+            if (text[i] !in 'A'..'Z' && text[i] !in 'a'..'z'){
+                result += text[i]
+            }
+        }
+        srcText.value = result
+    }
 
-        
+    private fun translateKorToBraille(text : String){
 
-        translatedText.value = text
+        val translator = KorToBrailleConverter()
 
+        translatedText.value = translator.translate(text)
     }
 
     private fun getErrorMessage(exception: Exception): String? {

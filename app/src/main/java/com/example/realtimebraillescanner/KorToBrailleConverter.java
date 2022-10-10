@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public class translator {
+public class KorToBrailleConverter {
 
     int BASE_CODE = 44032;
     int CHOSUNG = 588;
@@ -23,7 +23,7 @@ public class translator {
             "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ",
             "ㅋ", "ㅌ", "ㅍ", "ㅎ"};
 
-    translator(){}
+    KorToBrailleConverter(){}
 
     public ArrayList<String> extract_words(String text){
         String[] words = text.split(" ");
@@ -86,7 +86,6 @@ public class translator {
         int char_code, char1, char2, char3;
 
         if (Pattern.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*", keys[0])){
-
 
             char_code = (int)(keys[0].charAt(0)) - BASE_CODE;
             char1 = (char_code / CHOSUNG);
