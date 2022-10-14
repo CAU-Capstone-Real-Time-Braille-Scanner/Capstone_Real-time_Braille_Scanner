@@ -30,13 +30,9 @@ public class KorToBrailleConverter {
     public ArrayList<String> extract_words(String text){
         String[] words = text.split(" ");
         ArrayList<String> result = new ArrayList<>();
-        String[] temp;
 
         for(int i = 0; i < words.length; i++){
-            temp = words[i].split("\n");
-            for(int j = 0; j < temp.length; j++){
-                result.add(temp[j]);
-            }
+            result.add(words[i]);
         }
         return result;
     }
@@ -114,31 +110,36 @@ public class KorToBrailleConverter {
     }
 
     public String translate(String text){
-        ArrayList<String> words = new ArrayList<>();
-        words = extract_words(text);
+        String[] words_token = text.split("\n");
 
-        for(String word : words){
-            int i = 0;
-            while (i < word.length()){
-                int check_cont = check_contraction(word, i);
+        for(String token : words_token){
+            ArrayList<String> words = new ArrayList<>();
 
-                if (check_cont != 0){
-                    i += check_cont;
-                    continue;
-                }
-                if (check_number(word, i)){
-                    i+=1;
-                    continue;
-                }
-                if (check_punctuation(word, i)){
-                    i+=1;
-                    continue;
-                }
-                check_character(word, i);
-                i += 1;
+            words = extract_words(token);
 
+            for(String word : words){
+                int i = 0;
+                while (i < word.length()){
+                    int check_cont = check_contraction(word, i);
+
+                    if (check_cont != 0){
+                        i += check_cont;
+                        continue;
+                    }
+                    if (check_number(word, i)){
+                        i+=1;
+                        continue;
+                    }
+                    if (check_punctuation(word, i)){
+                        i+=1;
+                        continue;
+                    }
+                    check_character(word, i);
+                    i += 1;
+                }
+                braille += " ";
             }
-            braille += " ";
+            braille += "\n";
         }
         return braille;
     }

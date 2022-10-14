@@ -114,9 +114,9 @@ class TextAnalyzer(
         return detector.process(image)
             .addOnSuccessListener { text ->
                 // Task completed successfully
-                leaveOnlyKorean(text.text)
+                val result : String = leaveOnlyKorean(text.text)
 
-                translateKorToBraille(text.text)
+                translateKorToBraille(result)
             }
             .addOnFailureListener { exception ->
                 // Task failed with an exception
@@ -128,7 +128,7 @@ class TextAnalyzer(
             }
     }
 
-    private fun leaveOnlyKorean(text : String){
+    private fun leaveOnlyKorean(text : String): String {
         var result = ""
 
         for(i in 0 until text.length){
@@ -137,6 +137,8 @@ class TextAnalyzer(
             }
         }
         srcText.value = result
+
+        return result
     }
 
     private fun translateKorToBraille(text : String){
