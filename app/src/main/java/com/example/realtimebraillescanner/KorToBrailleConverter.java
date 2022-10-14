@@ -53,17 +53,17 @@ public class KorToBrailleConverter {
     }
 
     public Boolean check_number(String word, int idx){
-        if (Character.isDigit(word.charAt(idx))){
-            if (idx != 0){
-                if (Character.isDigit(word.charAt(idx-1))){
-                    braille += mapping.numbers.get(word.charAt(idx));
+        if (mapping.numbers.get(String.valueOf(word.charAt(idx))) != null){ //숫자일 경우
+            if (idx != 0){      //첫 글자 이후일 경우
+                if (mapping.numbers.get(String.valueOf(word.charAt(idx-1))) != null){   //직전 글자가 숫자일 경우 수표 추가할 필요 x
+                    braille += mapping.numbers.get(String.valueOf(word.charAt(idx)));
                 }
-                else{
-                    braille += mapping.number_start + mapping.numbers.get(word.charAt(idx));
+                else{   //처음 시작하는 숫자일 시 수표 추가
+                    braille += mapping.number_start + mapping.numbers.get(String.valueOf(word.charAt(idx)));
                 }
             }
-            else{
-                braille += mapping.number_start + mapping.numbers.get(word.charAt(idx));
+            else{   //첫 인덱스이며 숫자일 경우 수표 추가
+                braille += mapping.number_start + mapping.numbers.get(String.valueOf(word.charAt(idx)));
             }
             return true;
         }
@@ -71,12 +71,9 @@ public class KorToBrailleConverter {
     }
 
     public Boolean check_punctuation(String word, int idx){
-        Set<String> keys = mapping.punctuation.keySet();
-        for (String key : keys) {
-            if (key.equals(word.charAt(idx))){
-                braille += mapping.punctuation.get(key);
-                return true;
-            }
+        if (mapping.punctuation.get(String.valueOf(word.charAt(idx)))!=null){
+            braille += mapping.punctuation.get(String.valueOf(word.charAt(idx)));
+            return true;
         }
         return false;
     }
@@ -104,10 +101,10 @@ public class KorToBrailleConverter {
                 return true;
             }
             else{           //자음 혹은 모음 하나만 있을 때
-                try{    //초성 자음이었을 경우
+                if (mapping.CHOSUNG_letters.get(keys[0]) != null){      //초성 자음일 경우
                     braille += mapping.CHOSUNG_letters.get(keys[0]);
                 }
-                catch (Exception e){        //중성 모음이었을 경우
+                else{      //중성 모음일 경우
                     braille += mapping.JUNGSUNG_letters.get(keys[0]);
                 }
                 return true;
