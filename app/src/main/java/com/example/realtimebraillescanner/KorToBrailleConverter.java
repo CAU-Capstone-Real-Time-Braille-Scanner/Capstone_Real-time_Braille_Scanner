@@ -90,16 +90,28 @@ public class KorToBrailleConverter {
         if (Pattern.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*", keys[0])){
 
             char_code = (int)(keys[0].charAt(0)) - BASE_CODE;
-            char1 = (int)(char_code / CHOSUNG);
-            char2 = (int)((char_code - (CHOSUNG * char1)) / JUNGSUNG);
-            char3 = (int)((char_code - (CHOSUNG * char1) - (JUNGSUNG * char2)));
 
-            braille += mapping.CHOSUNG_letters.get(CHOSUNG_LIST[char1]);
-            braille += mapping.JUNGSUNG_letters.get(JUNGSUNG_LIST[char2]);
-            if (char3 != 0){
-                braille += mapping.JONGSUNG_letters.get(JONGSUNG_LIST[char3]);
+            if (char_code >= 0){        //완전한 글자일 때
+                char1 = (int)(char_code / CHOSUNG);
+                char2 = (int)((char_code - (CHOSUNG * char1)) / JUNGSUNG);
+                char3 = (int)((char_code - (CHOSUNG * char1) - (JUNGSUNG * char2)));
+
+                braille += mapping.CHOSUNG_letters.get(CHOSUNG_LIST[char1]);
+                braille += mapping.JUNGSUNG_letters.get(JUNGSUNG_LIST[char2]);
+                if (char3 != 0){
+                    braille += mapping.JONGSUNG_letters.get(JONGSUNG_LIST[char3]);
+                }
+                return true;
             }
-            return true;
+            else{           //자음 혹은 모음 하나만 있을 때
+                try{    //초성 자음이었을 경우
+                    braille += mapping.CHOSUNG_letters.get(keys[0]);
+                }
+                catch (Exception e){        //중성 모음이었을 경우
+                    braille += mapping.JUNGSUNG_letters.get(keys[0]);
+                }
+                return true;
+            }
         }
         return false;
     }
