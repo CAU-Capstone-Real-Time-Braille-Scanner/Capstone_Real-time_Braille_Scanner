@@ -80,7 +80,6 @@ public class mapping {
         JONGSUNG_letters.put("ㄼ",String.valueOf((char)(10240 + 4))+String.valueOf((char)(10240 + 2 + 1)));
         JONGSUNG_letters.put("ㄽ",String.valueOf((char)(10240 + 4))+String.valueOf((char)(10240 + 4)));
         JONGSUNG_letters.put("ㄾ",String.valueOf((char)(10240 + 4))+String.valueOf((char)(10240 + 32 + 4 + 2)));
-        JONGSUNG_letters.put("ㄿ",String.valueOf((char)(10240 + 4))+String.valueOf((char)(10240 + 32 + 16 + 2)));
         JONGSUNG_letters.put("ㅀ",String.valueOf((char)(10240 + 4))+String.valueOf((char)(10240 + 32 + 16 + 4)));
         JONGSUNG_letters.put("ㅄ",String.valueOf((char)(10240 + 2 + 1))+String.valueOf((char)(10240 + 4)));
         JONGSUNG_letters.put("ㅆ",String.valueOf((char)(10240 + 8 + 4)));
@@ -126,26 +125,33 @@ public class mapping {
         punctuation.put("!", String.valueOf((char)(10240 + 16 + 4 + 2)));
         punctuation.put("(", String.valueOf((char)(10240 + 32 + 4 + 2))+String.valueOf((char)(10240 + 4)));
         punctuation.put(")", String.valueOf((char)(10240 + 32))+String.valueOf((char)(10240 + 32 + 16 + 4)));
-        punctuation.put("\"", String.valueOf((char)(10240 + 32 + 4 + 2)));
-        punctuation.put("\"", String.valueOf((char)(10240 + 32 + 16 + 4)));
+        punctuation.put("{", String.valueOf((char)(10240 + 32 + 4 + 2))+String.valueOf((char)(10240 + 2)));
+        punctuation.put("}", String.valueOf((char)(10240 + 16))+String.valueOf((char)(10240 + 32 + 16 + 4)));
+        punctuation.put("[", String.valueOf((char)(10240 + 32 + 4 + 2))+String.valueOf((char)(10240 + 4 + 2)));
+        punctuation.put("]", String.valueOf((char)(10240 + 32 + 16))+String.valueOf((char)(10240 + 32 + 16 + 4)));
+        punctuation.put("“", String.valueOf((char)(10240 + 32 + 4 + 2)));
+        punctuation.put("”", String.valueOf((char)(10240 + 32 + 16 + 4)));
+        punctuation.put("'", String.valueOf((char)(10240 + 32))+String.valueOf((char)(10240 + 32 + 4 + 2)));
+        punctuation.put("'", String.valueOf((char)(10240 + 32 + 16 + 4))+String.valueOf((char)(10240 + 4)));
         punctuation.put("?", String.valueOf((char)(10240 + 32 + 4 + 2)));
         punctuation.put("/", String.valueOf((char)(10240 + 32 + 16 + 8))+String.valueOf((char)(10240 + 8 + 4)));
         punctuation.put("...", String.valueOf((char)(10240 + 32 + 16 + 2))+String.valueOf((char)(10240 + 32 + 16 + 2)));
         punctuation.put("", String.valueOf((char)(10240 + 32))+String.valueOf((char)(10240 + 32 + 4 + 2)));
         punctuation.put("-", String.valueOf((char)(10240 + 32 + 4)));
+        punctuation.put("~", String.valueOf((char)(10240 + 32 + 4))+String.valueOf((char)(10240 + 32 + 4)));
 
-        numbers.put("1",String.valueOf((char)(10240 + 8)));
-        numbers.put("2",String.valueOf((char)(10240 + 16 + 8)));
-        numbers.put("3",String.valueOf((char)(10240 + 8 + 1)));
-        numbers.put("4",String.valueOf((char)(10240 + 8 + 2 + 1)));
-        numbers.put("5",String.valueOf((char)(10240 + 8 + 2)));
-        numbers.put("6",String.valueOf((char)(10240 + 16 + 8 + 1)));
-        numbers.put("7",String.valueOf((char)(10240 + 16 + 8 + 2 + 1)));
-        numbers.put("8",String.valueOf((char)(10240 + 16 + 8 + 2)));
-        numbers.put("9",String.valueOf((char)(10240 + 16 + 1)));
-        numbers.put("0",String.valueOf((char)(10240 + 16 + 2 + 1)));
+        numbers.put("1","⠁");
+        numbers.put("2","⠃");
+        numbers.put("3","⠉");
+        numbers.put("4","⠙");
+        numbers.put("5","⠑");
+        numbers.put("6","⠋");
+        numbers.put("7","⠛");
+        numbers.put("8","⠓");
+        numbers.put("9","⠊");
+        numbers.put("0","⠚");
 
-        number_start = String.valueOf((char)(10240 + 32 + 4 + 2 + 1));
+        number_start = "⠼";
 
     }
 
