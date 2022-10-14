@@ -34,6 +34,18 @@ public class mapping {
         CHOSUNG_letters.put("ㅍ","⠙");
         CHOSUNG_letters.put("ㅎ","⠚");
 
+        CHOSUNG_letters.put("ㄳ","⠈⠠");
+        CHOSUNG_letters.put("ㄵ","⠉⠨");
+        CHOSUNG_letters.put("ㄶ","⠉⠚");
+        CHOSUNG_letters.put("ㄺ","⠐⠈");
+        CHOSUNG_letters.put("ㄻ","⠐⠑");
+        CHOSUNG_letters.put("ㄼ","⠐⠘");
+        CHOSUNG_letters.put("ㄽ","⠐⠠");
+        CHOSUNG_letters.put("ㄾ","⠐⠓");
+        CHOSUNG_letters.put("ㄿ","⠐⠙");
+        CHOSUNG_letters.put("ㅀ","⠐⠚");
+        CHOSUNG_letters.put("ㅄ","⠘⠠");
+
         JUNGSUNG_letters.put("ㅏ","⠣");
         JUNGSUNG_letters.put("ㅐ","⠗");
         JUNGSUNG_letters.put("ㅑ","⠜");
