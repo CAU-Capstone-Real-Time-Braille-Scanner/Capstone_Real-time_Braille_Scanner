@@ -101,7 +101,9 @@ class CameraFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val translator = KorToBrailleConverter()
-        Log.d("점자", translator.translate("이 예은 유 예 노 예"))
+        Log.d("점자", translator.translate("그리고예 이예은 유예 노예 예예예"))
+        Log.d("점자", translator.translate("수을예"))
+        Log.d("점자", translator.translate("소화액예예 야애구애 우예소화액 우와.애소화액"))
         Log.d("점자", translator.translate("오늘 밤에도 별은 바람에 스치운다."))
         Log.d("점자", translator.translate("나무위키, 여러분이 가꾸어 나가는 지식의 나무."))
         Log.d("점자", translator.translate("불어 되는 따뜻한 사람은 피고 하는 과실이 싶이 그리하였는가? 내는 이상 끝까지 속에 장식하는 것이다. 얼마나 힘차게 위하여 길지 장식하는 살 밥을 그들을 우리의 봄바람이다."))
