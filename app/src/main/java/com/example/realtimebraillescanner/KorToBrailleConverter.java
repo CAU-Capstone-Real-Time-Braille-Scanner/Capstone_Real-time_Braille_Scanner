@@ -2,6 +2,7 @@ package com.example.realtimebraillescanner;
 
 import android.util.Log;
 
+import com.github.kimkevin.hangulparser.HangulParser;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -48,6 +49,45 @@ public class KorToBrailleConverter {
         return 0;
     }
 
+    public Boolean check_contraction2(String Cho, String Jung, String Jong){
+        ArrayList<String> jasoList= new ArrayList<>();
+        jasoList.add("ㅇ");
+        jasoList.add(Jung);
+        jasoList.add(Jong);
+
+        try{
+            String hangul = HangulParser.assemble(jasoList);
+            if (mapping.contractions.get(hangul)!=null){
+                braille += mapping.CHOSUNG_letters.get(Cho);
+                braille += mapping.contractions.get(hangul);
+                return true;
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Boolean check_contraction3(String Cho, String Jung, String Jong){
+        ArrayList<String> jasoList= new ArrayList<>();
+        jasoList.add(Cho);
+        jasoList.add(Jung);
+
+        try{
+            String hangul = HangulParser.assemble(jasoList);
+            if (mapping.contractions.get(hangul)!=null){
+                braille += mapping.contractions.get(hangul);
+                braille += mapping.JONGSUNG_letters.get(Jong);
+                return true;
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public Boolean check_number(String word, int idx){
         if (mapping.numbers.get(String.valueOf(word.charAt(idx))) != null){ //숫자일 경우
             if (idx != 0){      //첫 글자 이후일 경우
@@ -89,11 +129,18 @@ public class KorToBrailleConverter {
                 char2 = (int)((char_code - (CHOSUNG * char1)) / JUNGSUNG);
                 char3 = (int)((char_code - (CHOSUNG * char1) - (JUNGSUNG * char2)));
 
-                braille += mapping.CHOSUNG_letters.get(CHOSUNG_LIST[char1]);
-                braille += mapping.JUNGSUNG_letters.get(JUNGSUNG_LIST[char2]);
-                if (char3 != 0){
-                    braille += mapping.JONGSUNG_letters.get(JONGSUNG_LIST[char3]);
+                if (!check_contraction2(CHOSUNG_LIST[char1], JUNGSUNG_LIST[char2], JONGSUNG_LIST[char3])){//늘 => ㄴ+'을' 과 같은 약어 경우 없을 시
+                    if (!check_contraction3(CHOSUNG_LIST[char1], JUNGSUNG_LIST[char2], JONGSUNG_LIST[char3])){//감 => '가'+ㅁ 과 같은 약어 경우 없을 시
+                        //초,중,종 모든 파트 1:1 매핑
+                        braille += mapping.CHOSUNG_letters.get(CHOSUNG_LIST[char1]);
+                        braille += mapping.JUNGSUNG_letters.get(JUNGSUNG_LIST[char2]);
+                        if (char3 != 0){    //종성 자음 존재할 경우만 추가
+                            braille += mapping.JONGSUNG_letters.get(JONGSUNG_LIST[char3]);
+                        }
+
+                    }
                 }
+
                 return true;
             }
             else{           //자음 혹은 모음 하나만 있을 때
