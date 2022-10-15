@@ -14,6 +14,7 @@ public class KorToBrailleConverter {
     int JUNGSUNG = 28;
     mapping mapping = new mapping();
     String braille = "";
+    Boolean flag10 = false;
 
     String[] CHOSUNG_LIST = {"ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ",
             "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ",
@@ -133,25 +134,36 @@ public class KorToBrailleConverter {
 
                 if (!check_contraction2(CHOSUNG_LIST[char1], JUNGSUNG_LIST[char2], JONGSUNG_LIST[char3])){//늘 => ㄴ+'을' 과 같은 약어 경우 없을 시
                     if (!check_contraction3(CHOSUNG_LIST[char1], JUNGSUNG_LIST[char2], JONGSUNG_LIST[char3])){//감 => '가'+ㅁ 과 같은 약어 경우 없을 시
-                        //초,중,종 모든 파트 1:1 매핑
-                        braille += mapping.CHOSUNG_letters.get(CHOSUNG_LIST[char1]);
-                        braille += mapping.JUNGSUNG_letters.get(JUNGSUNG_LIST[char2]);
-                        if (char3 != 0){    //종성 자음 존재할 경우만 추가
-                            braille += mapping.JONGSUNG_letters.get(JONGSUNG_LIST[char3]);
+
+                        //약자, 약어없이 초,중,종 모든 파트 1:1 매핑
+                        if (char3 == 0 && flag10 && CHOSUNG_LIST[char1].equals("ㅇ") && JUNGSUNG_LIST[char2].equals("ㅖ")){  //규정 제10항
+                            braille += "⠤";
+                            braille += mapping.CHOSUNG_letters.get(CHOSUNG_LIST[char1]);
+                            braille += mapping.JUNGSUNG_letters.get(JUNGSUNG_LIST[char2]);
+                            flag10 = false;
                         }
+                        else{   //1:1 매핑 케이스
+                            braille += mapping.CHOSUNG_letters.get(CHOSUNG_LIST[char1]);
+                            braille += mapping.JUNGSUNG_letters.get(JUNGSUNG_LIST[char2]);
+                            if (char3 != 0){    //종성 자음 존재할 경우만 추가
+                                braille += mapping.JONGSUNG_letters.get(JONGSUNG_LIST[char3]);
+                            }
+                            else{
+                                flag10 = true;
+                            }
+                        }
+
 
                     }
                 }
-
                 return true;
             }
             else{           //자음 혹은 모음 하나만 있을 때
+                braille += mapping.CHOSUNG_start;
                 if (mapping.CHOSUNG_letters.get(keys[0]) != null){      //초성 자음일 경우
-                    braille += mapping.CHOSUNG_start;
                     braille += mapping.CHOSUNG_letters.get(keys[0]);
                 }
                 else{      //중성 모음일 경우
-                    braille += mapping.CHOSUNG_start;
                     braille += mapping.JUNGSUNG_letters.get(keys[0]);
                 }
                 return true;
@@ -189,6 +201,7 @@ public class KorToBrailleConverter {
                     i += 1;
                 }
                 braille += " ";
+                flag10 = false;
             }
             braille += "\n";
         }
