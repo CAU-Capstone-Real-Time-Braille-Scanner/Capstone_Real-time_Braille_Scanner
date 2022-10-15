@@ -11,6 +11,7 @@ public class mapping {
     HashMap<String, String> punctuation = new HashMap<>();
     HashMap<String, String> numbers = new HashMap<>();
     String number_start = new String();
+    String CHOSUNG_start = new String();
 
 
     mapping(){
@@ -45,6 +46,8 @@ public class mapping {
         CHOSUNG_letters.put("ㄿ","⠐⠙");
         CHOSUNG_letters.put("ㅀ","⠐⠚");
         CHOSUNG_letters.put("ㅄ","⠘⠠");
+
+        CHOSUNG_start = "⠿";
 
         JUNGSUNG_letters.put("ㅏ","⠣");
         JUNGSUNG_letters.put("ㅐ","⠗");
