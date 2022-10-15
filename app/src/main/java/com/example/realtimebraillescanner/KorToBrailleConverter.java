@@ -28,7 +28,7 @@ public class KorToBrailleConverter {
 
     KorToBrailleConverter(){}
 
-    public ArrayList<String> extract_words(String text){
+    public ArrayList<String> extract_words(String text){ //문자열 띄어쓰기 기준으로 분리
         String[] words = text.split(" ");
         ArrayList<String> result = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class KorToBrailleConverter {
         return result;
     }
 
-    public int check_contraction(String word, int idx){
+    public int check_contraction(String word, int idx){ //check the data set of mapping.contraction
         Set<String> keys = mapping.contractions.keySet();
         for (String key : keys){
             if (word.substring(idx).startsWith(key)){
@@ -50,6 +50,7 @@ public class KorToBrailleConverter {
     }
 
     public Boolean check_contraction2(String Cho, String Jung, String Jong){
+        // 초성 자음 + 약어 (억 || 언 || 얼 || 연 || 열 ... || 인)    등 검사
         ArrayList<String> jasoList= new ArrayList<>();
         jasoList.add("ㅇ");
         jasoList.add(Jung);
@@ -70,6 +71,7 @@ public class KorToBrailleConverter {
     }
 
     public Boolean check_contraction3(String Cho, String Jung, String Jong){
+        // 약어 (가 || 나 || 다 || 마 || 바 || 사 ... || 하 || 것) + 종성 자음    등 검사
         ArrayList<String> jasoList= new ArrayList<>();
         jasoList.add(Cho);
         jasoList.add(Jung);
@@ -88,7 +90,7 @@ public class KorToBrailleConverter {
         return false;
     }
 
-    public Boolean check_number(String word, int idx){
+    public Boolean check_number(String word, int idx){  //check the data set of numbers
         if (mapping.numbers.get(String.valueOf(word.charAt(idx))) != null){ //숫자일 경우
             if (idx != 0){      //첫 글자 이후일 경우
                 if (mapping.numbers.get(String.valueOf(word.charAt(idx-1))) != null){   //직전 글자가 숫자일 경우 수표 추가할 필요 x
@@ -106,7 +108,7 @@ public class KorToBrailleConverter {
         return false;
     }
 
-    public Boolean check_punctuation(String word, int idx){
+    public Boolean check_punctuation(String word, int idx){ //check the data set of punctuation
         if (mapping.punctuation.get(String.valueOf(word.charAt(idx)))!=null){
             braille += mapping.punctuation.get(String.valueOf(word.charAt(idx)));
             return true;
@@ -114,7 +116,7 @@ public class KorToBrailleConverter {
         return false;
     }
 
-    public Boolean check_character(String word, int idx){
+    public Boolean check_character(String word, int idx){//check the data set of characters in all letters
         String[] keys = new String[1];
         Character key = word.charAt(idx);
         keys[0] = String.valueOf(key);
@@ -156,7 +158,7 @@ public class KorToBrailleConverter {
         return false;
     }
 
-    public String translate(String text){
+    public String translate(String text){   //Kor --> Braille
         String[] words_token = text.split("\n");
 
         for(String token : words_token){
