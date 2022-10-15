@@ -10,6 +10,7 @@ public class mapping {
     HashMap<String, String> contractions = new HashMap<>();
     HashMap<String, String> punctuation = new HashMap<>();
     HashMap<String, String> numbers = new HashMap<>();
+    HashMap<String, String> decompose = new HashMap<>();
     String number_start = new String();
     String CHOSUNG_start = new String();
 
@@ -99,6 +100,20 @@ public class mapping {
         JONGSUNG_letters.put("ㅀ","⠂⠴");
         JONGSUNG_letters.put("ㅄ","⠃⠄");
         JONGSUNG_letters.put("ㅆ","⠌");
+
+        decompose.put("ㄲ", "ㄱㄱ");
+        decompose.put("ㄳ", "ㄱㅅ");
+        decompose.put("ㄵ", "ㄴㅈ");
+        decompose.put("ㄶ", "ㄴㅎ");
+        decompose.put("ㄺ", "ㄹㄱ");
+        decompose.put("ㄻ", "ㄹㅁ");
+        decompose.put("ㄼ", "ㄹㅂ");
+        decompose.put("ㄽ", "ㄹㅅ");
+        decompose.put("ㄾ", "ㄹㅌ");
+        decompose.put("ㄿ", "ㄹㅍ");
+        decompose.put("ㅀ", "ㄹㅎ");
+        decompose.put("ㅄ", "ㅂㅅ");
+        decompose.put("ㅆ", "ㅅㅅ");
 
         contractions.put("가", "⠫");
         contractions.put("나", "⠉");

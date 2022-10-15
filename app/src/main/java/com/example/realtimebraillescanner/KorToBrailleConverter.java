@@ -3,7 +3,10 @@ package com.example.realtimebraillescanner;
 import android.util.Log;
 
 import com.github.kimkevin.hangulparser.HangulParser;
+import com.github.kimkevin.hangulparser.HangulParserException;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -58,9 +61,20 @@ public class KorToBrailleConverter {
     public Boolean check_contraction2(String Cho, String Jung, String Jong){
         // 초성 자음 + 약어 (억 || 언 || 얼 || 연 || 열 ... || 인)    등 검사
         ArrayList<String> jasoList= new ArrayList<>();
+        String doubleJong = new String();   //규정 제15항 확인용 변수 (종성이 자음 두개로 이루어질 시 분리 후 첫 번째로 약자 확인)
+
         jasoList.add("ㅇ");
         jasoList.add(Jung);
-        jasoList.add(Jong);
+
+        if (!(Jong.trim().equals(""))){
+            if(mapping.decompose.get(Jong)!=null){
+                doubleJong = mapping.decompose.get(Jong);
+                jasoList.add(String.valueOf(doubleJong.charAt(0)));
+            }
+            else{
+                jasoList.add(Jong);
+            }
+        }
 
         try{
             String hangul = HangulParser.assemble(jasoList);
@@ -68,6 +82,9 @@ public class KorToBrailleConverter {
                 braille += mapping.CHOSUNG_letters.get(Cho);
                 braille += mapping.contractions.get(hangul);
                 flag10 = false;
+                if (doubleJong.length()>1){
+                    braille += mapping.JONGSUNG_letters.get(String.valueOf(doubleJong.charAt(1)));
+                }
                 return true;
             }
         }
