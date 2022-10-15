@@ -204,7 +204,17 @@ public class KorToBrailleConverter {
             else{           //자음 혹은 모음 하나만 있을 때
                 braille += mapping.CHOSUNG_start;
                 if (mapping.CHOSUNG_letters.get(keys[0]) != null){      //초성 자음일 경우
-                    braille += mapping.CHOSUNG_letters.get(keys[0]);
+                    Log.d("점자 분해1", keys[0]);
+                    String decompose = mapping.decompose.get(keys[0]);
+                    if (decompose != null){
+                        Log.d("점자 분해2", decompose);
+                        if (decompose.length() > 1){
+                            braille += mapping.JONGSUNG_letters.get(keys[0]);
+                        }
+                    }
+                    else{
+                        braille += mapping.CHOSUNG_letters.get(keys[0]);
+                    }
                 }
                 else{      //중성 모음일 경우
                     braille += mapping.JUNGSUNG_letters.get(keys[0]);
