@@ -102,9 +102,9 @@ class CameraFragment : Fragment() {
 
         val translator = KorToBrailleConverter()
         Log.d("점자", translator.translate("그리고예 이예은 유예 노예 예예예"))
-        Log.d("점자", translator.translate("수을예"))
-        Log.d("점자", translator.translate("소화액예예 야애구애 우예소화액 우와.애소화액"))
-        Log.d("점자", translator.translate("오늘 밤에도 별은 바람에 스치운다."))
+        Log.d("점자", translator.translate("세금 부과액이 너무 과하다."))
+        Log.d("점자", translator.translate("내강예"))
+        Log.d("점자", translator.translate("까치 깡충깡충 쌍둥이 쌍쌍이 한껏 힘껏 불을 껐다 까마귀 쌀통 알겄소"))
         Log.d("점자", translator.translate("나무위키, 여러분이 가꾸어 나가는 지식의 나무."))
         Log.d("점자", translator.translate("불어 되는 따뜻한 사람은 피고 하는 과실이 싶이 그리하였는가? 내는 이상 끝까지 속에 장식하는 것이다. 얼마나 힘차게 위하여 길지 장식하는 살 밥을 그들을 우리의 봄바람이다."))
         Log.d("점자", translator.translate("밤이 계집애들의 하나에 당신은 자랑처럼 멀듯이, 지나고 아스라히 거외다. 위에도 어머니, 걱정도 너무나 것은 버리었습니다. 슬퍼하는 지나고 잠, 말 내일 이웃 이름과, 까닭입니다. 비둘기, 지나가는 하나의 하나에 때 마리아 이제 내린 듯합니다."))

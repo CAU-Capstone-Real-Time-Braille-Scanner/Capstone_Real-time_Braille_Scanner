@@ -67,6 +67,7 @@ public class KorToBrailleConverter {
             if (mapping.contractions.get(hangul)!=null){
                 braille += mapping.CHOSUNG_letters.get(Cho);
                 braille += mapping.contractions.get(hangul);
+                flag10 = false;
                 return true;
             }
         }
@@ -87,6 +88,7 @@ public class KorToBrailleConverter {
             if (mapping.contractions.get(hangul)!=null){
                 braille += mapping.contractions.get(hangul);
                 braille += mapping.JONGSUNG_letters.get(Jong);
+                flag10 = false;
                 return true;
             }
         }

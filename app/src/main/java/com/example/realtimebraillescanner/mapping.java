@@ -126,6 +126,9 @@ public class mapping {
         contractions.put("은", "⠵");
         contractions.put("을", "⠮");
         contractions.put("인", "⠟");
+        contractions.put("까", "⠠⠫");
+        contractions.put("싸", "⠠⠇");
+        contractions.put("껏", "⠠⠸⠎");
         contractions.put("그래서", "⠁⠎");
         contractions.put("그러나", "⠁⠉");
         contractions.put("그러면", "⠁⠒");
