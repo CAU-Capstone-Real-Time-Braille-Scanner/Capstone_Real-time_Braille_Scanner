@@ -3,7 +3,10 @@ package com.example.realtimebraillescanner;
 import android.util.Log;
 
 import com.github.kimkevin.hangulparser.HangulParser;
+import com.github.kimkevin.hangulparser.HangulParserException;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -14,6 +17,9 @@ public class KorToBrailleConverter {
     int JUNGSUNG = 28;
     mapping mapping = new mapping();
     String braille = "";
+    Boolean flag10 = false;
+    Boolean flag11 = false;
+    Boolean flag17 = false;
 
     String[] CHOSUNG_LIST = {"ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ",
             "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ",
@@ -28,7 +34,7 @@ public class KorToBrailleConverter {
 
     KorToBrailleConverter(){}
 
-    public ArrayList<String> extract_words(String text){
+    public ArrayList<String> extract_words(String text){ //문자열 띄어쓰기 기준으로 분리
         String[] words = text.split(" ");
         ArrayList<String> result = new ArrayList<>();
 
@@ -38,10 +44,13 @@ public class KorToBrailleConverter {
         return result;
     }
 
-    public int check_contraction(String word, int idx){
+    public int check_contraction(String word, int idx){ //check the data set of mapping.contraction
         Set<String> keys = mapping.contractions.keySet();
         for (String key : keys){
             if (word.substring(idx).startsWith(key)){
+                if (!(word.substring(idx).equals("가")||word.substring(idx).equals("나")||word.substring(idx).equals("다")||word.substring(idx).equals("마")||word.substring(idx).equals("바")||word.substring(idx).equals("사")||word.substring(idx).equals("자")||word.substring(idx).equals("카")||word.substring(idx).equals("타")||word.substring(idx).equals("파")||word.substring(idx).equals("하"))){
+                    flag10 = false;
+                }
                 braille += mapping.contractions.get(key);
                 return key.length();
             }
@@ -50,16 +59,32 @@ public class KorToBrailleConverter {
     }
 
     public Boolean check_contraction2(String Cho, String Jung, String Jong){
+        // 초성 자음 + 약어 (억 || 언 || 얼 || 연 || 열 ... || 인)    등 검사
         ArrayList<String> jasoList= new ArrayList<>();
+        String doubleJong = new String();   //규정 제15항 확인용 변수 (종성이 자음 두개로 이루어질 시 분리 후 첫 번째로 약자 확인)
+
         jasoList.add("ㅇ");
         jasoList.add(Jung);
-        jasoList.add(Jong);
+
+        if (!(Jong.trim().equals(""))){
+            if(mapping.decompose.get(Jong)!=null){
+                doubleJong = mapping.decompose.get(Jong);
+                jasoList.add(String.valueOf(doubleJong.charAt(0)));
+            }
+            else{
+                jasoList.add(Jong);
+            }
+        }
 
         try{
             String hangul = HangulParser.assemble(jasoList);
             if (mapping.contractions.get(hangul)!=null){
                 braille += mapping.CHOSUNG_letters.get(Cho);
                 braille += mapping.contractions.get(hangul);
+                flag10 = false;
+                if (doubleJong.length()>1){
+                    braille += mapping.JONGSUNG_letters.get(String.valueOf(doubleJong.charAt(1)));
+                }
                 return true;
             }
         }
@@ -70,6 +95,7 @@ public class KorToBrailleConverter {
     }
 
     public Boolean check_contraction3(String Cho, String Jung, String Jong){
+        // 약어 (가 || 나 || 다 || 마 || 바 || 사 ... || 하 || 것) + 종성 자음    등 검사
         ArrayList<String> jasoList= new ArrayList<>();
         jasoList.add(Cho);
         jasoList.add(Jung);
@@ -79,6 +105,7 @@ public class KorToBrailleConverter {
             if (mapping.contractions.get(hangul)!=null){
                 braille += mapping.contractions.get(hangul);
                 braille += mapping.JONGSUNG_letters.get(Jong);
+                flag10 = false;
                 return true;
             }
         }
@@ -88,7 +115,7 @@ public class KorToBrailleConverter {
         return false;
     }
 
-    public Boolean check_number(String word, int idx){
+    public Boolean check_number(String word, int idx){  //check the data set of numbers
         if (mapping.numbers.get(String.valueOf(word.charAt(idx))) != null){ //숫자일 경우
             if (idx != 0){      //첫 글자 이후일 경우
                 if (mapping.numbers.get(String.valueOf(word.charAt(idx-1))) != null){   //직전 글자가 숫자일 경우 수표 추가할 필요 x
@@ -106,7 +133,7 @@ public class KorToBrailleConverter {
         return false;
     }
 
-    public Boolean check_punctuation(String word, int idx){
+    public Boolean check_punctuation(String word, int idx){ //check the data set of punctuation
         if (mapping.punctuation.get(String.valueOf(word.charAt(idx)))!=null){
             braille += mapping.punctuation.get(String.valueOf(word.charAt(idx)));
             return true;
@@ -114,7 +141,7 @@ public class KorToBrailleConverter {
         return false;
     }
 
-    public Boolean check_character(String word, int idx){
+    public Boolean check_character(String word, int idx){//check the data set of characters in all letters
         String[] keys = new String[1];
         Character key = word.charAt(idx);
         keys[0] = String.valueOf(key);
@@ -129,23 +156,65 @@ public class KorToBrailleConverter {
                 char2 = (int)((char_code - (CHOSUNG * char1)) / JUNGSUNG);
                 char3 = (int)((char_code - (CHOSUNG * char1) - (JUNGSUNG * char2)));
 
-                if (!check_contraction2(CHOSUNG_LIST[char1], JUNGSUNG_LIST[char2], JONGSUNG_LIST[char3])){//늘 => ㄴ+'을' 과 같은 약어 경우 없을 시
-                    if (!check_contraction3(CHOSUNG_LIST[char1], JUNGSUNG_LIST[char2], JONGSUNG_LIST[char3])){//감 => '가'+ㅁ 과 같은 약어 경우 없을 시
-                        //초,중,종 모든 파트 1:1 매핑
-                        braille += mapping.CHOSUNG_letters.get(CHOSUNG_LIST[char1]);
-                        braille += mapping.JUNGSUNG_letters.get(JUNGSUNG_LIST[char2]);
-                        if (char3 != 0){    //종성 자음 존재할 경우만 추가
-                            braille += mapping.JONGSUNG_letters.get(JONGSUNG_LIST[char3]);
+                String Cho = CHOSUNG_LIST[char1];
+                String Jung = JUNGSUNG_LIST[char2];
+                String Jong = JONGSUNG_LIST[char3];
+
+                if (!check_contraction2(Cho, Jung, Jong)){//늘 => ㄴ+'을' 과 같은 약어 경우 없을 시
+                    if (!check_contraction3(Cho, Jung, Jong)){//감 => '가'+ㅁ 과 같은 약어 경우 없을 시
+
+                        //약자, 약어없이 초,중,종 모든 파트 1:1 매핑
+                        if (char3 == 0 && flag10 && Cho.equals("ㅇ") && Jung.equals("ㅖ")){  //규정 제10항
+                            braille += "⠤";
+                            braille += mapping.CHOSUNG_letters.get(Cho);
+                            braille += mapping.JUNGSUNG_letters.get(Jung);
                         }
+                        else if(flag10 && flag11 && Cho.equals("ㅇ") && Jung.equals("ㅐ")){ //규정 제11항
+                            braille += "⠤";
+                            braille += mapping.CHOSUNG_letters.get(Cho);
+                            braille += mapping.JUNGSUNG_letters.get(Jung);
+                            if (char3 != 0){
+                                braille += mapping.JONGSUNG_letters.get(Jong);
+                                flag10 = false;
+                            }
+                            flag11 = false;
+                        }
+                        else{   //1:1 매핑 케이스
+                            braille += mapping.CHOSUNG_letters.get(Cho);
+                            braille += mapping.JUNGSUNG_letters.get(Jung);
+                            if (char3 != 0){    //종성 자음 존재할 경우만 추가
+                                braille += mapping.JONGSUNG_letters.get(Jong);
+                                flag10 = false;
+                                flag11 = false;
+                            }
+                            else{   //종성 자음 존재하지 않고 모음까지만 존재하는 경우
+                                flag10 = true;
+
+                                if(Jung.equals("ㅑ") || Jung.equals("ㅘ") || Jung.equals("ㅜ") || Jung.equals("ㅝ")){
+                                    flag11 = true;
+                                }
+                            }
+                        }
+
 
                     }
                 }
-
                 return true;
             }
             else{           //자음 혹은 모음 하나만 있을 때
+                braille += mapping.CHOSUNG_start;
                 if (mapping.CHOSUNG_letters.get(keys[0]) != null){      //초성 자음일 경우
-                    braille += mapping.CHOSUNG_letters.get(keys[0]);
+                    Log.d("점자 분해1", keys[0]);
+                    String decompose = mapping.decompose.get(keys[0]);
+                    if (decompose != null){
+                        Log.d("점자 분해2", decompose);
+                        if (decompose.length() > 1){
+                            braille += mapping.JONGSUNG_letters.get(keys[0]);
+                        }
+                    }
+                    else{
+                        braille += mapping.CHOSUNG_letters.get(keys[0]);
+                    }
                 }
                 else{      //중성 모음일 경우
                     braille += mapping.JUNGSUNG_letters.get(keys[0]);
@@ -156,7 +225,7 @@ public class KorToBrailleConverter {
         return false;
     }
 
-    public String translate(String text){
+    public String translate(String text){   //Kor --> Braille
         String[] words_token = text.split("\n");
 
         for(String token : words_token){
@@ -175,16 +244,23 @@ public class KorToBrailleConverter {
                     }
                     if (check_number(word, i)){
                         i+=1;
+                        flag10 = false;
+                        flag11 = false;
                         continue;
                     }
                     if (check_punctuation(word, i)){
                         i+=1;
+                        flag10 = false;
+                        flag11 = false;
                         continue;
                     }
                     check_character(word, i);
                     i += 1;
                 }
                 braille += " ";
+                flag10 = false;
+                flag11 = false;
+                flag17 = false;
             }
             braille += "\n";
         }

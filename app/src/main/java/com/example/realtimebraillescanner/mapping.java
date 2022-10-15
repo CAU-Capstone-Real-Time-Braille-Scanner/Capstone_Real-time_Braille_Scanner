@@ -10,7 +10,9 @@ public class mapping {
     HashMap<String, String> contractions = new HashMap<>();
     HashMap<String, String> punctuation = new HashMap<>();
     HashMap<String, String> numbers = new HashMap<>();
+    HashMap<String, String> decompose = new HashMap<>();
     String number_start = new String();
+    String CHOSUNG_start = new String();
 
 
     mapping(){
@@ -45,6 +47,8 @@ public class mapping {
         CHOSUNG_letters.put("ㄿ","⠐⠙");
         CHOSUNG_letters.put("ㅀ","⠐⠚");
         CHOSUNG_letters.put("ㅄ","⠘⠠");
+
+        CHOSUNG_start = "⠿";
 
         JUNGSUNG_letters.put("ㅏ","⠣");
         JUNGSUNG_letters.put("ㅐ","⠗");
@@ -97,6 +101,20 @@ public class mapping {
         JONGSUNG_letters.put("ㅄ","⠃⠄");
         JONGSUNG_letters.put("ㅆ","⠌");
 
+        decompose.put("ㄲ", "ㄱㄱ");
+        decompose.put("ㄳ", "ㄱㅅ");
+        decompose.put("ㄵ", "ㄴㅈ");
+        decompose.put("ㄶ", "ㄴㅎ");
+        decompose.put("ㄺ", "ㄹㄱ");
+        decompose.put("ㄻ", "ㄹㅁ");
+        decompose.put("ㄼ", "ㄹㅂ");
+        decompose.put("ㄽ", "ㄹㅅ");
+        decompose.put("ㄾ", "ㄹㅌ");
+        decompose.put("ㄿ", "ㄹㅍ");
+        decompose.put("ㅀ", "ㄹㅎ");
+        decompose.put("ㅄ", "ㅂㅅ");
+        decompose.put("ㅆ", "ㅅㅅ");
+
         contractions.put("가", "⠫");
         contractions.put("나", "⠉");
         contractions.put("다", "⠊");
@@ -123,6 +141,9 @@ public class mapping {
         contractions.put("은", "⠵");
         contractions.put("을", "⠮");
         contractions.put("인", "⠟");
+        contractions.put("까", "⠠⠫");
+        contractions.put("싸", "⠠⠇");
+        contractions.put("껏", "⠠⠸⠎");
         contractions.put("그래서", "⠁⠎");
         contractions.put("그러나", "⠁⠉");
         contractions.put("그러면", "⠁⠒");
