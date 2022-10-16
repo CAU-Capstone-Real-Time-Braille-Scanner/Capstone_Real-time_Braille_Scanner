@@ -101,7 +101,7 @@ class CameraFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val translator = KorToBrailleConverter()
-        Log.d("점자", translator.translate("ㄳㅏㅀㄶㄿ ㅁㄴㅎ"))
+        Log.d("점자", translator.translate("성가 말썽 정성 어정쩡 청년"))
 //        Log.d("점자", translator.translate("그리고예 이예은 유예 노예 예예예"))
 //        Log.d("점자", translator.translate("세금 부과액이 너무 과하다."))
 //        Log.d("점자", translator.translate("까치 깡충깡충 쌍둥이 쌍쌍이 한껏 힘껏 불을 껐다 까마귀 쌀통 알겄소"))

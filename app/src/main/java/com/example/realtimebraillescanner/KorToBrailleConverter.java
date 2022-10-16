@@ -181,13 +181,20 @@ public class KorToBrailleConverter {
                         }
                         else{   //1:1 매핑 케이스
                             braille += mapping.CHOSUNG_letters.get(Cho);
-                            braille += mapping.JUNGSUNG_letters.get(Jung);
                             if (char3 != 0){    //종성 자음 존재할 경우만 추가
-                                braille += mapping.JONGSUNG_letters.get(Jong);
+                                if(Jung.equals("ㅓ") && Jong.equals("ㅇ") && (Cho.equals("ㅅ") || Cho.equals("ㅆ") || Cho.equals("ㅈ") || Cho.equals("ㅉ") || Cho.equals("ㅊ"))){
+                                    braille += "⠻";     //규정 제17항
+                                }
+                                else{
+                                    braille += mapping.JUNGSUNG_letters.get(Jung);
+                                    braille += mapping.JONGSUNG_letters.get(Jong);
+                                }
                                 flag10 = false;
                                 flag11 = false;
                             }
                             else{   //종성 자음 존재하지 않고 모음까지만 존재하는 경우
+                                braille += mapping.JUNGSUNG_letters.get(Jung);
+
                                 flag10 = true;
 
                                 if(Jung.equals("ㅑ") || Jung.equals("ㅘ") || Jung.equals("ㅜ") || Jung.equals("ㅝ")){
