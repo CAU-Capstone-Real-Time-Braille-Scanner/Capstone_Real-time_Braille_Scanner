@@ -56,6 +56,14 @@ public class KorToBrailleConverter {
 
         for (String key : keys){
             if (word.substring(idx).startsWith(key)){
+
+                if (idx!=0 && (key.equals("그래서")||key.equals("그러나")||key.equals("그러면")||key.equals("그러므로")||key.equals("그런데")||key.equals("그리고")||key.equals("그리하여"))){
+                    flag10 = false;
+                    flag11 = false;
+                    flag17 = false;
+                    return 0;
+                }
+
                 if (!(word.substring(idx).equals("가")||word.substring(idx).equals("나")||word.substring(idx).equals("다")||word.substring(idx).equals("마")||word.substring(idx).equals("바")||word.substring(idx).equals("사")||word.substring(idx).equals("자")||word.substring(idx).equals("카")||word.substring(idx).equals("타")||word.substring(idx).equals("파")||word.substring(idx).equals("하"))){
                     if (flag17){
                         braille += "⠣";

@@ -102,9 +102,9 @@ class CameraFragment : Fragment() {
 
         val translator = KorToBrailleConverter()
         Log.d("점자", translator.translate(""))
-        Log.d("점자", translator.translate("다예 나예림"))
-        Log.d("점자", translator.translate("까 따 빠 싸 짜 "))
-        Log.d("점자", translator.translate("땅을 팠다"))
+        Log.d("점자", translator.translate("그러나저러나"))
+        Log.d("점자", translator.translate("그리고는"))
+        Log.d("점자", translator.translate("그런데도"))
 //        Log.d("점자", translator.translate("성가 말썽 정성 어정쩡 청년"))
 //        Log.d("점자", translator.translate("그리고예 이예은 유예 노예 예예예"))
 //        Log.d("점자", translator.translate("세금 부과액이 너무 과하다."))
