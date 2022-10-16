@@ -294,6 +294,9 @@ public class KorToBrailleConverter {
                 else{      //중성 모음일 경우
                     braille += mapping.JUNGSUNG_letters.get(keys[0]);
                 }
+                flag10 = false;
+                flag11 = false;
+                flag17 = false;
                 return true;
             }
         }

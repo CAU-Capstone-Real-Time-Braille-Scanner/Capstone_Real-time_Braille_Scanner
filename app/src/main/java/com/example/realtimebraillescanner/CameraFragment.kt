@@ -100,15 +100,13 @@ class CameraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        //Test Case
         val translator = KorToBrailleConverter()
         Log.d("점자", (""))
-        Log.d("점자", translator.translate("까옙 라옙 따옙 짜옙"))
-//        Log.d("점자", translator.translate("가옙 마을 바위"))
-//        Log.d("점자", translator.translate("나무위키, 여러분이 가꾸어 나가는 지식의 나무."))
-//        Log.d("점자", translator.translate("불어 되는 따뜻한 사람은 피고 하는 과실이 싶이 그리하였는가? 내는 이상 끝까지 속에 장식하는 것이다. 얼마나 힘차게 위하여 길지 장식하는 살 밥을 그들을 우리의 봄바람이다."))
-//        Log.d("점자", translator.translate("밤이 계집애들의 하나에 당신은 자랑처럼 멀듯이, 지나고 아스라히 거외다. 위에도 어머니, 걱정도 너무나 것은 버리었습니다. 슬퍼하는 지나고 잠, 말 내일 이웃 이름과, 까닭입니다. 비둘기, 지나가는 하나의 하나에 때 마리아 이제 내린 듯합니다."))
-//        Log.d("점자", translator.translate("나는 노루, 않은 우는 불러 별빛이 애기 멀리 거외다. 이름과, 그리고 이름을 이제 파란 계절이 라이너 밤이 옥 거외다. 같이 이름과 비둘기, 멀듯이, 차 봄이 아무 남은 듯합니다."))
-//        Log.d("점자", translator.translate(""))
+        Log.d("점자", translator.translate("나무위키, 여러분이 가꾸어 나가는 지식의 나무."))
+        Log.d("점자", translator.translate("불어 되는 따뜻한 사람은 피고 하는 과실이 싶이 그리하였는가? 내는 이상 끝까지 속에 장식하는 것이다. 얼마나 힘차게 위하여 길지 장식하는 살 밥을 그들을 우리의 봄바람이다."))
+        Log.d("점자", translator.translate("밤이 계집애들의 하나에 당신은 자랑처럼 멀듯이, 지나고 아스라히 거외다. 위에도 어머니, 걱정도 너무나 것은 버리었습니다. 슬퍼하는 지나고 잠, 말 내일 이웃 이름과, 까닭입니다. 비둘기, 지나가는 하나의 하나에 때 마리아 이제 내린 듯합니다."))
+        Log.d("점자", translator.translate("나는 노루, 않은 우는 불러 별빛이 애기 멀리 거외다. 이름과, 그리고 이름을 이제 파란 계절이 라이너 밤이 옥 거외다. 같이 이름과 비둘기, 멀듯이, 차 봄이 아무 남은 듯합니다."))
 
 
         super.onViewCreated(view, savedInstanceState)
