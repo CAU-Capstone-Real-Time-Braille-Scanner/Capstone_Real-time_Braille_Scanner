@@ -66,23 +66,27 @@ public class KorToBrailleConverter {
         jasoList.add("ㅇ");
         jasoList.add(Jung);
 
-        if (!(Jong.trim().equals(""))){
-            if(mapping.decompose.get(Jong)!=null){
+        if (!(Jong.trim().equals(""))){     //종성 존재하면
+            if(mapping.decompose.get(Jong)!=null){      //종성이 double 형태일 시
                 doubleJong = mapping.decompose.get(Jong);
-                jasoList.add(String.valueOf(doubleJong.charAt(0)));
+                jasoList.add(String.valueOf(doubleJong.charAt(0))); //double의 첫 자모 추가
             }
             else{
-                jasoList.add(Jong);
+                jasoList.add(Jong); //종성이 낱개 자모일 시 해당 문자 추가
             }
         }
 
         try{
             String hangul = HangulParser.assemble(jasoList);
-            if (mapping.contractions.get(hangul)!=null){
+            if (mapping.contractions.get(hangul)!=null){    //약어 존재할 시
+
+                if(hangul.equals("영") && (Cho.equals("ㅅ") || Cho.equals("ㅈ") || Cho.equals("ㅊ"))){
+                    return false;
+                }
                 braille += mapping.CHOSUNG_letters.get(Cho);
                 braille += mapping.contractions.get(hangul);
                 flag10 = false;
-                if (doubleJong.length()>1){
+                if (doubleJong.length()>1){ //double이면 낱개 자모 하나 더 추가
                     braille += mapping.JONGSUNG_letters.get(String.valueOf(doubleJong.charAt(1)));
                 }
                 return true;
