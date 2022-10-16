@@ -48,15 +48,22 @@ public class KorToBrailleConverter {
         Set<String> keys = mapping.contractions.keySet();
 
         String w = String.valueOf(word.charAt(idx));
+
         if((w.equals("나") || w.equals("다") || w.equals("마") || w.equals("바") || w.equals("자") || w.equals("카") || w.equals("타") || w.equals("파") || w.equals("하") )){
             braille += mapping.contractions.get(w);
+            flag10 = true;
             flag17 = true;
+            return 1;
+        }
+        else if((w.equals("가") || w.equals("사") || w.equals("까") || w.equals("따") || w.equals("빠") || w.equals("짜"))){
+            braille += mapping.contractions.get(w);
+            flag10 = true;
             return 1;
         }
 
         for (String key : keys){
             if (word.substring(idx).startsWith(key)){
-
+                //제 18항
                 if (idx!=0 && (key.equals("그래서")||key.equals("그러나")||key.equals("그러면")||key.equals("그러므로")||key.equals("그런데")||key.equals("그리고")||key.equals("그리하여"))){
                     flag10 = false;
                     flag11 = false;
@@ -64,12 +71,14 @@ public class KorToBrailleConverter {
                     return 0;
                 }
 
-                if (!(word.substring(idx).equals("가")||word.substring(idx).equals("나")||word.substring(idx).equals("다")||word.substring(idx).equals("마")||word.substring(idx).equals("바")||word.substring(idx).equals("사")||word.substring(idx).equals("자")||word.substring(idx).equals("카")||word.substring(idx).equals("타")||word.substring(idx).equals("파")||word.substring(idx).equals("하"))){
-                    if (flag17){
+                if (!(word.substring(idx).equals("가")||word.substring(idx).equals("나")||word.substring(idx).equals("다")||word.substring(idx).equals("마")||word.substring(idx).equals("바")||word.substring(idx).equals("사")||word.substring(idx).equals("자")||word.substring(idx).equals("카")||word.substring(idx).equals("타")||word.substring(idx).equals("파")||word.substring(idx).equals("하")||word.substring(idx).equals("것")||word.substring(idx).equals("까")||word.substring(idx).equals("싸")||word.substring(idx).equals("껏"))){
+                    //억, 언 , ... 인
+                    if (flag17){    // 나, 다, 마, ... , 하 뒤에 모음인 경우
                         braille += "⠣";
                         flag17 = false;
                     }
                     flag10 = false;
+                    flag11 = false;
                 }
                 braille += mapping.contractions.get(key);
                 return key.length();
@@ -106,6 +115,7 @@ public class KorToBrailleConverter {
                 braille += mapping.CHOSUNG_letters.get(Cho);
                 braille += mapping.contractions.get(hangul);
                 flag10 = false;
+                flag11 = false;
                 flag17 = false;
                 if (doubleJong.length()>1){ //double이면 낱개 자모 하나 더 추가
                     braille += mapping.JONGSUNG_letters.get(String.valueOf(doubleJong.charAt(1)));
@@ -135,6 +145,7 @@ public class KorToBrailleConverter {
                 }
                 braille += mapping.JONGSUNG_letters.get(Jong);
                 flag10 = false;
+                flag11 = false;
                 flag17 = false;
                 return true;
             }
@@ -190,8 +201,15 @@ public class KorToBrailleConverter {
                 String Jung = JUNGSUNG_LIST[char2];
                 String Jong = JONGSUNG_LIST[char3];
 
-                if (Cho.equals("ㅇ") && flag17){
-                    if(Jung.equals("ㅖ")){
+                if (Cho.equals("ㅇ") && flag17){ //모음 시작
+                    flag11 = false;
+                    if (char3 == 0) {
+                        flag10 = true;
+                        if (Jong.equals("ㅑ")||Jong.equals("ㅘ")||Jong.equals("ㅜ")||Jong.equals("ㅝ")){
+                            flag11 = true;
+                        }
+                    }
+                    if(Jung.equals("ㅖ")){ // "예" 로 끝
                         braille += "⠤";
                     }
                     else{
@@ -204,10 +222,17 @@ public class KorToBrailleConverter {
                     if (!check_contraction3(Cho, Jung, Jong)){//감 => '가'+ㅁ 과 같은 약어 경우 없을 시
 
                         //약자, 약어없이 초,중,종 모든 파트 1:1 매핑
-                        if (char3 == 0 && flag10 && Cho.equals("ㅇ") && Jung.equals("ㅖ")){  //규정 제10항
+                        if (flag10 && Cho.equals("ㅇ") && Jung.equals("ㅖ")){  //규정 제10항
                             braille += "⠤";
                             braille += mapping.CHOSUNG_letters.get(Cho);
                             braille += mapping.JUNGSUNG_letters.get(Jung);
+                            if (char3 != 0){
+                                braille += mapping.JONGSUNG_letters.get(Jong);
+                            }
+                            else{
+                                flag10 = false;
+                            }
+                            flag11 = false;
                             flag17 = false;
                         }
                         else if(flag10 && flag11 && Cho.equals("ㅇ") && Jung.equals("ㅐ")){ //규정 제11항
@@ -239,11 +264,12 @@ public class KorToBrailleConverter {
                                 braille += mapping.JUNGSUNG_letters.get(Jung);
 
                                 flag10 = true;
-                                flag17 = false;
 
                                 if(Jung.equals("ㅑ") || Jung.equals("ㅘ") || Jung.equals("ㅜ") || Jung.equals("ㅝ")){
                                     flag11 = true;
                                 }
+
+                                flag17 = false;
                             }
                         }
 
