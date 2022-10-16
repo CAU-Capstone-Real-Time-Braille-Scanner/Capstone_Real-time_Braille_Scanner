@@ -1,5 +1,6 @@
 package com.example.realtimebraillescanner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class mapping {
@@ -13,6 +14,7 @@ public class mapping {
     HashMap<String, String> decompose = new HashMap<>();
     String number_start = new String();
     String CHOSUNG_start = new String();
+    ArrayList<String> quotation = new ArrayList<>();
 
 
     mapping(){
@@ -167,16 +169,21 @@ public class mapping {
         punctuation.put("}", "⠐⠴");
         punctuation.put("[", "⠦⠆");
         punctuation.put("]", "⠰⠴");
-        punctuation.put("“", "⠦");
-        punctuation.put("”", "⠴");
-        punctuation.put("'", "⠠⠦");
-        punctuation.put("'", "⠴⠄");
+//        punctuation.put("“", "⠦");
+//        punctuation.put("”", "⠴");
+//        punctuation.put("'", "⠠⠦");
+//        punctuation.put("'", "⠴⠄");
         punctuation.put("?", "⠦");
         punctuation.put("/", String.valueOf((char)(10240 + 32 + 16 + 8))+String.valueOf((char)(10240 + 8 + 4)));
         punctuation.put("...", String.valueOf((char)(10240 + 32 + 16 + 2))+String.valueOf((char)(10240 + 32 + 16 + 2)));
         punctuation.put("", String.valueOf((char)(10240 + 32))+String.valueOf((char)(10240 + 32 + 4 + 2)));
         punctuation.put("-", "⠤");
         punctuation.put("~", "⠤⠤");
+
+        quotation.add("⠦");
+        quotation.add("⠴");
+        quotation.add("⠠⠦");
+        quotation.add("⠴⠄");
 
         numbers.put("1","⠁");
         numbers.put("2","⠃");

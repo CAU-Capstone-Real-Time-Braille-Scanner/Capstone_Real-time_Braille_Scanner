@@ -16,10 +16,12 @@ public class KorToBrailleConverter {
     int CHOSUNG = 588;
     int JUNGSUNG = 28;
     mapping mapping = new mapping();
-    String braille = "";
-    Boolean flag10 = false;
-    Boolean flag11 = false;
-    Boolean flag17 = false;
+    String braille = "";    //translated text로 보내질 점자 텍스트
+    Boolean flag10 = false; //점자규정 제 10 항 확인용
+    Boolean flag11 = false; //점자규정 제 11 항 확인용
+    Boolean flag17 = false; //점자규정 제 17 항 확인용
+    int bQuot = 0;  //big quotation index
+    int sQuot = 2;  //small quotation index
 
     String[] CHOSUNG_LIST = {"ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ",
             "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ",
@@ -175,10 +177,34 @@ public class KorToBrailleConverter {
     }
 
     public Boolean check_punctuation(String word, int idx){ //check the data set of punctuation
-        if (mapping.punctuation.get(String.valueOf(word.charAt(idx)))!=null){
-            braille += mapping.punctuation.get(String.valueOf(word.charAt(idx)));
+        String punc = String.valueOf(word.charAt(idx));
+        if (mapping.punctuation.get(punc)!=null){
+            braille += mapping.punctuation.get(punc);
             return true;
         }
+        else if (punc.equals("\"")){
+            if (bQuot == 0){
+                braille += mapping.quotation.get(bQuot);
+                bQuot+=1;
+            }
+            else{
+                braille += mapping.quotation.get(bQuot);
+                bQuot-=1;
+            }
+            return true;
+        }
+        else if (punc.equals("'")){
+            if (sQuot == 2){
+                braille += mapping.quotation.get(sQuot);
+                sQuot+=1;
+            }
+            else{
+                braille += mapping.quotation.get(sQuot);
+                sQuot-=1;
+            }
+            return true;
+        }
+
         return false;
     }
 
