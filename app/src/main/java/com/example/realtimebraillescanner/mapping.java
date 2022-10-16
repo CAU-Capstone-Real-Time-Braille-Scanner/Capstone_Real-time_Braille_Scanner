@@ -115,6 +115,9 @@ public class mapping {
         decompose.put("ㅄ", "ㅂㅅ");
         decompose.put("ㅆ", "ㅅㅅ");
 
+        contractions.put("따", "⠠⠊");
+        contractions.put("빠", "⠠⠘");
+        contractions.put("짜", "⠠⠨");
         contractions.put("가", "⠫");
         contractions.put("나", "⠉");
         contractions.put("다", "⠊");
