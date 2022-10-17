@@ -20,6 +20,7 @@ package com.example.realtimebraillescanner
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.content.res.AssetManager
 import android.graphics.*
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -41,6 +42,9 @@ import com.example.realtimebraillescanner.databinding.CameraFragmentBinding
 import com.example.realtimebraillescanner.util.Language
 import com.example.realtimebraillescanner.util.ScopedExecutor
 import kotlinx.android.synthetic.main.camera_fragment.*
+import java.io.FileInputStream
+import java.nio.ByteBuffer
+import java.nio.channels.FileChannel
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -388,6 +392,17 @@ class CameraFragment : Fragment() {
         ContextCompat.checkSelfPermission(
             requireContext(), it
         ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    // This helper function loads tensorflow lite model from "assets" directory.
+    private fun loadModelFile(assetManager: AssetManager, modelPath: String): ByteBuffer {
+        val fileDescriptor = assetManager.openFd(modelPath)
+        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
+        val fileChannel = inputStream.channel
+        val startOffset = fileDescriptor.startOffset
+        val declaredLength = fileDescriptor.declaredLength
+
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
     }
 }
 
