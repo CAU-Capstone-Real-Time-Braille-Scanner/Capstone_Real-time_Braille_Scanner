@@ -40,6 +40,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    aaptOptions {
+        // 컴파일러가 .tflite 파일을 압축하지 않도록 만듦.
+        noCompress "tflite"
+    }
 }
 
 dependencies {
@@ -86,4 +91,7 @@ dependencies {
 
     //Copyright (c) 2015 "KimKevin" Yongjun Kim
     implementation 'com.github.kimkevin:hangulparser:1.0.0'
+
+    // To add Tensorflow Lite dependency
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
 }
