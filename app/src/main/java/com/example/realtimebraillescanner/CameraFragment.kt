@@ -84,6 +84,8 @@ class CameraFragment : Fragment() {
     private lateinit var container: ConstraintLayout
     private lateinit var viewFinder: PreviewView
 
+    private lateinit var binding: CameraFragmentBinding
+
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
 
@@ -109,7 +111,8 @@ class CameraFragment : Fragment() {
             ex.printStackTrace()
         }
 
-        return inflater.inflate(R.layout.camera_fragment, container, false)
+        binding = CameraFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onDestroyView() {
