@@ -437,6 +437,10 @@ class CameraFragment : Fragment() {
 
     // 추론을 수행하는 함수
     private fun doInference() {
+        val bitmap: Bitmap = BitmapFactory.decodeFile("")
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 28, 28, false)
+
+
         // 추론 결과를 표시하는 AlertDialog
         val builder = AlertDialog.Builder(requireContext())
         with (builder) {
