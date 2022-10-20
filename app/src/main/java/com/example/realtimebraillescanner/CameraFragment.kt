@@ -112,8 +112,15 @@ class CameraFragment : Fragment() {
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
-
+        
         binding = CameraFragmentBinding.inflate(inflater, container, false)
+        
+        // 추론 버튼의 리스너 추가
+        binding.inferButton.setOnClickListener { 
+            doInference()
+        }
+        
+        
         return binding.root
     }
 
