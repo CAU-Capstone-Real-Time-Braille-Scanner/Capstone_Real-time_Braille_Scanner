@@ -20,6 +20,8 @@ package com.example.realtimebraillescanner
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.content.res.AssetManager
 import android.graphics.*
@@ -428,8 +430,16 @@ class CameraFragment : Fragment() {
 
     // 추론을 수행하는 함수
     private fun doInference() {
-        // TODO
-        // 이 함수 안에 입력된 데이터를 추론을 위해 텐서플로우 라이트에 전달하고 추론 결과를 화면에 표시해야 함.
+        // 추론 결과를 표시하는 AlertDialog
+        val builder = AlertDialog.Builder(requireContext())
+        with (builder) {
+            setTitle("TFLite Interpreter")
+            setMessage("추론 결과: ?") // TODO: 추론 결과로 얻어진 6자리 숫자 값을 출력해야 함.
+            setNeutralButton("OK", DialogInterface.OnClickListener {
+                dialog, id -> dialog.cancel()
+            })
+            show()
+        }
     }
 }
 
