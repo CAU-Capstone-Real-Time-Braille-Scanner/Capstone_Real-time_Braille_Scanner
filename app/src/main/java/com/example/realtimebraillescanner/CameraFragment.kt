@@ -19,6 +19,7 @@ package com.example.realtimebraillescanner
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.content.res.AssetManager
 import android.graphics.*
@@ -42,6 +43,7 @@ import com.example.realtimebraillescanner.databinding.CameraFragmentBinding
 import com.example.realtimebraillescanner.util.Language
 import com.example.realtimebraillescanner.util.ScopedExecutor
 import kotlinx.android.synthetic.main.camera_fragment.*
+import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
@@ -87,10 +89,26 @@ class CameraFragment : Fragment() {
 
     private lateinit var scopedExecutor: ScopedExecutor
 
+    /* 모델과 인터프리터를 위한 프로퍼티 추가 */
+
+    // 모든 작업을 수행할 인터프리터 객체
+    private lateinit var tflite: Interpreter
+
+    // 인터프리터에 전달할 모델
+    private lateinit var tflitemodel: ByteBuffer
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // 인터프리터를 초기화하고 model.tflite 을 로드하는 코드
+        try {
+            tflitemodel = loadModelFile(requireActivity().assets, "model.tflite")
+            tflite = Interpreter(tflitemodel)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
         return inflater.inflate(R.layout.camera_fragment, container, false)
     }
 
@@ -403,6 +421,12 @@ class CameraFragment : Fragment() {
         val declaredLength = fileDescriptor.declaredLength
 
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
+    }
+
+    // 추론을 수행하는 함수
+    private fun doInference() {
+        // TODO
+        // 이 함수 안에 입력된 데이터를 추론을 위해 텐서플로우 라이트에 전달하고 추론 결과를 화면에 표시해야 함.
     }
 }
 
