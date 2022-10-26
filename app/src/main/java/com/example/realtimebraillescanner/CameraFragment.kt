@@ -77,6 +77,7 @@ class CameraFragment : Fragment() {
     private var imageAnalyzer: ImageAnalysis? = null
     private lateinit var container: ConstraintLayout
     private lateinit var viewFinder: PreviewView
+    private lateinit var textAnalyzer: TextAnalyzer
 
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
@@ -229,6 +230,14 @@ class CameraFragment : Fragment() {
             .setTargetRotation(rotation)
             .build()
 
+        textAnalyzer = TextAnalyzer(
+            requireContext(),
+            lifecycle,
+            viewModel.sourceText,
+            viewModel.translatedText,
+            viewModel.imageCropPercentages
+        )
+
         // Build the image analysis use case and instantiate our analyzer
         imageAnalyzer = ImageAnalysis.Builder()
             // We request aspect ratio but no resolution
@@ -239,13 +248,7 @@ class CameraFragment : Fragment() {
             .also {
                 it.setAnalyzer(
                     cameraExecutor
-                    , TextAnalyzer(
-                        requireContext(),
-                        lifecycle,
-                        viewModel.sourceText,
-                        viewModel.translatedText,
-                        viewModel.imageCropPercentages
-                    )
+                    , textAnalyzer
                 )
             }
         viewModel.sourceText.observe(viewLifecycleOwner, Observer { srcText.text = it })

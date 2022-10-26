@@ -152,7 +152,7 @@ class TextAnalyzer(
         val mlKitException = exception as? MlKitException ?: return exception.message
         return if (mlKitException.errorCode == MlKitException.UNAVAILABLE) {
 //            "Waiting for text recognition model to be downloaded"
-            "로딩중..."
+            "종료중..."
         } else exception.message
     }
 
