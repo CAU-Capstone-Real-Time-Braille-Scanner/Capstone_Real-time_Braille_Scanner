@@ -57,6 +57,7 @@ class TextAnalyzer(
 
     init {
         lifecycle.addObserver(detector)
+        setEditText()
     }
 
     // TODO: Add lifecycle observer to properly close ML Kit detectors
@@ -117,7 +118,7 @@ class TextAnalyzer(
         // 매 frame 별 image 받아와 text 인식기 실행
         // TODO Use ML Kit's TextRecognition to analyze frames from the camera live feed.
         // Pass image to an ML Kit Vision API
-        return detector.process(image)
+        return detector.process(image)      //매 프레임마다 실행되는 과정 속에서 mode를 기준으로 특정 작업 수행 반복
             .addOnSuccessListener { text ->
                 // Task completed successfully
                 if(binding.mode.text.equals("1")){  //재생 버튼
@@ -125,18 +126,24 @@ class TextAnalyzer(
                     binding.srcText.visibility = View.VISIBLE
                     binding.editSrcText.visibility = View.GONE
 
-                    val result : String = leaveOnlyKorean(text.text)
+                    val result : String = leaveOnlyKorean(text.text)    //실시간 번역 수행
                     translateKorToBraille(result)
                 }
                 else if(binding.mode.text.equals("2")){ //일시정지 버튼
-
+                    //아무것도 안함
                 }
                 else if(binding.mode.text.equals("3")){   //수정 버튼
-                    binding.editSrcText.setText(srcText.value.toString())
+                    if (srcText.value.equals(null)){
+                        binding.editSrcText.setText("")
+                    }
+                    else{
+                        binding.editSrcText.setText(srcText.value.toString())
+                    }
                     binding.srcText.visibility = View.GONE
                     binding.editSrcText.visibility = View.VISIBLE
 
-                    setEditText()
+                    binding.mode.setText("2")   //editText 보이도록 하고 detector가 일시정지된 것처럼 하기 위함
+                    //위 문구 없으면 해당 문단 계속 반복되면서 editText 반복 갱신 --> 제대로 수정 불가
                 }
             }
             .addOnFailureListener { exception ->
