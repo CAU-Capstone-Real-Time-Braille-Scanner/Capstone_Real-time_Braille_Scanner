@@ -19,12 +19,17 @@ package com.example.realtimebraillescanner
 
 import android.content.Context
 import android.graphics.Rect
+import android.opengl.Visibility
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
+import com.example.realtimebraillescanner.databinding.CameraFragmentBinding
 import com.example.realtimebraillescanner.util.ImageUtils
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.common.MlKitException
@@ -43,7 +48,8 @@ class TextAnalyzer(
     private val lifecycle: Lifecycle,
     private val srcText: MutableLiveData<String>,
     private val translatedText: MutableLiveData<String>,
-    private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>
+    private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>,
+    private val binding: CameraFragmentBinding
 ) : ImageAnalysis.Analyzer {
 
     // TODO: Instantiate TextRecognition detector
@@ -114,9 +120,24 @@ class TextAnalyzer(
         return detector.process(image)
             .addOnSuccessListener { text ->
                 // Task completed successfully
-                val result : String = leaveOnlyKorean(text.text)
+                if(binding.mode.text.equals("1")){  //재생 버튼
 
-                translateKorToBraille(result)
+                    binding.srcText.visibility = View.VISIBLE
+                    binding.editSrcText.visibility = View.GONE
+
+                    val result : String = leaveOnlyKorean(text.text)
+                    translateKorToBraille(result)
+                }
+                else if(binding.mode.text.equals("2")){ //일시정지 버튼
+
+                }
+                else if(binding.mode.text.equals("3")){   //수정 버튼
+                    binding.editSrcText.setText(srcText.value.toString())
+                    binding.srcText.visibility = View.GONE
+                    binding.editSrcText.visibility = View.VISIBLE
+
+                    setEditText()
+                }
             }
             .addOnFailureListener { exception ->
                 // Task failed with an exception
@@ -146,6 +167,24 @@ class TextAnalyzer(
         val translator = KorToBrailleConverter()
 
         translatedText.value = translator.translate(text)
+    }
+
+    private fun setEditText(){
+        binding.editSrcText.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val result : String = leaveOnlyKorean(binding.editSrcText.text.toString())
+                translateKorToBraille(result)
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                val result : String = leaveOnlyKorean(binding.editSrcText.text.toString())
+                translateKorToBraille(result)
+            }
+
+        })
     }
 
     private fun getErrorMessage(exception: Exception): String? {

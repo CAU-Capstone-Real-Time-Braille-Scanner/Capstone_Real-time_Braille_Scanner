@@ -91,6 +91,7 @@ class CameraFragment : Fragment() {
     ): View {
 
         binding = CameraFragmentBinding.inflate(inflater, container, false)
+        initClickListener()
 
         return binding.root
     }
@@ -200,12 +201,22 @@ class CameraFragment : Fragment() {
             })
         }
 
-        initClick()
-
     }
 
-    private fun initClick(){
-        binding.hanToBraille.setOnClickListener {  }
+    private fun initClickListener(){
+        //각 버튼 케이스별 text 처리는 CameraFragment layout객체 TextAnalyzer로 넘겨줘서 처리
+        binding.play.setOnClickListener {
+            Toast.makeText(context, "번역을 실행합니다", Toast.LENGTH_SHORT).show()
+            binding.mode.setText("1")
+        }
+        binding.pause.setOnClickListener {
+            Toast.makeText(context, "일시정지", Toast.LENGTH_SHORT).show()
+            binding.mode.setText("2")
+        }
+        binding.edit.setOnClickListener {
+            Toast.makeText(context, "텍스트 수정이 가능합니다", Toast.LENGTH_SHORT).show()
+            binding.mode.setText("3")
+        }
     }
 
     /** Initialize CameraX, and prepare to bind the camera use cases  */
@@ -245,7 +256,8 @@ class CameraFragment : Fragment() {
             lifecycle,
             viewModel.sourceText,
             viewModel.translatedText,
-            viewModel.imageCropPercentages
+            viewModel.imageCropPercentages,
+            binding
         )
 
         // Build the image analysis use case and instantiate our analyzer
