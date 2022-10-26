@@ -100,35 +100,11 @@ class CameraFragment : Fragment() {
 
     private lateinit var scopedExecutor: ScopedExecutor
 
-
-    /************************************/
-    /* 모델과 인터프리터를 위한 프로퍼티 추가 */
-
-    // 모든 작업을 수행할 인터프리터 객체
-    private lateinit var tflite: Interpreter
-
-    // 인터프리터에 전달할 모델
-    private lateinit var tflitemodel: ByteBuffer
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // 인터프리터를 초기화하고 model.tflite 을 로드하는 코드
-        try {
-            tflitemodel = loadModelFile(resources.assets, "model.tflite")
-            tflite = Interpreter(tflitemodel)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-        
         binding = CameraFragmentBinding.inflate(inflater, container, false)
-        
-        // 추론 버튼의 리스너 추가
-        binding.inferButton.setOnClickListener { 
-            doInference()
-        }
-
         return binding.root
     }
 
@@ -430,90 +406,6 @@ class CameraFragment : Fragment() {
         ContextCompat.checkSelfPermission(
             requireContext(), it
         ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    // This helper function loads tensorflow lite model from "assets" directory.
-    private fun loadModelFile(assetManager: AssetManager, modelPath: String): ByteBuffer {
-        val fileDescriptor = assetManager.openFd(modelPath)
-        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
-        val fileChannel = inputStream.channel
-        val startOffset = fileDescriptor.startOffset
-        val declaredLength = fileDescriptor.declaredLength
-
-        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
-    }
-
-    // 추론을 수행하는 함수
-    private fun doInference() {
-        // assets 폴더에 저장된 점자 이미지 로드하기
-        val bitmap: Bitmap
-        var inputStream: InputStream? = null
-        val scaledBitmap: Bitmap
-        val assetManager: AssetManager = resources.assets
-        val byteBuffer = ByteBuffer.allocateDirect(4 * 28 * 28 * 3)
-        byteBuffer.order(ByteOrder.nativeOrder())
-        val intValues = IntArray(28 * 28)  // 28 * 28 크기의 점자 이미지의 픽셀 값을 저장하는 배열
-        val result = Array(1) { FloatArray(64) }  // 해당 점자 이미지가 어떤 글자에 해당하는지를 나타내는 확률 배열. 이 중 값이 가장 높은 인덱스가 결과값이 된다.
-
-        try {
-            inputStream = assetManager.open("Braille_dataset/111101/111101_0_3.jpg", AssetManager.ACCESS_UNKNOWN)
-            bitmap = BitmapFactory.decodeStream(inputStream, null, null) ?: throw Exception("fail to load bitmap from InputStream")
-            scaledBitmap = Bitmap.createScaledBitmap(bitmap, 28, 28, false)
-            binding.inferImageView.setImageBitmap(scaledBitmap)
-            scaledBitmap.getPixels(intValues, 0, 28, 0, 0, 28, 28)
-
-            var pixel = 0
-            for (i in 0 until 28) {
-                for (j in 0 until 28) {
-                    val input = intValues[pixel++]
-                    byteBuffer.putFloat(((input.shr(16) and 0xFF) / 1.0f))
-                    byteBuffer.putFloat(((input.shr(8) and 0xFF) / 1.0f))
-                    byteBuffer.putFloat(((input and 0xFF) / 1.0f))
-                }
-            }
-
-            inputStream.close()
-            inputStream = null
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            try {
-                inputStream?.close()
-            } catch (e: Exception) {}
-        }
-
-        tflite.run(byteBuffer, result)
-        var maxValue = 0.0f
-        var maxIndex = 0
-        for (i in result[0].indices) {
-            if (maxValue < result[0][i]) {
-                maxValue = result[0][i]
-                maxIndex = i
-            }
-        }
-
-        val answer = StringBuilder().apply {
-            for (i in 0 until 6) {
-                if (maxIndex % 2 == 1) {
-                    maxIndex = (maxIndex - 1) / 2
-                    append("1")
-                } else {
-                    maxIndex /= 2
-                    append("0")
-                }
-            }
-        }.toString().reversed()
-
-        // 추론 결과를 표시하는 AlertDialog
-        val builder = AlertDialog.Builder(requireContext())
-        with (builder) {
-            setTitle("TFLite Interpreter")
-            setMessage("추론 결과: $answer")
-            setNeutralButton("OK") { dialog, _ ->
-                dialog.cancel()
-            }
-            show()
-        }
     }
 }
 
