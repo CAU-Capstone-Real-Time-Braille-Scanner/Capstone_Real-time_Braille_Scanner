@@ -45,6 +45,10 @@ import androidx.lifecycle.Observer
 import com.example.realtimebraillescanner.databinding.CameraFragmentBinding
 import com.example.realtimebraillescanner.util.Language
 import com.example.realtimebraillescanner.util.ScopedExecutor
+import com.google.mlkit.common.model.LocalModel
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.objects.ObjectDetection
+import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
 import kotlinx.android.synthetic.main.camera_fragment.*
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
@@ -96,6 +100,8 @@ class CameraFragment : Fragment() {
 
     private lateinit var scopedExecutor: ScopedExecutor
 
+
+    /************************************/
     /* 모델과 인터프리터를 위한 프로퍼티 추가 */
 
     // 모든 작업을 수행할 인터프리터 객체
@@ -316,7 +322,7 @@ class CameraFragment : Fragment() {
                 return@setOnTouchListener true
             }
 
-            preview.setSurfaceProvider(viewFinder.createSurfaceProvider())
+            preview.setSurfaceProvider(viewFinder.surfaceProvider)
         } catch (exc: IllegalStateException) {
             Log.e(TAG, "Use case binding failed. This must be running on main thread.", exc)
         }
