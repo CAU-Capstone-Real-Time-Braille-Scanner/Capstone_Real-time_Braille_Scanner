@@ -52,6 +52,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val imageCropPercentages = MutableLiveData<Pair<Int, Int>>()
         .apply { value = Pair(DESIRED_HEIGHT_CROP_PERCENT, DESIRED_WIDTH_CROP_PERCENT) }
     val translatedText = SmoothedMutableLiveData<String>(SMOOTHING_DURATION)
+
+    val editSourceText = SmoothedMutableLiveData<String>(SMOOTHING_DURATION)
 //    val translatedText = MediatorLiveData<ResultOrError>()
 //    private val translating = MutableLiveData<Boolean>()
 //    val modelDownloading = SmoothedMutableLiveData<Boolean>(SMOOTHING_DURATION)

@@ -78,6 +78,7 @@ class CameraFragment : Fragment() {
     private lateinit var container: ConstraintLayout
     private lateinit var viewFinder: PreviewView
     private lateinit var textAnalyzer: TextAnalyzer
+    private lateinit var binding : CameraFragmentBinding
 
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
@@ -88,7 +89,11 @@ class CameraFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.camera_fragment, container, false)
+
+        binding = CameraFragmentBinding.inflate(inflater, container, false)
+        initClickListener()
+
+        return binding.root
     }
 
     override fun onDestroyView() {
@@ -110,11 +115,11 @@ class CameraFragment : Fragment() {
 //        Log.d("점자", translator.translate("밤이 계집애들의 하나에 당신은 자랑처럼 멀듯이, 지나고 아스라히 거외다. 위에도 어머니, 걱정도 너무나 것은 버리었습니다. 슬퍼하는 지나고 잠, 말 내일 이웃 이름과, 까닭입니다. 비둘기, 지나가는 하나의 하나에 때 마리아 이제 내린 듯합니다."))
 //        Log.d("점자", translator.translate("나는 노루, 않은 우는 불러 별빛이 애기 멀리 거외다. 이름과, 그리고 이름을 이제 파란 계절이 라이너 밤이 옥 거외다. 같이 이름과 비둘기, 멀듯이, 차 봄이 아무 남은 듯합니다."))
 
-
         super.onViewCreated(view, savedInstanceState)
 
-        container = view as ConstraintLayout
-        viewFinder = container.findViewById(R.id.viewfinder)
+//        container = view as ConstraintLayout
+//        viewFinder = container.findViewById(R.id.viewfinder)
+        viewFinder = binding.viewfinder
 
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -195,8 +200,24 @@ class CameraFragment : Fragment() {
 
             })
         }
+
     }
 
+    private fun initClickListener(){
+        //각 버튼 케이스별 text 처리는 CameraFragment layout객체 TextAnalyzer로 넘겨줘서 처리
+        binding.play.setOnClickListener {
+            Toast.makeText(context, "번역을 실행합니다", Toast.LENGTH_SHORT).show()
+            binding.mode.setText("1")
+        }
+        binding.pause.setOnClickListener {
+            Toast.makeText(context, "일시정지", Toast.LENGTH_SHORT).show()
+            binding.mode.setText("2")
+        }
+        binding.edit.setOnClickListener {
+            Toast.makeText(context, "텍스트 수정이 가능합니다", Toast.LENGTH_SHORT).show()
+            binding.mode.setText("3")
+        }
+    }
 
     /** Initialize CameraX, and prepare to bind the camera use cases  */
     private fun setUpCamera() {
@@ -235,7 +256,8 @@ class CameraFragment : Fragment() {
             lifecycle,
             viewModel.sourceText,
             viewModel.translatedText,
-            viewModel.imageCropPercentages
+            viewModel.imageCropPercentages,
+            binding
         )
 
         // Build the image analysis use case and instantiate our analyzer
