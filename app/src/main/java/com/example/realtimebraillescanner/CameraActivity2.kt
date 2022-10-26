@@ -80,7 +80,7 @@ class CameraActivity2 : AppCompatActivity() {
 
         // 인터프리터를 초기화하고 model.tflite 을 로드하는 코드
         try {
-            tflitemodel = loadModelFile(resources.assets, "model.tflite")
+            tflitemodel = loadModelFile(this.assets, "model.tflite")
             tflite = Interpreter(tflitemodel)
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -232,7 +232,7 @@ class CameraActivity2 : AppCompatActivity() {
         val bitmap: Bitmap
         var inputStream: InputStream? = null
         val scaledBitmap: Bitmap
-        val assetManager: AssetManager = resources.assets
+        val assetManager: AssetManager = this.assets
         val byteBuffer = ByteBuffer.allocateDirect(4 * 28 * 28 * 3)
         byteBuffer.order(ByteOrder.nativeOrder())
         val intValues = IntArray(28 * 28)  // 28 * 28 크기의 점자 이미지의 픽셀 값을 저장하는 배열
@@ -275,17 +275,21 @@ class CameraActivity2 : AppCompatActivity() {
             }
         }
 
-        val answer = StringBuilder().apply {
-            for (i in 0 until 6) {
-                if (maxIndex % 2 == 1) {
-                    maxIndex = (maxIndex - 1) / 2
-                    append("1")
-                } else {
-                    maxIndex /= 2
-                    append("0")
+        val answer = if (maxValue >= 0.5f) {
+            StringBuilder().apply {
+                for (i in 0 until 6) {
+                    if (maxIndex % 2 == 1) {
+                        maxIndex = (maxIndex - 1) / 2
+                        append("1")
+                    } else {
+                        maxIndex /= 2
+                        append("0")
+                    }
                 }
-            }
-        }.toString().reversed()
+            }.toString().reversed()
+        } else {
+            "인식 불가"
+        }
 
         // 추론 결과를 표시하는 AlertDialog
         val builder = AlertDialog.Builder(this)
