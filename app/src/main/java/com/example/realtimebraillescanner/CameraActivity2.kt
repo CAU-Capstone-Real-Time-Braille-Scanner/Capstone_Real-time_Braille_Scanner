@@ -5,8 +5,8 @@ import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.content.res.AssetManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.*
+import android.media.Image
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -24,13 +24,13 @@ import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.realtimebraillescanner.databinding.ActivityCamera2Binding
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
 import org.tensorflow.lite.Interpreter
+import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.ByteBuffer
@@ -39,23 +39,18 @@ import java.nio.channels.FileChannel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-typealias LumaListener = (luma: Double) -> Unit
-
+typealias BrailleListener = (temp: String) -> Unit
 
 class CameraActivity2 : AppCompatActivity() {
     private lateinit var binding: ActivityCamera2Binding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
 
-    /************************************/
-    /* 모델과 인터프리터를 위한 프로퍼티 추가 */
-
     // 모든 작업을 수행할 인터프리터 객체
     private lateinit var tflite: Interpreter
 
     // 인터프리터에 전달할 모델
     private lateinit var tflitemodel: ByteBuffer
-
 
     private val localModel = LocalModel.Builder()
         .setAssetFilePath("model.tflite")
@@ -88,7 +83,7 @@ class CameraActivity2 : AppCompatActivity() {
 
         // 추론 버튼의 리스너 추가
         binding.inferButton.setOnClickListener {
-            doInference()
+            doInferenceFromSavedImage()
         }
 
         // Request camera permissions
@@ -101,7 +96,7 @@ class CameraActivity2 : AppCompatActivity() {
 
         // Set up the listeners for take photo and video capture buttons
         binding.imageCaptureButton.setOnClickListener { takePhoto() }
-        binding.inferButton.setOnClickListener { doInference() }
+        binding.inferButton.setOnClickListener { doInferenceFromSavedImage() }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
@@ -166,8 +161,10 @@ class CameraActivity2 : AppCompatActivity() {
             val imageAnalyzer = ImageAnalysis.Builder()
                 .build()
                 .also {
-                    it.setAnalyzer(cameraExecutor, LuminosityAnalyzer { luma ->
-                        Log.d(TAG, "Average luminosity: $luma")
+                    it.setAnalyzer(cameraExecutor, BrailleAnalyzer { temp ->
+                        runOnUiThread {
+                            binding.textView.text = "인식된 글자: $temp"
+                        }
                     })
                 }
 
@@ -226,8 +223,8 @@ class CameraActivity2 : AppCompatActivity() {
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
     }
 
-    // 추론을 수행하는 함수
-    private fun doInference() {
+    // assets 폴더에 저장된 이미지에서 추론을 수행하는 함수
+    private fun doInferenceFromSavedImage() {
         // assets 폴더에 저장된 점자 이미지 로드하기
         val bitmap: Bitmap
         var inputStream: InputStream? = null
@@ -303,14 +300,62 @@ class CameraActivity2 : AppCompatActivity() {
         }
     }
 
+    private fun doInference(bitmap: Bitmap): String {
+        val byteBuffer = ByteBuffer.allocateDirect(4 * 28 * 28 * 3)
+        byteBuffer.order(ByteOrder.nativeOrder())
+        val intValues = IntArray(28 * 28)  // 28 * 28 크기의 점자 이미지의 픽셀 값을 저장하는 배열
+        val result = Array(1) { FloatArray(64) }  // 해당 점자 이미지가 어떤 글자에 해당하는지를 나타내는 확률 배열. 이 중 값이 가장 높은 인덱스가 결과값이 된다.
+
+        val scaledBitmap: Bitmap = Bitmap.createScaledBitmap(bitmap, 28, 28, false)
+        // binding.imageView.setImageBitmap(scaledBitmap)
+        scaledBitmap.getPixels(intValues, 0, 28, 0, 0, 28, 28)
+
+        var pixel = 0
+        for (i in 0 until 28) {
+            for (j in 0 until 28) {
+                val input = intValues[pixel++]
+                byteBuffer.putFloat(((input.shr(16) and 0xFF) / 1.0f))
+                byteBuffer.putFloat(((input.shr(8) and 0xFF) / 1.0f))
+                byteBuffer.putFloat(((input and 0xFF) / 1.0f))
+            }
+        }
+
+        tflite.run(byteBuffer, result)
+        var maxValue = 0.0f
+        var maxIndex = 0
+        for (i in result[0].indices) {
+            if (maxValue < result[0][i]) {
+                maxValue = result[0][i]
+                maxIndex = i
+            }
+        }
+
+        val answer = if (maxValue >= 0.5f) {
+            StringBuilder().apply {
+                for (i in 0 until 6) {
+                    if (maxIndex % 2 == 1) {
+                        maxIndex = (maxIndex - 1) / 2
+                        append("1")
+                    } else {
+                        maxIndex /= 2
+                        append("0")
+                    }
+                }
+            }.toString().reversed()
+        } else {
+            "인식 불가"
+        }
+
+        return answer
+    }
+
     companion object {
-        private const val TAG = "CameraXApp"
+        private const val TAG = "CurrentApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
             mutableListOf (
                 Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -318,54 +363,67 @@ class CameraActivity2 : AppCompatActivity() {
             }.toTypedArray()
     }
 
-    private class LuminosityAnalyzer(private val listener: LumaListener) : ImageAnalysis.Analyzer {
-        private fun ByteBuffer.toByteArray(): ByteArray {
-            rewind()    // Rewind the buffer to zero
-            val data = ByteArray(remaining())
-            get(data)   // Copy the buffer into a byte array
-            return data // Return the byte array
-        }
+    private inner class BrailleAnalyzer(private val listener: BrailleListener) : ImageAnalysis.Analyzer {
+        @androidx.camera.core.ExperimentalGetImage
+        override fun analyze(imageProxy: ImageProxy) {
+            val mediaImage = imageProxy.image ?: return
 
-        override fun analyze(image: ImageProxy) {
-            val buffer = image.planes[0].buffer
-            val data = buffer.toByteArray()
-            val pixels = data.map { it.toInt() and 0xFF }
-            val luma = pixels.average()
+            /*
+            val str = StringBuilder()
 
-            listener(luma)
+            if (mediaImage != null) {
+                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
-            image.close()
-        }
-    }
+                objectDetector.process(image)
+                    .addOnSuccessListener { detectedObjects ->
+                        // Task completed successfully
+                        // process() 호출이 성공하면 DetectedObject 목록이 성공 리스너에 전달됨.
+                        for (detectedObject in detectedObjects) {
+                            val boundingBox = detectedObject.boundingBox
+                            val trackingId = detectedObject.trackingId
+                            for (label in detectedObject.labels) {
+                                val text = label.text
+                                val index = label.index
+                                val confidence = label.confidence
 
-    /*
-    @androidx.camera.core.ExperimentalGetImage
-    override fun analyze(imageProxy: ImageProxy) {
-        val mediaImage = imageProxy.image
-        if (mediaImage != null) {
-            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-            // Pass image to an ML Kit Vision API
-
-            objectDetector.process(image)
-                .addOnSuccessListener { detectedObjects ->
-                    // Task completed successfully
-                    // process() 호출이 성공하면 DetectedObject 목록이 성공 리스너에 전달됨.
-                    for (detectedObject in detectedObjects) {
-                        val boundingBox = detectedObject.boundingBox
-                        val trackingId = detectedObject.trackingId
-                        for (label in detectedObject.labels) {
-                            val text = label.text
-                            val index = label.index
-                            val confidence = label.confidence
+                                str.append("Detected object: ${index}, ")
+                                str.append("confidence: ${confidence}\n")
+                            }
                         }
                     }
-                }
-                .addOnFailureListener { e ->
-                    // Task failed with an exception
-                }
-        }
-        // val convertedImageToBitmap = ImageUtils.convertYuv420888ImageToBitmap(mediaImage)
+                    .addOnFailureListener { e ->
+                        // Task failed with an exception
+                    }
+            }
+            */
 
+            val bitmap = toBitmap(mediaImage)
+            listener(doInference(bitmap))
+
+            imageProxy.close()
+        }
+
+        private fun toBitmap(image: Image): Bitmap {
+            val planes: Array<Image.Plane> = image.planes
+            val yBuffer: ByteBuffer = planes[0].buffer
+            val uBuffer: ByteBuffer = planes[1].buffer
+            val vBuffer: ByteBuffer = planes[2].buffer
+
+            val ySize: Int = yBuffer.remaining()
+            val uSize: Int = uBuffer.remaining()
+            val vSize: Int = vBuffer.remaining()
+
+            val nv21: ByteArray = ByteArray(ySize + uSize + vSize)
+            yBuffer.get(nv21, 0, ySize)
+            vBuffer.get(nv21, ySize, vSize)
+            uBuffer.get(nv21, ySize + vSize, uSize)
+
+            val yuvImage: YuvImage = YuvImage(nv21, ImageFormat.NV21, image.width, image.height, null)
+            val out: ByteArrayOutputStream = ByteArrayOutputStream()
+            yuvImage.compressToJpeg(Rect(0, 0, yuvImage.width, yuvImage.height), 75, out)
+
+            val imageBytes: ByteArray = out.toByteArray()
+            return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        }
     }
-    */
 }
