@@ -254,9 +254,10 @@ public class KorToBrailleConverter {
                             braille += mapping.JUNGSUNG_letters.get(Jung);
                             if (char3 != 0){
                                 braille += mapping.JONGSUNG_letters.get(Jong);
+                                flag10 = false;
                             }
                             else{
-                                flag10 = false;
+                                flag10 = true;
                             }
                             flag11 = false;
                             flag17 = false;
