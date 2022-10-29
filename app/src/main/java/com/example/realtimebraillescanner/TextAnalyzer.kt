@@ -52,6 +52,7 @@ class TextAnalyzer(
     private val lifecycle: Lifecycle,
     private val srcText: MutableLiveData<String>,
     private val translatedText: MutableLiveData<String>,
+    private val brailleText: MutableLiveData<String>,
     private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>,
     private val binding: CameraFragmentBinding
 ) : ImageAnalysis.Analyzer {
@@ -185,6 +186,7 @@ class TextAnalyzer(
         val translator = KorToBrailleConverter()
 
         translatedText.value = translator.translate(text)
+        brailleText.value = translatedText.value
     }
 
     private fun setEditText(){
