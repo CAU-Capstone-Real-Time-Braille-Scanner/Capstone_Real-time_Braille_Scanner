@@ -180,6 +180,7 @@
                 <TextView
                     android:id="@+id/srcText"
                     style="@style/SrcText"
+                    android:bufferType="spannable"
                     android:textSize="20sp"
                     android:textColor="@color/black"
                     android:layout_width="match_parent"
@@ -244,6 +245,7 @@
             <TextView
                 android:id="@+id/translatedText"
                 style="@style/TranslatedText"
+                android:bufferType="spannable"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_width="match_parent"

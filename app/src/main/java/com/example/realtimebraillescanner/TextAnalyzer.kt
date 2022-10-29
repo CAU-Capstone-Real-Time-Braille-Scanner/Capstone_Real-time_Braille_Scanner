@@ -140,6 +140,8 @@ class TextAnalyzer(
                 }
                 else if(binding.mode.text.equals("2")){ //일시정지 버튼
                     //아무것도 안함
+                    binding.srcText.visibility = View.VISIBLE
+                    binding.editSrcText.visibility = View.GONE
                 }
                 else if(binding.mode.text.equals("3")){   //수정 버튼
                     if (srcText.value.equals(null)){
@@ -151,7 +153,7 @@ class TextAnalyzer(
                     binding.srcText.visibility = View.GONE
                     binding.editSrcText.visibility = View.VISIBLE
 
-                    binding.mode.setText("2")   //editText 보이도록 하고 detector가 일시정지된 것처럼 하기 위함
+                    binding.mode.setText("0")   //editText 보이도록 하고 detector가 일시정지된 것처럼 하기 위함 (위 문구 중 어느 곳에도 안 들어감)
                     //위 문구 없으면 해당 문단 계속 반복되면서 editText 반복 갱신 --> 제대로 수정 불가
                 }
             }

@@ -22,6 +22,12 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.os.Bundle
+import android.os.Handler
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
@@ -34,6 +40,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -212,6 +219,10 @@ class CameraFragment : Fragment() {
         binding.pause.setOnClickListener {
             Toast.makeText(context, "일시정지", Toast.LENGTH_SHORT).show()
             binding.mode.setText("2")
+
+            Handler().postDelayed({     //인식된 텍스트 반영 멈춘 뒤 실행위함
+               setSrcTextSpannable()    //텍스트 하이라이트
+            }, 200)
         }
         binding.edit.setOnClickListener {
             Toast.makeText(context, "텍스트 수정이 가능합니다", Toast.LENGTH_SHORT).show()
@@ -273,8 +284,12 @@ class CameraFragment : Fragment() {
                     , textAnalyzer
                 )
             }
-        viewModel.sourceText.observe(viewLifecycleOwner, Observer { srcText.text = it })
-        viewModel.translatedText.observe(viewLifecycleOwner, Observer { translatedText.text = it })
+        viewModel.sourceText.observe(viewLifecycleOwner, Observer {
+            srcText.text = it
+        })
+        viewModel.translatedText.observe(viewLifecycleOwner, Observer {
+            translatedText.text = it
+        })
         viewModel.imageCropPercentages.observe(viewLifecycleOwner,
             Observer { drawOverlay(overlay.holder, it.first, it.second) })
 
@@ -380,6 +395,21 @@ class CameraFragment : Fragment() {
         return AspectRatio.RATIO_16_9
     }
 
+    private fun setSrcTextSpannable(){
+        val tokens : List<String> = srcText.text.split(" ")
+
+        for(i in tokens.indices){
+            srcText.text.toSpannable().setSpan(object : ClickableSpan() {
+                override fun onClick(p0: View) {
+                    Toast.makeText(requireContext(), "Spannable Click", Toast.LENGTH_SHORT).show()
+                    
+                    var builder = SpannableStringBuilder(translatedText.text)
+                    builder.setSpan(UnderlineSpan(), 0, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    translatedText.text = builder
+                }
+            }, srcText.text.indexOf(tokens[i]), srcText.text.indexOf(tokens[i]) + tokens[i].length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
     /**
      * Process result from permission request dialog box, has the request
      * been granted? If yes, start Camera. Otherwise display a toast
