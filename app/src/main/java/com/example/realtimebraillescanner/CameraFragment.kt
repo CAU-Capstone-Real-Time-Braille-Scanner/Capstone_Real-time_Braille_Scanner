@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
@@ -404,11 +405,13 @@ class CameraFragment : Fragment() {
                     Toast.makeText(requireContext(), "Spannable Click", Toast.LENGTH_SHORT).show()
                     
                     var builder = SpannableStringBuilder(translatedText.text)
-                    builder.setSpan(UnderlineSpan(), 0, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    builder.setSpan(UnderlineSpan(), srcText.text.indexOf(tokens[i]), srcText.text.indexOf(tokens[i]) + tokens[i].length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     translatedText.text = builder
                 }
             }, srcText.text.indexOf(tokens[i]), srcText.text.indexOf(tokens[i]) + tokens[i].length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
+        srcText.linksClickable = true
+        srcText.movementMethod = LinkMovementMethod.getInstance()
     }
     /**
      * Process result from permission request dialog box, has the request
