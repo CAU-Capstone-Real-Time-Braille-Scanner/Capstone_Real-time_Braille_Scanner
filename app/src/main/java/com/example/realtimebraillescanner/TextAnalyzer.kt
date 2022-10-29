@@ -37,6 +37,10 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 /**
@@ -54,6 +58,7 @@ class TextAnalyzer(
 
     // TODO: Instantiate TextRecognition detector
     private val detector = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+    var currentTimestamp: Long = 0
 
     init {
         lifecycle.addObserver(detector)
@@ -66,8 +71,9 @@ class TextAnalyzer(
     override fun analyze(imageProxy: ImageProxy) {  //camera frame rate 에 맞게 호출되어 이미지 분석
         val mediaImage = imageProxy.image ?: return
 
-        val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+        currentTimestamp = System.currentTimeMillis()
 
+        val rotationDegrees = imageProxy.imageInfo.rotationDegrees
         // We requested a setTargetAspectRatio, but it's not guaranteed that's what the camera
         // stack is able to support, so we calculate the actual ratio from the first frame to
         // know how to appropriately crop the image we want to analyze.
@@ -110,7 +116,10 @@ class TextAnalyzer(
 
         // TODO call recognizeText() once implemented
         recognizeText(InputImage.fromBitmap(croppedBitmap, 0)).addOnCompleteListener {
-            imageProxy.close()
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(500 - (System.currentTimeMillis() - currentTimestamp))
+                imageProxy.close()
+            }
         }
     }
 
