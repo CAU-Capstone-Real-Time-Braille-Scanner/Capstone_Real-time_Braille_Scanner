@@ -429,27 +429,16 @@ class CameraFragment : Fragment() {
                 end = start + tokens[i].length
 
                 var oneBraille = KorToBrailleConverter().translate(tokens[i]).trim()
-//                var oneBraille = KorToBrailleConverter().translate(sentence.substring(start, end)).trim()
                 var startBraille = sentenceBraille.indexOf(oneBraille, startIndexForBraille)
                 var idxBraille = startBraille + lenBrailleList[j]
-
-//                endB = startB + oneBraille.length
-//                var arr = Array<Int>(2) { 0 }
-//                arr[0] = startB
-//                arr[1] = endB
-//                posB.add(arr)
 
                 Log.d("subString", subSentence)
                 Log.d("subString sentence ", sentenceBraille)
                 Log.d("subString token", tokens[i])
                 Log.d("subString oneBraille", oneBraille)
-    //            Log.d("subString idx", i.toString())
-    //            Log.d("subString idx", idx.toString())
                 Log.d("subString st ", start.toString())
                 Log.d("subString ed ", end.toString())
                 Log.d("subString Braille ", startBraille.toString())
-    //            Log.d("subString stB ", posB.get(i)[0].toString())
-    //            Log.d("subString edB ", posB.get(i)[1].toString())
                 Log.d("subString startIdx ", startIndexForBraille.toString())
                 Log.d("subString ", "")
 
@@ -463,7 +452,6 @@ class CameraFragment : Fragment() {
                         Log.d("subString oneBraille", oneBraille)
                         Log.d("subString startBraille ", startBraille.toString())
                         Log.d("subString lenBraille ", lenBraille.toString())
-//                        Log.d("subString lenBraille ", lenBrailleList[i].toString())
                         Log.d("subString sentence ", sentenceBraille)
                         Log.d("subString startIdx ", startIndexForBraille.toString())
                         Log.d("subString ", "idxBraille")
@@ -478,7 +466,6 @@ class CameraFragment : Fragment() {
                     }
                 }, start + lenSentence, end + lenSentence, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-//                startB = endB + 1
                 startIndexForBraille += oneBraille.length + 1
                 idx = end + 1
                 if (idx < wordsTokens[j].length)
