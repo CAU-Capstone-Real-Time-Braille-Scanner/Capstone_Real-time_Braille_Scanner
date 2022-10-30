@@ -136,7 +136,7 @@ class TextAnalyzer(
                     binding.srcText.visibility = View.VISIBLE
                     binding.editSrcText.visibility = View.GONE
 
-                    val result : String = leaveOnlyKorean(text.text)    //실시간 번역 수행
+                    val result : String = leaveOnlyAvailableText(text.text)    //실시간 번역 수행
                     translateKorToBraille(result)
                 }
                 else if(binding.mode.text.equals("2")){ //일시정지 버튼
@@ -168,11 +168,19 @@ class TextAnalyzer(
             }
     }
 
-    private fun leaveOnlyKorean(text : String): String {
+    private fun leaveOnlyAvailableText(text : String): String {
         var result = ""
 
-        for(i in 0 until text.length){
-            if (text[i] !in 'A'..'Z' && text[i] !in 'a'..'z'){
+
+
+        for(i in text.indices){
+            val translator = KorToBrailleConverter()
+
+            if(text[i].toString() == " " || text[i].toString() == "\n"){
+                result += text[i]
+            }
+
+            if (translator.checkValidity(text[i].toString())){
                 result += text[i]
             }
         }
@@ -195,12 +203,12 @@ class TextAnalyzer(
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val result : String = leaveOnlyKorean(binding.editSrcText.text.toString())
+                val result : String = leaveOnlyAvailableText(binding.editSrcText.text.toString())
                 translateKorToBraille(result)
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                val result : String = leaveOnlyKorean(binding.editSrcText.text.toString())
+                val result : String = leaveOnlyAvailableText(binding.editSrcText.text.toString())
                 translateKorToBraille(result)
             }
 
