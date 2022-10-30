@@ -223,7 +223,7 @@ class CameraFragment : Fragment() {
             binding.mode.setText("2")
 
             Handler().postDelayed({     //인식된 텍스트 반영 멈춘 뒤 실행위함
-               setSrcTextSpannable()    //텍스트 하이라이트
+                setTextHighlight()    //텍스트 하이라이트
             }, 200)
         }
         binding.edit.setOnClickListener {
@@ -401,65 +401,94 @@ class CameraFragment : Fragment() {
         return AspectRatio.RATIO_16_9
     }
 
-    private fun setSrcTextSpannable(){      //문장의 각 어절 클릭 시 대응하는 점자 highlight
-        val tokens : List<String> = srcText.text.split(" ")
-        var idx = 0 //문장에서 특정 단어의 인덱스를 찾을 때 사용하는 indexOf의 중복 케이스를 구분하기 위한 subString의 누적 idx
-        var subSentence = srcText.text.substring(0 until srcText.text.length)   //찾은 단어를 배제하여 subSentence를 계속 줄여나감
+    private fun setTextHighlight(){      //문장의 각 어절 클릭 시 대응하는 점자 highlight
+        val wordsTokens : List<String> = srcText.text.split("\n")   //줄바꿈 기준으로 문장 나누기
 
-        var posB = ArrayList<Array<Int>>() //matching Braille position 저장
-        var startB = 0  //시작점
-        var endB = 0    //끝점
+        var start = 0
+        var end = 0
+        var lenSentence = 0
+        var lenBraille = 0
+        var lenBrailleList = ArrayList<Int>()
+        lenBrailleList.add(0)
 
-        for(i in tokens.indices){
+            for(j in wordsTokens.indices){
+            val tokens : List<String> = wordsTokens[j].split(" ") //한 문장에서 각 단어 색출
+            var idx = 0 //문장에서 특정 단어의 인덱스를 찾을 때 사용하는 indexOf의 중복 케이스를 구분하기 위한 subString의 누적 idx
+            var subSentence = wordsTokens[j].substring(wordsTokens[j].indices)   //찾은 단어를 배제하여 subSentence를 계속 줄여나감
 
-            var start = subSentence.indexOf(tokens[i]) + idx
-            var end = start + tokens[i].length
+            var sentenceBraille = KorToBrailleConverter().translate(wordsTokens[j])
+            var startIndexForBraille = 0
 
-            val translator = KorToBrailleConverter()
-            var oneBraille = translator.translate(srcText.text.substring(start, end)).trim()
-            var startBraille = braille.indexOf(oneBraille)
+//            var posB = ArrayList<Array<Int>>() //matching Braille position 저장
+//            var startB = 0  //시작점
+//            var endB = 0    //끝점
 
-            endB = startB + oneBraille.length
-            var arr = Array<Int>(2) { 0 }
-            arr[0] = startB
-            arr[1] = endB
-            posB.add(arr)
+            for(i in tokens.indices){
 
-//            Log.d("subString token", tokens[i])
-//            Log.d("subString idx", i.toString())
-//            Log.d("subString idx", idx.toString())
-//            Log.d("subString", subSentence)
-//            Log.d("subString oneBraille", oneBraille)
-//            Log.d("subString st ", start.toString())
-//            Log.d("subString ed ", end.toString())
-//            Log.d("subString stB ", posB.get(i)[0].toString())
-//            Log.d("subString edB ", posB.get(i)[1].toString())
-//            Log.d("subString ", "")
+                start = subSentence.indexOf(tokens[i]) + idx
+                end = start + tokens[i].length
 
-            srcText.text.toSpannable().setSpan(object : ClickableSpan() {
-                override fun onClick(p0: View) {
+                var oneBraille = KorToBrailleConverter().translate(tokens[i]).trim()
+//                var oneBraille = KorToBrailleConverter().translate(sentence.substring(start, end)).trim()
+                var startBraille = sentenceBraille.indexOf(oneBraille, startIndexForBraille)
+                var idxBraille = startBraille + lenBrailleList[j]
 
-                    var builder = SpannableStringBuilder(translatedText.text)
+//                endB = startB + oneBraille.length
+//                var arr = Array<Int>(2) { 0 }
+//                arr[0] = startB
+//                arr[1] = endB
+//                posB.add(arr)
 
-//                    Log.d("subString braille", braille)
-//                    Log.d("subString subBraille", (srcText.text.substring(start, end)))
-//                    Log.d("subString oneBraille", oneBraille)
-//                    Log.d("subString startBraille", startBraille.toString())
-//                    Log.d("subString st ", start.toString())
-//                    Log.d("subString ed ", end.toString())
-//                    Log.d("subString stB ", posB.get(i)[0].toString())
-//                    Log.d("subString edB ", posB.get(i)[1].toString())
+                Log.d("subString", subSentence)
+                Log.d("subString sentence ", sentenceBraille)
+                Log.d("subString token", tokens[i])
+                Log.d("subString oneBraille", oneBraille)
+    //            Log.d("subString idx", i.toString())
+    //            Log.d("subString idx", idx.toString())
+                Log.d("subString st ", start.toString())
+                Log.d("subString ed ", end.toString())
+                Log.d("subString Braille ", startBraille.toString())
+    //            Log.d("subString stB ", posB.get(i)[0].toString())
+    //            Log.d("subString edB ", posB.get(i)[1].toString())
+                Log.d("subString startIdx ", startIndexForBraille.toString())
+                Log.d("subString ", "")
 
-                    builder.setSpan(UnderlineSpan(), posB.get(i)[0], posB.get(i)[1], Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    translatedText.text = builder
-                }
-            }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                srcText.text.toSpannable().setSpan(object : ClickableSpan() {
+                    override fun onClick(p0: View) {
 
-            startB = endB + 1
-            idx = end + 1
-            if (idx < srcText.text.length)
-                subSentence = subSentence.substring((end - start + 1) until subSentence.length)
+                        var builder = SpannableStringBuilder(translatedText.text)
+
+                        Log.d("subString sentence ", sentenceBraille)
+                        Log.d("subString token", tokens[i])
+                        Log.d("subString oneBraille", oneBraille)
+                        Log.d("subString startBraille ", startBraille.toString())
+                        Log.d("subString lenBraille ", lenBraille.toString())
+//                        Log.d("subString lenBraille ", lenBrailleList[i].toString())
+                        Log.d("subString sentence ", sentenceBraille)
+                        Log.d("subString startIdx ", startIndexForBraille.toString())
+                        Log.d("subString ", "idxBraille")
+                        Log.d("subString ", "")
+
+                        try {
+                            builder.setSpan(UnderlineSpan(), idxBraille, idxBraille + oneBraille.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }catch (e : Exception){
+
+                        }
+                        translatedText.text = builder
+                    }
+                }, start + lenSentence, end + lenSentence, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+//                startB = endB + 1
+                startIndexForBraille += oneBraille.length + 1
+                idx = end + 1
+                if (idx < wordsTokens[j].length)
+                    subSentence = subSentence.substring((end - start + 1) until subSentence.length)
+            }
+                lenSentence += wordsTokens[j].length + 1
+                lenBraille += KorToBrailleConverter().translate(wordsTokens[j]).length
+                lenBrailleList.add(lenBraille)
         }
+
         srcText.linksClickable = true
         srcText.movementMethod = LinkMovementMethod.getInstance()
     }

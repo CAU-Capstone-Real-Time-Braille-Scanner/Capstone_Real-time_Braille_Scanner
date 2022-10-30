@@ -330,6 +330,19 @@ public class KorToBrailleConverter {
         return false;
     }
 
+    public Boolean checkValidity(String text){
+        int check_cont = check_contraction(text, 0);
+        if (check_cont != 0)
+            return true;
+        if (check_number(text, 0))
+            return true;
+        if (check_punctuation(text, 0))
+            return true;
+        if (check_character(text, 0))
+            return true;
+        return false;
+    }
+
     public String translate(String text){   //Kor --> Braille
         String[] words_token = text.split("\n");
 
