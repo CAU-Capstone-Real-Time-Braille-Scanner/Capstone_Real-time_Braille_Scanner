@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
@@ -478,11 +479,19 @@ class CameraFragment : Fragment() {
 
     private fun setTextHighlight(){      //문장의 각 어절 클릭 시 대응하는 점자 highlight
         val wordsTokens : List<String> = srcText.text.split("\n")   //줄바꿈 기준으로 문장 나누기
+
         var lenSentence = 0
+        var lenSentenceList = ArrayList<Int>()
+        val startIdxList = Array(wordsTokens.size) { Array(100) { 0 } }
+        val lenWordList = Array(wordsTokens.size) { Array(100) { 0 } }
+        val statePressed = Array(wordsTokens.size) { Array(100) { false } }
+        lenSentenceList.add(lenSentence)
+
         var lenBSentence = 0
         var lenBSentenceList = ArrayList<Int>()
-        val startBIdxList = Array(wordsTokens.size, { Array(100, {0}) })
-        val lenBWordList = Array(wordsTokens.size, { Array(100, {0}) })
+        val startBIdxList = Array(wordsTokens.size) { Array(100) { 0 } }
+        val lenBWordList = Array(wordsTokens.size) { Array(100) { 0 } }
+        val stateBPressed = Array(wordsTokens.size) { Array(100) { false } }
         lenBSentenceList.add(lenBSentence)
 
         for(i in wordsTokens.indices){
@@ -494,9 +503,11 @@ class CameraFragment : Fragment() {
             for(j in tokens.indices){
 
                 val lenWord = tokens[j].length
-                if (j > 0)
+                lenWordList[i][j] = lenWord
+                if (j > 0){
                     startIdx += tokens[j-1].length + 1
-
+                    startIdxList[i][j] = startIdx
+                }
 
                 val lenBWord = KorToBrailleConverter().translate(tokens[j]).trim().length
                 lenBWordList[i][j] = lenBWord
@@ -506,26 +517,55 @@ class CameraFragment : Fragment() {
                 }
 
                 srcText.text.toSpannable().setSpan(object : ClickableSpan() {
+
                     override fun onClick(p0: View) {
+                        //srcText 클릭 시 srcText 및 translatedText highlight 하기
+                        srcText.text = setHighlightWhenClicked(i, j, srcText.text, statePressed, startIdxList, lenSentenceList, lenWordList)
+                        translatedText.text = setHighlightWhenClicked(i, j, translatedText.text, stateBPressed, startBIdxList, lenBSentenceList, lenBWordList)
 
-                        var builder = SpannableStringBuilder(translatedText.text)
-                        try {
-                            builder.setSpan(UnderlineSpan(), startBIdxList[i][j] + lenBSentenceList[i], startBIdxList[i][j] + lenBWordList[i][j] + lenBSentenceList[i], Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }catch (e : Exception){
-
-                        }
-                        translatedText.text = builder
                     }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.isUnderlineText = false
+                        ds.color = Color.BLACK
+                    }
+
                 },  startIdx + lenSentence, startIdx + lenWord + lenSentence, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             }
             lenSentence += wordsTokens[i].length + 1
+            lenSentenceList.add(lenSentence)
+
             lenBSentence += KorToBrailleConverter().translate(wordsTokens[i]).length
             lenBSentenceList.add(lenBSentence)
         }
 
         srcText.linksClickable = true
         srcText.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    private fun setHighlightWhenClicked(i:Int, j:Int, text:CharSequence, statePressed:Array<Array<Boolean>>, startIdxList:Array<Array<Int>>, lenSentenceList:ArrayList<Int>, lenWordList:Array<Array<Int>>):SpannableStringBuilder{
+        val underLineRemoveSpan = object : UnderlineSpan(){
+            override fun updateDrawState(ds: TextPaint) {
+                ds.isUnderlineText = false
+            }
+        }
+
+        var builderSrc = SpannableStringBuilder(text)
+        try {
+            if (!statePressed[i][j]){
+                builderSrc.setSpan(UnderlineSpan(), startIdxList[i][j] + lenSentenceList[i], startIdxList[i][j] + lenWordList[i][j] + lenSentenceList[i], Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                statePressed[i][j] = true
+            }
+            else{
+                builderSrc.setSpan(underLineRemoveSpan, startIdxList[i][j] + lenSentenceList[i], startIdxList[i][j] + lenWordList[i][j] + lenSentenceList[i], Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                statePressed[i][j] = false
+            }
+        }catch (e : Exception){
+            Toast.makeText(requireContext(), "인식할 수 없음", Toast.LENGTH_SHORT).show()
+        }
+        return builderSrc
     }
 
     /**
