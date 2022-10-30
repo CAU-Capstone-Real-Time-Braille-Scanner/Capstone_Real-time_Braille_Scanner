@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
@@ -59,6 +60,7 @@ class CameraFragment : Fragment() {
 
     companion object {
         fun newInstance() = CameraFragment()
+        var braille : String = ""
 
         // We only need to analyze the part of the image that has text, so we set crop percentages
         // to avoid analyze the entire image from the live camera feed.
@@ -267,6 +269,7 @@ class CameraFragment : Fragment() {
             lifecycle,
             viewModel.sourceText,
             viewModel.translatedText,
+            viewModel.braille,
             viewModel.imageCropPercentages,
             binding
         )
@@ -289,6 +292,9 @@ class CameraFragment : Fragment() {
         })
         viewModel.translatedText.observe(viewLifecycleOwner, Observer {
             translatedText.text = it
+        })
+        viewModel.braille.observe(viewLifecycleOwner, Observer {
+            braille = it
         })
         viewModel.imageCropPercentages.observe(viewLifecycleOwner,
             Observer { drawOverlay(overlay.holder, it.first, it.second) })
@@ -395,20 +401,67 @@ class CameraFragment : Fragment() {
         return AspectRatio.RATIO_16_9
     }
 
-    private fun setSrcTextSpannable(){
+    private fun setSrcTextSpannable(){      //문장의 각 어절 클릭 시 대응하는 점자 highlight
         val tokens : List<String> = srcText.text.split(" ")
+        var idx = 0 //문장에서 특정 단어의 인덱스를 찾을 때 사용하는 indexOf의 중복 케이스를 구분하기 위한 subString의 누적 idx
+        var subSentence = srcText.text.substring(0 until srcText.text.length)   //찾은 단어를 배제하여 subSentence를 계속 줄여나감
+
+        var posB = ArrayList<Array<Int>>() //matching Braille position 저장
+        var startB = 0  //시작점
+        var endB = 0    //끝점
 
         for(i in tokens.indices){
+
+            var start = subSentence.indexOf(tokens[i]) + idx
+            var end = start + tokens[i].length
+
+            val translator = KorToBrailleConverter()
+            var oneBraille = translator.translate(srcText.text.substring(start, end)).trim()
+            var startBraille = braille.indexOf(oneBraille)
+
+            endB = startB + oneBraille.length
+            var arr = Array<Int>(2) { 0 }
+            arr[0] = startB
+            arr[1] = endB
+            posB.add(arr)
+
+//            Log.d("subString token", tokens[i])
+//            Log.d("subString idx", i.toString())
+//            Log.d("subString idx", idx.toString())
+//            Log.d("subString", subSentence)
+//            Log.d("subString oneBraille", oneBraille)
+//            Log.d("subString st ", start.toString())
+//            Log.d("subString ed ", end.toString())
+//            Log.d("subString stB ", posB.get(i)[0].toString())
+//            Log.d("subString edB ", posB.get(i)[1].toString())
+//            Log.d("subString ", "")
+
             srcText.text.toSpannable().setSpan(object : ClickableSpan() {
                 override fun onClick(p0: View) {
-                    Toast.makeText(requireContext(), "Spannable Click", Toast.LENGTH_SHORT).show()
-                    
+
                     var builder = SpannableStringBuilder(translatedText.text)
-                    builder.setSpan(UnderlineSpan(), 0, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+//                    Log.d("subString braille", braille)
+//                    Log.d("subString subBraille", (srcText.text.substring(start, end)))
+//                    Log.d("subString oneBraille", oneBraille)
+//                    Log.d("subString startBraille", startBraille.toString())
+//                    Log.d("subString st ", start.toString())
+//                    Log.d("subString ed ", end.toString())
+//                    Log.d("subString stB ", posB.get(i)[0].toString())
+//                    Log.d("subString edB ", posB.get(i)[1].toString())
+
+                    builder.setSpan(UnderlineSpan(), posB.get(i)[0], posB.get(i)[1], Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     translatedText.text = builder
                 }
-            }, srcText.text.indexOf(tokens[i]), srcText.text.indexOf(tokens[i]) + tokens[i].length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            startB = endB + 1
+            idx = end + 1
+            if (idx < srcText.text.length)
+                subSentence = subSentence.substring((end - start + 1) until subSentence.length)
         }
+        srcText.linksClickable = true
+        srcText.movementMethod = LinkMovementMethod.getInstance()
     }
     /**
      * Process result from permission request dialog box, has the request
