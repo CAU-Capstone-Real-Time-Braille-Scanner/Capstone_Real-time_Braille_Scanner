@@ -213,7 +213,7 @@ class CameraFragment : Fragment() {
 
             binding.mode.setText("1")
 
-            setIconBackground(1, 0, 0, 0, 0)
+            setIconBackground(1, 2, 0, 0, 0)
         }
         binding.pause.setOnClickListener {
             binding.srcText.visibility = View.VISIBLE
@@ -226,7 +226,7 @@ class CameraFragment : Fragment() {
             srcText.text.trim()
             translatedText.text.trim()
 
-            setIconBackground(0, 1, 1, 1, 1)
+            setIconBackground(2, 1, 1, 1, 1)
         }
         binding.edit.setOnClickListener {
             if (srcText.text.equals(null)){
@@ -241,7 +241,7 @@ class CameraFragment : Fragment() {
 
             binding.mode.setText("3")
 
-            setIconBackground(1, 0, 0, 0, 0)
+            setIconBackground(1, 0, 2, 0, 0)
         }
         binding.highlight.setOnClickListener {
             binding.mode.setText("2")
@@ -254,13 +254,13 @@ class CameraFragment : Fragment() {
                 Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
             }
             else{
-                setIconBackground(1, 0, 0, 0, 0)
+                setIconBackground(1, 0, 0, 2, 0)
             }
         }
         binding.voice.setOnClickListener {
             binding.mode.setText("2")
 
-            setIconBackground(1, 0, 0, 0, 0)
+            setIconBackground(1, 0, 0, 0, 2)
         }
     }
 
@@ -271,6 +271,10 @@ class CameraFragment : Fragment() {
             binding.pause.isClickable = true
         }
         else if (pause == 0){
+            binding.pause.setImageDrawable(resources.getDrawable(R.drawable.pause_d))
+            binding.pause.isClickable = false
+        }
+        else{
             binding.pause.setImageDrawable(resources.getDrawable(R.drawable.pause_g))
             binding.pause.isClickable = false
         }
@@ -280,6 +284,10 @@ class CameraFragment : Fragment() {
             binding.play.isClickable = true
         }
         else if (play == 0){
+            binding.play.setImageDrawable(resources.getDrawable(R.drawable.play_d))
+            binding.play.isClickable = false
+        }
+        else{
             binding.play.setImageDrawable(resources.getDrawable(R.drawable.play_g))
             binding.play.isClickable = false
         }
@@ -289,6 +297,10 @@ class CameraFragment : Fragment() {
             binding.edit.isClickable = true
         }
         else if (edit == 0){
+            binding.edit.setImageDrawable(resources.getDrawable(R.drawable.edit_d))
+            binding.edit.isClickable = false
+        }
+        else{
             binding.edit.setImageDrawable(resources.getDrawable(R.drawable.edit_g))
             binding.edit.isClickable = false
         }
@@ -298,6 +310,10 @@ class CameraFragment : Fragment() {
             binding.highlight.isClickable = true
         }
         else if (highlight == 0){
+            binding.highlight.setImageDrawable(resources.getDrawable(R.drawable.highlight_d))
+            binding.highlight.isClickable = false
+        }
+        else{
             binding.highlight.setImageDrawable(resources.getDrawable(R.drawable.highlight_g))
             binding.highlight.isClickable = false
         }
@@ -307,6 +323,10 @@ class CameraFragment : Fragment() {
             binding.voice.isClickable = true
         }
         else if (voice == 0){
+            binding.voice.setImageDrawable(resources.getDrawable(R.drawable.voice_d))
+            binding.voice.isClickable = false
+        }
+        else{
             binding.voice.setImageDrawable(resources.getDrawable(R.drawable.voice_g))
             binding.voice.isClickable = false
         }

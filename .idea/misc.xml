@@ -10,8 +10,13 @@
         <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/converter_clicked.xml" value="0.2" />
         <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/converter_event.xml" value="0.197" />
         <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/converter_unclicked.xml" value="0.2" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/edit_click.xml" value="0.228" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/highlight_click.xml" value="0.25" />
         <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1935" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/pause_click.xml" value="0.228" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/play_click.xml" value="0.228" />
         <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/text_border.xml" value="0.25" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/voice_click.xml" value="0.228" />
         <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/activity_camera.xml" value="0.3619791666666667" />
         <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/activity_main.xml" value="0.3619791666666667" />
         <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/camera_activity.xml" value="0.3619791666666667" />
