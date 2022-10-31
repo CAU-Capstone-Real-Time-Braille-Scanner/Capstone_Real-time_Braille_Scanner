@@ -117,23 +117,46 @@
 <!--                app:layout_constraintTop_toTopOf="parent"-->
 <!--                app:layout_constraintBottom_toBottomOf="parent"-->
 <!--                app:layout_constraintStart_toEndOf="@id/hanToBraille"/>-->
+            <ImageView
+                android:id="@+id/voice"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                app:srcCompat="@drawable/voice_w"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/highlight"/>
+
+            <ImageView
+                android:id="@+id/highlight"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                app:srcCompat="@drawable/highlight_w"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/edit"/>
 
             <ImageView
                 android:id="@+id/edit"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:srcCompat="@drawable/edit"
-                android:layout_marginRight="10dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                app:srcCompat="@drawable/edit_w"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/play"/>
 
             <ImageView
                 android:id="@+id/play"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                app:srcCompat="@drawable/play"
-                android:layout_marginRight="10dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                app:srcCompat="@drawable/play_w"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/pause"/>
@@ -142,8 +165,9 @@
                 android:id="@+id/pause"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
-                app:srcCompat="@drawable/pause"
+                app:srcCompat="@drawable/pause_w"
                 android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
