@@ -102,6 +102,7 @@ class CameraFragment : Fragment() {
 
         binding = CameraFragmentBinding.inflate(inflater, container, false)
         initClickListener()
+        setIconBackground(0, 1, 0, 0, 0)
 
         return binding.root
     }
@@ -115,15 +116,6 @@ class CameraFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        //Test Case
-//        val translator = KorToBrailleConverter()
-//        Log.d("점자", (""))
-//        Log.d("점자", translator.translate("가\"나다라\"마 가'나다라'마 "))
-//        Log.d("점자", translator.translate("나무위키, 여러분이 가꾸어 나가는 지식의 나무."))
-//        Log.d("점자", translator.translate("불어 되는 따뜻한 사람은 피고 하는 과실이 싶이 그리하였는가? 내는 이상 끝까지 속에 장식하는 것이다. 얼마나 힘차게 위하여 길지 장식하는 살 밥을 그들을 우리의 봄바람이다."))
-//        Log.d("점자", translator.translate("밤이 계집애들의 하나에 당신은 자랑처럼 멀듯이, 지나고 아스라히 거외다. 위에도 어머니, 걱정도 너무나 것은 버리었습니다. 슬퍼하는 지나고 잠, 말 내일 이웃 이름과, 까닭입니다. 비둘기, 지나가는 하나의 하나에 때 마리아 이제 내린 듯합니다."))
-//        Log.d("점자", translator.translate("나는 노루, 않은 우는 불러 별빛이 애기 멀리 거외다. 이름과, 그리고 이름을 이제 파란 계절이 라이너 밤이 옥 거외다. 같이 이름과 비둘기, 멀듯이, 차 봄이 아무 남은 듯합니다."))
 
         super.onViewCreated(view, savedInstanceState)
 
@@ -216,20 +208,86 @@ class CameraFragment : Fragment() {
     private fun initClickListener(){
         //각 버튼 케이스별 text 처리는 CameraFragment layout객체 TextAnalyzer로 넘겨줘서 처리
         binding.play.setOnClickListener {
-            Toast.makeText(context, "번역을 실행합니다", Toast.LENGTH_SHORT).show()
             binding.mode.setText("1")
+
+            setIconBackground(1, 0, 0, 0, 0)
         }
         binding.pause.setOnClickListener {
-            Toast.makeText(context, "일시정지", Toast.LENGTH_SHORT).show()
+            binding.mode.setText("2")
+
+            setIconBackground(0, 1, 1, 1, 1)
+        }
+        binding.edit.setOnClickListener {
+            binding.mode.setText("3")
+
+            setIconBackground(1, 0, 0, 0, 0)
+        }
+        binding.highlight.setOnClickListener {
             binding.mode.setText("2")
 
             Handler().postDelayed({     //인식된 텍스트 반영 멈춘 뒤 실행위함
                 setTextHighlight()    //텍스트 하이라이트
-            }, 200)
+            }, 100)
+
+            if (srcText.text.trim().equals(null)){
+                Toast.makeText(requireContext(), "번역할 텍스트를 촬영해주세요", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                setIconBackground(1, 0, 0, 0, 0)
+            }
         }
-        binding.edit.setOnClickListener {
-            Toast.makeText(context, "텍스트 수정이 가능합니다", Toast.LENGTH_SHORT).show()
-            binding.mode.setText("3")
+        binding.voice.setOnClickListener {
+            binding.mode.setText("2")
+
+            setIconBackground(1, 0, 0, 0, 0)
+        }
+    }
+
+    private fun setIconBackground(pause : Int, play : Int, edit : Int, highlight : Int, voice : Int){
+
+        if (pause == 1){
+            binding.pause.setImageDrawable(resources.getDrawable(R.drawable.pause_w))
+            binding.pause.isClickable = true
+        }
+        else if (pause == 0){
+            binding.pause.setImageDrawable(resources.getDrawable(R.drawable.pause_g))
+            binding.pause.isClickable = false
+        }
+
+        if (play == 1){
+            binding.play.setImageDrawable(resources.getDrawable(R.drawable.play_w))
+            binding.play.isClickable = true
+        }
+        else if (play == 0){
+            binding.play.setImageDrawable(resources.getDrawable(R.drawable.play_g))
+            binding.play.isClickable = false
+        }
+
+        if (edit == 1){
+            binding.edit.setImageDrawable(resources.getDrawable(R.drawable.edit_w))
+            binding.edit.isClickable = true
+        }
+        else if (edit == 0){
+            binding.edit.setImageDrawable(resources.getDrawable(R.drawable.edit_g))
+            binding.edit.isClickable = false
+        }
+
+        if (highlight == 1){
+            binding.highlight.setImageDrawable(resources.getDrawable(R.drawable.highlight_w))
+            binding.highlight.isClickable = true
+        }
+        else if (highlight == 0){
+            binding.highlight.setImageDrawable(resources.getDrawable(R.drawable.highlight_g))
+            binding.highlight.isClickable = false
+        }
+
+        if (voice == 1){
+            binding.voice.setImageDrawable(resources.getDrawable(R.drawable.voice_w))
+            binding.voice.isClickable = true
+        }
+        else if (voice == 0){
+            binding.voice.setImageDrawable(resources.getDrawable(R.drawable.voice_g))
+            binding.voice.isClickable = false
         }
     }
 
@@ -402,81 +460,6 @@ class CameraFragment : Fragment() {
         return AspectRatio.RATIO_16_9
     }
 
-//    private fun setTextHighlight(){      //문장의 각 어절 클릭 시 대응하는 점자 highlight
-//        val wordsTokens : List<String> = srcText.text.split("\n")   //줄바꿈 기준으로 문장 나누기
-//
-//        var start = 0
-//        var end = 0
-//        var lenSentence = 0
-//        var lenBraille = 0
-//        var lenBrailleList = ArrayList<Int>()
-//        lenBrailleList.add(0)
-//
-//            for(i in wordsTokens.indices){
-//            val tokens : List<String> = wordsTokens[i].split(" ") //한 문장에서 각 단어 색출
-//            var idx = 0 //문장에서 특정 단어의 인덱스를 찾을 때 사용하는 indexOf의 중복 케이스를 구분하기 위한 subString의 누적 idx
-//            var subSentence = wordsTokens[i].substring(wordsTokens[i].indices)   //찾은 단어를 배제하여 subSentence를 계속 줄여나감
-//
-//            var sentenceBraille = KorToBrailleConverter().translate(wordsTokens[i])
-//            var startIndexForBraille = 0
-//
-//            for(j in tokens.indices){
-//
-//                start = subSentence.indexOf(tokens[j]) + idx
-//                end = start + tokens[j].length
-//
-//                var oneBraille = KorToBrailleConverter().translate(tokens[j]).trim()
-//                var startBraille = sentenceBraille.indexOf(oneBraille, startIndexForBraille)
-//                var idxBraille = startBraille + lenBrailleList[i]
-//
-//                Log.d("subString", subSentence)
-//                Log.d("subString sentence ", sentenceBraille)
-//                Log.d("subString token", tokens[j])
-//                Log.d("subString oneBraille", oneBraille)
-//                Log.d("subString st ", start.toString())
-//                Log.d("subString ed ", end.toString())
-//                Log.d("subString Braille ", startBraille.toString())
-//                Log.d("subString startIdx ", startIndexForBraille.toString())
-//                Log.d("subString ", "")
-//
-//                srcText.text.toSpannable().setSpan(object : ClickableSpan() {
-//                    override fun onClick(p0: View) {
-//
-//                        var builder = SpannableStringBuilder(translatedText.text)
-//
-//                        Log.d("subString sentence ", sentenceBraille)
-//                        Log.d("subString token", tokens[j])
-//                        Log.d("subString oneBraille", oneBraille)
-//                        Log.d("subString startBraille ", startBraille.toString())
-//                        Log.d("subString lenBraille ", lenBraille.toString())
-//                        Log.d("subString sentence ", sentenceBraille)
-//                        Log.d("subString startIdx ", startIndexForBraille.toString())
-//                        Log.d("subString ", "idxBraille")
-//                        Log.d("subString ", "")
-//
-//                        try {
-//                            builder.setSpan(UnderlineSpan(), idxBraille, idxBraille + oneBraille.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//                        }catch (e : Exception){
-//
-//                        }
-//                        translatedText.text = builder
-//                    }
-//                }, start + lenSentence, end + lenSentence, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//
-//                startIndexForBraille += oneBraille.length + 1
-//                idx = end + 1
-//                if (idx < wordsTokens[i].length)
-//                    subSentence = subSentence.substring((end - start + 1) until subSentence.length)
-//            }
-//                lenSentence += wordsTokens[i].length + 1
-//                lenBraille += KorToBrailleConverter().translate(wordsTokens[i]).length
-//                lenBrailleList.add(lenBraille)
-//        }
-//
-//        srcText.linksClickable = true
-//        srcText.movementMethod = LinkMovementMethod.getInstance()
-//    }
-
     private fun setTextHighlight(){      //문장의 각 어절 클릭 시 대응하는 점자 highlight
         val wordsTokens : List<String> = srcText.text.split("\n")   //줄바꿈 기준으로 문장 나누기
 
@@ -527,7 +510,6 @@ class CameraFragment : Fragment() {
 
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
-                        ds.isUnderlineText = false
                         ds.color = Color.BLACK
                     }
 

@@ -123,6 +123,7 @@
                 android:layout_height="42dp"
                 app:srcCompat="@drawable/voice_w"
                 android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/highlight"/>
@@ -133,6 +134,7 @@
                 android:layout_height="42dp"
                 app:srcCompat="@drawable/highlight_w"
                 android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/edit"/>
@@ -143,6 +145,7 @@
                 android:layout_height="42dp"
                 app:srcCompat="@drawable/edit_w"
                 android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/play"/>
@@ -153,6 +156,7 @@
                 android:layout_height="42dp"
                 app:srcCompat="@drawable/play_w"
                 android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/pause"/>
@@ -163,6 +167,7 @@
                 android:layout_height="42dp"
                 app:srcCompat="@drawable/pause_w"
                 android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
