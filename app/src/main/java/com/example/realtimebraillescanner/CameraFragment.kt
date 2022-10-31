@@ -267,7 +267,7 @@ class CameraFragment : Fragment() {
     private fun setIconBackground(pause : Int, play : Int, edit : Int, highlight : Int, voice : Int){
 
         if (pause == 1){
-            binding.pause.setImageDrawable(resources.getDrawable(R.drawable.pause_w))
+            binding.pause.setImageDrawable(resources.getDrawable(R.drawable.pause_click))
             binding.pause.isClickable = true
         }
         else if (pause == 0){
@@ -280,7 +280,7 @@ class CameraFragment : Fragment() {
         }
 
         if (play == 1){
-            binding.play.setImageDrawable(resources.getDrawable(R.drawable.play_w))
+            binding.play.setImageDrawable(resources.getDrawable(R.drawable.play_click))
             binding.play.isClickable = true
         }
         else if (play == 0){
@@ -293,7 +293,7 @@ class CameraFragment : Fragment() {
         }
 
         if (edit == 1){
-            binding.edit.setImageDrawable(resources.getDrawable(R.drawable.edit_w))
+            binding.edit.setImageDrawable(resources.getDrawable(R.drawable.edit_click))
             binding.edit.isClickable = true
         }
         else if (edit == 0){
@@ -306,7 +306,7 @@ class CameraFragment : Fragment() {
         }
 
         if (highlight == 1){
-            binding.highlight.setImageDrawable(resources.getDrawable(R.drawable.highlight_w))
+            binding.highlight.setImageDrawable(resources.getDrawable(R.drawable.highlight_click))
             binding.highlight.isClickable = true
         }
         else if (highlight == 0){
@@ -319,7 +319,7 @@ class CameraFragment : Fragment() {
         }
 
         if (voice == 1){
-            binding.voice.setImageDrawable(resources.getDrawable(R.drawable.voice_w))
+            binding.voice.setImageDrawable(resources.getDrawable(R.drawable.voice_click))
             binding.voice.isClickable = true
         }
         else if (voice == 0){
