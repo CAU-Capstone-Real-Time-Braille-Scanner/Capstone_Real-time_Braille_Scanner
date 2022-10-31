@@ -208,16 +208,37 @@ class CameraFragment : Fragment() {
     private fun initClickListener(){
         //각 버튼 케이스별 text 처리는 CameraFragment layout객체 TextAnalyzer로 넘겨줘서 처리
         binding.play.setOnClickListener {
+            binding.srcText.visibility = View.VISIBLE
+            binding.editSrcText.visibility = View.GONE
+
             binding.mode.setText("1")
 
             setIconBackground(1, 0, 0, 0, 0)
         }
         binding.pause.setOnClickListener {
+            binding.srcText.visibility = View.VISIBLE
+            binding.editSrcText.visibility = View.GONE
+
             binding.mode.setText("2")
+
+            srcText.setText(srcText.text.toString() + " ")
+            translatedText.setText(translatedText.text.toString() + " ")
+            srcText.text.trim()
+            translatedText.text.trim()
 
             setIconBackground(0, 1, 1, 1, 1)
         }
         binding.edit.setOnClickListener {
+            if (srcText.text.equals(null)){
+                binding.editSrcText.setText("")
+            }
+            else{
+                binding.editSrcText.setText(srcText.text.toString())
+            }
+
+            binding.srcText.visibility = View.GONE
+            binding.editSrcText.visibility = View.VISIBLE
+
             binding.mode.setText("3")
 
             setIconBackground(1, 0, 0, 0, 0)
@@ -229,8 +250,8 @@ class CameraFragment : Fragment() {
                 setTextHighlight()    //텍스트 하이라이트
             }, 100)
 
-            if (srcText.text.trim().equals(null)){
-                Toast.makeText(requireContext(), "번역할 텍스트를 촬영해주세요", Toast.LENGTH_SHORT).show()
+            if (srcText.text.equals(null)){
+                Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
             }
             else{
                 setIconBackground(1, 0, 0, 0, 0)
@@ -511,6 +532,7 @@ class CameraFragment : Fragment() {
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
                         ds.color = Color.BLACK
+                        ds.isUnderlineText = false
                     }
 
                 },  startIdx + lenSentence, startIdx + lenWord + lenSentence, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
