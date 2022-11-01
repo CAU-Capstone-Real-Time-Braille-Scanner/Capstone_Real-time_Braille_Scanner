@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_title_main"
         app:layout_constraintEnd_toStartOf="@id/iv_converterBTH_main"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="100dp"/>
+        android:layout_marginTop="80dp"/>
 
     <TextView
         android:id="@+id/tv_converterHTB_main"
