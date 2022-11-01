@@ -29,7 +29,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
-import com.example.realtimebraillescanner.databinding.CameraFragmentBinding
+import com.example.realtimebraillescanner.databinding.CameraHtbFragmentBinding
 import com.example.realtimebraillescanner.util.ImageUtils
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.common.MlKitException
@@ -54,7 +54,7 @@ class TextAnalyzer(
     private val translatedText: MutableLiveData<String>,
     private val brailleText: MutableLiveData<String>,
     private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>,
-    private val binding: CameraFragmentBinding
+    private val binding: CameraHtbFragmentBinding
 ) : ImageAnalysis.Analyzer {
 
     // TODO: Instantiate TextRecognition detector
