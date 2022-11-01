@@ -28,13 +28,10 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.core.Camera
@@ -46,10 +43,9 @@ import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.example.realtimebraillescanner.databinding.CameraFragmentBinding
-import com.example.realtimebraillescanner.util.Language
+import com.example.realtimebraillescanner.databinding.CameraHtbFragmentBinding
 import com.example.realtimebraillescanner.util.ScopedExecutor
-import kotlinx.android.synthetic.main.camera_fragment.*
+import kotlinx.android.synthetic.main.camera_htb_fragment.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -57,10 +53,10 @@ import kotlin.math.ln
 import kotlin.math.max
 import kotlin.math.min
 
-class CameraFragment : Fragment() {
+class CameraHTBFragment : Fragment() {
 
     companion object {
-        fun newInstance() = CameraFragment()
+        fun newInstance() = CameraHTBFragment()
         var braille : String = ""
 
         // We only need to analyze the part of the image that has text, so we set crop percentages
@@ -88,7 +84,7 @@ class CameraFragment : Fragment() {
     private lateinit var container: ConstraintLayout
     private lateinit var viewFinder: PreviewView
     private lateinit var textAnalyzer: TextAnalyzer
-    private lateinit var binding : CameraFragmentBinding
+    private lateinit var binding : CameraHtbFragmentBinding
 
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
@@ -100,7 +96,7 @@ class CameraFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = CameraFragmentBinding.inflate(inflater, container, false)
+        binding = CameraHtbFragmentBinding.inflate(inflater, container, false)
         initClickListener()
         setIconBackground(0, 1, 0, 0, 0)
 

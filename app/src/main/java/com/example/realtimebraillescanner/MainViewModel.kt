@@ -18,24 +18,11 @@
 package com.example.realtimebraillescanner
 
 import android.app.Application
-import android.os.Handler
-import android.util.LruCache
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import com.example.realtimebraillescanner.CameraFragment.Companion.DESIRED_HEIGHT_CROP_PERCENT
-import com.example.realtimebraillescanner.CameraFragment.Companion.DESIRED_WIDTH_CROP_PERCENT
-import com.example.realtimebraillescanner.util.Language
-import com.example.realtimebraillescanner.util.ResultOrError
+import com.example.realtimebraillescanner.CameraHTBFragment.Companion.DESIRED_HEIGHT_CROP_PERCENT
+import com.example.realtimebraillescanner.CameraHTBFragment.Companion.DESIRED_WIDTH_CROP_PERCENT
 import com.example.realtimebraillescanner.util.SmoothedMutableLiveData
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
-import com.google.mlkit.nl.translate.TranslateLanguage
-import com.google.mlkit.nl.translate.Translation
-import com.google.mlkit.nl.translate.Translator
-import com.google.mlkit.nl.translate.TranslatorOptions
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
