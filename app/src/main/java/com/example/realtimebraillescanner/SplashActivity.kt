@@ -12,10 +12,14 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = SplashActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         Handler().postDelayed({
-          startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }, 2000)
+
     }
 
 }
