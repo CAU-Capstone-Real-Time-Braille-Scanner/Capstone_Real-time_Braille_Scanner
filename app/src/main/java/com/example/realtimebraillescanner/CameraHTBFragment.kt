@@ -19,7 +19,12 @@ package com.example.realtimebraillescanner
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
+import android.app.ProgressDialog.show
+import android.content.DialogInterface
 import android.content.pm.PackageManager
+import android.content.res.AssetManager
 import android.graphics.*
 import android.os.Bundle
 import android.os.Handler
@@ -46,6 +51,12 @@ import androidx.lifecycle.Observer
 import com.example.realtimebraillescanner.databinding.CameraHtbFragmentBinding
 import com.example.realtimebraillescanner.util.ScopedExecutor
 import kotlinx.android.synthetic.main.camera_htb_fragment.*
+import org.tensorflow.lite.Interpreter
+import java.io.FileInputStream
+import java.io.InputStream
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.channels.FileChannel
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -86,6 +97,8 @@ class CameraHTBFragment : Fragment() {
     private lateinit var textAnalyzer: TextAnalyzer
     private lateinit var binding : CameraHtbFragmentBinding
 
+    private lateinit var binding: CameraFragmentBinding
+
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
 
@@ -95,12 +108,10 @@ class CameraHTBFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        binding = CameraHtbFragmentBinding.inflate(inflater, container, false)
-        initClickListener()
-        setIconBackground(0, 1, 0, 0, 0)
-
-        return binding.root
+		binding = CameraHtbFragmentBinding.inflate(inflater, container, false)
+		initClickListener()
+		setIconBackground(0, 1, 0, 0, 0)
+		return binding.root
     }
 
     override fun onDestroyView() {
@@ -422,7 +433,7 @@ class CameraHTBFragment : Fragment() {
                 return@setOnTouchListener true
             }
 
-            preview.setSurfaceProvider(viewFinder.createSurfaceProvider())
+            preview.setSurfaceProvider(viewFinder.surfaceProvider)
         } catch (exc: IllegalStateException) {
             Log.e(TAG, "Use case binding failed. This must be running on main thread.", exc)
         }
