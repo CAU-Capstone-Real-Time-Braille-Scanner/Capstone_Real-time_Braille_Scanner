@@ -19,12 +19,7 @@ package com.example.realtimebraillescanner
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.AlertDialog
-import android.app.ProgressDialog.show
-import android.content.DialogInterface
 import android.content.pm.PackageManager
-import android.content.res.AssetManager
 import android.graphics.*
 import android.os.Bundle
 import android.os.Handler
@@ -50,13 +45,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.realtimebraillescanner.databinding.CameraHtbFragmentBinding
 import com.example.realtimebraillescanner.util.ScopedExecutor
-import kotlinx.android.synthetic.main.camera_htb_fragment.*
-import org.tensorflow.lite.Interpreter
-import java.io.FileInputStream
-import java.io.InputStream
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.channels.FileChannel
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -96,8 +84,6 @@ class CameraHTBFragment : Fragment() {
     private lateinit var viewFinder: PreviewView
     private lateinit var textAnalyzer: TextAnalyzer
     private lateinit var binding : CameraHtbFragmentBinding
-
-    private lateinit var binding: CameraFragmentBinding
 
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
@@ -189,7 +175,7 @@ class CameraHTBFragment : Fragment() {
 //            progressText.visibility = progressBar.visibility
 //        })
 
-        overlay.apply {
+        binding.overlay.apply {
             setZOrderOnTop(true)
             holder.setFormat(PixelFormat.TRANSPARENT)
             holder.addCallback(object : SurfaceHolder.Callback {
@@ -228,19 +214,19 @@ class CameraHTBFragment : Fragment() {
 
             binding.mode.setText("2")
 
-            srcText.setText(srcText.text.toString() + " ")
-            translatedText.setText(translatedText.text.toString() + " ")
-            srcText.text.trim()
-            translatedText.text.trim()
+            binding.srcText.setText(binding.srcText.text.toString() + " ")
+            binding.translatedText.setText(binding.translatedText.text.toString() + " ")
+            binding.srcText.text.trim()
+            binding.translatedText.text.trim()
 
             setIconBackground(2, 1, 1, 1, 1)
         }
         binding.edit.setOnClickListener {
-            if (srcText.text.equals(null)){
+            if (binding.srcText.text.equals(null)){
                 binding.editSrcText.setText("")
             }
             else{
-                binding.editSrcText.setText(srcText.text.toString())
+                binding.editSrcText.setText(binding.srcText.text.toString())
             }
 
             binding.srcText.visibility = View.GONE
@@ -257,7 +243,7 @@ class CameraHTBFragment : Fragment() {
                 setTextHighlight()    //텍스트 하이라이트
             }, 100)
 
-            if (srcText.text.equals(null)){
+            if (binding.srcText.text.equals(null)){
                 Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
             }
             else{
@@ -395,16 +381,16 @@ class CameraHTBFragment : Fragment() {
                 )
             }
         viewModel.sourceText.observe(viewLifecycleOwner, Observer {
-            srcText.text = it
+            binding.srcText.text = it
         })
         viewModel.translatedText.observe(viewLifecycleOwner, Observer {
-            translatedText.text = it
+            binding.translatedText.text = it
         })
         viewModel.braille.observe(viewLifecycleOwner, Observer {
             braille = it
         })
         viewModel.imageCropPercentages.observe(viewLifecycleOwner,
-            Observer { drawOverlay(overlay.holder, it.first, it.second) })
+            Observer { drawOverlay(binding.overlay.holder, it.first, it.second) })
 
         // Select back camera since text detection does not work with front camera
         val cameraSelector =
@@ -509,7 +495,7 @@ class CameraHTBFragment : Fragment() {
     }
 
     private fun setTextHighlight(){      //문장의 각 어절 클릭 시 대응하는 점자 highlight
-        val wordsTokens : List<String> = srcText.text.split("\n")   //줄바꿈 기준으로 문장 나누기
+        val wordsTokens : List<String> = binding.srcText.text.split("\n")   //줄바꿈 기준으로 문장 나누기
 
         var lenSentence = 0
         var lenSentenceList = ArrayList<Int>()
@@ -547,12 +533,12 @@ class CameraHTBFragment : Fragment() {
                     startBIdxList[i][j] = startBIdx
                 }
 
-                srcText.text.toSpannable().setSpan(object : ClickableSpan() {
+                binding.srcText.text.toSpannable().setSpan(object : ClickableSpan() {
 
                     override fun onClick(p0: View) {
                         //srcText 클릭 시 srcText 및 translatedText highlight 하기
-                        srcText.text = setHighlightWhenClicked(i, j, srcText.text, statePressed, startIdxList, lenSentenceList, lenWordList)
-                        translatedText.text = setHighlightWhenClicked(i, j, translatedText.text, stateBPressed, startBIdxList, lenBSentenceList, lenBWordList)
+                        binding.srcText.text = setHighlightWhenClicked(i, j, binding.srcText.text, statePressed, startIdxList, lenSentenceList, lenWordList)
+                        binding.translatedText.text = setHighlightWhenClicked(i, j, binding.translatedText.text, stateBPressed, startBIdxList, lenBSentenceList, lenBWordList)
 
                     }
 
@@ -572,8 +558,8 @@ class CameraHTBFragment : Fragment() {
             lenBSentenceList.add(lenBSentence)
         }
 
-        srcText.linksClickable = true
-        srcText.movementMethod = LinkMovementMethod.getInstance()
+        binding.srcText.linksClickable = true
+        binding.srcText.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun setHighlightWhenClicked(i:Int, j:Int, text:CharSequence, statePressed:Array<Array<Boolean>>, startIdxList:Array<Array<Int>>, lenSentenceList:ArrayList<Int>, lenWordList:Array<Array<Int>>):SpannableStringBuilder{

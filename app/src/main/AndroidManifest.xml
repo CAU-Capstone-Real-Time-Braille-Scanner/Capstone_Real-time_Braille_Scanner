@@ -22,10 +22,7 @@
         android:theme="@style/Theme.RealTimeBrailleScanner"
         tools:targetApi="31">
 		<activity
-            android:name=".CameraActivity2"
-            android:exported="false" />
-        <activity
-            android:name=".SettingsActivity"
+            android:name=".CameraBTHActivity"
             android:exported="false" />
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
@@ -48,21 +45,11 @@
             android:name=".CameraHTBActivity"
             android:exported="true"
             android:theme="@style/noActionBar" />
-
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:theme="@style/noActionBar" />
-
-        <!-- Automatically download the text recognition model after app install -->		<activity
-            android:name=".CameraHTBActivity"
-            android:exported="true"
-            android:theme="@style/noActionBar" />
-
-        <activity
-            android:name=".SettingsActivity"
-            android:exported="false"
-            android:theme="@style/noActionBar" />        <meta-data
+        <meta-data
             android:name="com.google.ml.vision.DEPENDENCIES"
             android:value="ocr" />
     </application>

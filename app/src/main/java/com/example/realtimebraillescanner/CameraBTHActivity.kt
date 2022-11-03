@@ -26,7 +26,6 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import com.example.realtimebraillescanner.databinding.ActivityCamera2Binding
 import com.google.mlkit.common.model.LocalModel
-import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
 import org.tensorflow.lite.Interpreter
@@ -41,7 +40,7 @@ import java.util.Locale
 
 typealias BrailleListener = (temp: String) -> Unit
 
-class CameraActivity2 : AppCompatActivity() {
+class CameraBTHActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCamera2Binding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
@@ -66,7 +65,7 @@ class CameraActivity2 : AppCompatActivity() {
             .setMaxPerObjectLabelCount(3)
             .build()
 
-    private val objectDetector = ObjectDetection.getClient(customObjectDetectorOptions)
+    // private val objectDetector = ObjectDetection.getClient(customObjectDetectorOptions)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
