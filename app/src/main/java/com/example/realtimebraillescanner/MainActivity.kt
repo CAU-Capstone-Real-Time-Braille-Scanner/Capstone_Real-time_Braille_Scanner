@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             when (switch) {
 				1 -> startActivity(Intent(this, CameraHTBActivity::class.java))
-				2 -> startActivity(Intent(this, CameraBTHActivity::class.java))
+				2 -> startActivity(Intent(this, CameraBTHFragment::class.java))
 			}
 		}
     }
@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
 
         if (hasCameraPermission == PackageManager.PERMISSION_GRANTED) {
             // 2. 이미 퍼미션을 가지고 있다면 액티비티 이동
-            startActivity(Intent(this, CameraBTHActivity::class.java))
+            startActivity(Intent(this, CameraBTHFragment::class.java))
         } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
             // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우에는
             if (ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity, REQUIRED_PERMISSIONS.get(0))) {

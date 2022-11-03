@@ -22,7 +22,7 @@
         android:theme="@style/Theme.RealTimeBrailleScanner"
         tools:targetApi="31">
 		<activity
-            android:name=".CameraBTHActivity"
+            android:name=".CameraBTHFragment"
             android:exported="false" />
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
