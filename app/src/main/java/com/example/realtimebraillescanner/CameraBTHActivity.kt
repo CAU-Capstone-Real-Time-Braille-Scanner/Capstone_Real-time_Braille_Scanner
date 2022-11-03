@@ -10,7 +10,7 @@ class CameraBTHActivity : AppCompatActivity() {
         setContentView(R.layout.camera_bth_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container_camera_activity, CameraBTHFragment.newInstance())
+                .replace(R.id.container_camera_activity2, CameraBTHFragment.newInstance())
                 .commitNow()
         }
     }

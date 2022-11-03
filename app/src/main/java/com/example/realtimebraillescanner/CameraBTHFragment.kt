@@ -2,14 +2,11 @@ package com.example.realtimebraillescanner
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.DisplayMetrics
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -24,8 +21,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
 import com.example.realtimebraillescanner.util.ScopedExecutor
-import java.text.SimpleDateFormat
-import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.max
@@ -58,19 +53,15 @@ class CameraBTHFragment : Fragment() {
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
 
-    private lateinit var binding: CameraBthFragmentBinding
-    private var imageCapture: ImageCapture? = null
-    private lateinit var cameraExecutor: ExecutorService
-
-    /* ######################################################### */
     private var displayId: Int = -1
     private val viewModel: BTHViewModel by viewModels()
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var imageAnalyzer: ImageAnalysis
     private lateinit var viewFinder: PreviewView
     private lateinit var brailleAnalyzer: BrailleAnalyzer
+    private lateinit var cameraExecutor: ExecutorService
     private lateinit var scopedExecutor: ScopedExecutor
-    /* ######################################################### */
+    private lateinit var binding: CameraBthFragmentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,8 +96,7 @@ class CameraBTHFragment : Fragment() {
                 startCamera()
             }
         } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+            requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
         binding.overlay.apply {
@@ -129,9 +119,6 @@ class CameraBTHFragment : Fragment() {
     }
 
     private fun initClickListener() {
-        // Set up the listeners for take photo and video capture buttons
-        binding.imageCaptureButton.setOnClickListener { takePhoto() }
-
         binding.play.setOnClickListener {
             binding.srcText.visibility = View.VISIBLE
             binding.recognizedText.visibility = View.GONE
@@ -205,47 +192,6 @@ class CameraBTHFragment : Fragment() {
         }
     }
 
-    private fun takePhoto() {
-        // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
-
-        // Create time stamped name and MediaStore entry.
-        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
-            .format(System.currentTimeMillis())
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
-            }
-        }
-
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions
-            .Builder(requireActivity().contentResolver,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues)
-            .build()
-
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
-        imageCapture.takePicture(
-            outputOptions,
-            ContextCompat.getMainExecutor(requireContext()),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                }
-
-                override fun onImageSaved(output: ImageCapture.OutputFileResults){
-                    val msg = "Photo capture succeeded: ${output.savedUri}"
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
-                }
-            }
-        )
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -277,8 +223,6 @@ class CameraBTHFragment : Fragment() {
                 viewModel.imageCropPercentages,
                 binding
             )
-
-            imageCapture = ImageCapture.Builder().build()
 
             imageAnalyzer = ImageAnalysis.Builder()
                 .setTargetAspectRatio(screenAspectRatio)

@@ -152,15 +152,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/pause_click" />
 
-            <Button
-                android:id="@+id/imageCaptureButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:text="@string/take_photo"
-                app:layout_constraintEnd_toStartOf="@+id/voice"
-                tools:layout_editor_absoluteY="1dp" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
