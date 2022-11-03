@@ -24,7 +24,7 @@ import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
-import com.example.realtimebraillescanner.databinding.ActivityCamera2Binding
+import com.example.realtimebraillescanner.databinding.CameraBthActivityBinding
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
@@ -41,7 +41,7 @@ import java.util.Locale
 typealias BrailleListener = (temp: String) -> Unit
 
 class CameraBTHActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityCamera2Binding
+    private lateinit var binding: CameraBthActivityBinding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
 
@@ -69,7 +69,7 @@ class CameraBTHActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCamera2Binding.inflate(layoutInflater)
+        binding = CameraBthActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // 인터프리터를 초기화하고 model.tflite 을 로드하는 코드
