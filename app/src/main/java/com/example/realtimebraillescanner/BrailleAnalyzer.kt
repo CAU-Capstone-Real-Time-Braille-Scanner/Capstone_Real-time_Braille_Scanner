@@ -4,12 +4,20 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.*
 import android.media.Image
+import android.util.Log
+import android.widget.Toast
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
 import com.example.realtimebraillescanner.util.ImageUtils
+import com.google.mlkit.common.MlKitException
+import com.google.mlkit.common.model.LocalModel
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.objects.ObjectDetection
+import com.google.mlkit.vision.objects.ObjectDetector
+import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
 import org.tensorflow.lite.Interpreter
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
@@ -40,8 +48,20 @@ class BrailleAnalyzer(
     // 인터프리터에 전달할 모델
     private lateinit var tflitemodel: ByteBuffer
 
-    // TODO
-    // private val detector = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+    private val localModel = LocalModel.Builder()
+        .setAssetFilePath("model.tflite")
+        .build()
+
+    private val customObjectDetectorOptions =
+        CustomObjectDetectorOptions.Builder(localModel)
+            .setDetectorMode(CustomObjectDetectorOptions.STREAM_MODE)
+            .enableClassification()
+            .enableMultipleObjects()
+            .setClassificationConfidenceThreshold(0.5f)
+            .setMaxPerObjectLabelCount(3)
+            .build()
+
+    private val objectDetector = ObjectDetection.getClient(customObjectDetectorOptions)
 
     var currentTimestamp: Long = 0L
 
@@ -56,7 +76,6 @@ class BrailleAnalyzer(
 
         // TODO
         // lifecycle.addObserver(detector)
-        // setEditText()
     }
 
     // camera frame rate 에 맞게 호출되어 이미지 분석
@@ -105,10 +124,43 @@ class BrailleAnalyzer(
             ImageUtils.rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect)
 
         // TODO: recognizeBraille
+        val image = InputImage.fromBitmap(croppedBitmap, 0)
+        objectDetector
+            .process(image)
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Braille recognition error", exception)
+                val message = getErrorMessage(exception)
+                message?.let {
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                }
+            }
+            .addOnSuccessListener { results ->
+                when (binding.mode.text) {
+                    "1" -> { // 재생 버튼
+                        for (detectedObject in results) {
+                            val boundingBox = detectedObject.boundingBox
+                            val trackingId = detectedObject.trackingId
+                            for (label in detectedObject.labels) {
+                                val text = label.text
+                                val index = label.index
+                                val confidence = label.confidence
+                            }
+                        }
+                    }
+                    "2" -> { // 일시정지 버튼
+                        // Do nothing.
+                    }
+                    else -> {
+                        // TODO
+                        binding.mode.text = "1"
+                    }
+                }
+            }
 
         imageProxy.close()
     }
 
+    /*
     private fun imageToBitmap(image: Image): Bitmap {
         val planes: Array<Image.Plane> = image.planes
         val yBuffer: ByteBuffer = planes[0].buffer
@@ -130,6 +182,16 @@ class BrailleAnalyzer(
 
         val imageBytes: ByteArray = out.toByteArray()
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+    }
+    */
+
+    private fun getErrorMessage(exception: Exception): String? {
+        val mlKitException = exception as? MlKitException ?: return exception.message
+        return if (mlKitException.errorCode == MlKitException.UNAVAILABLE) {
+            "종료중..."
+        } else {
+            exception.message
+        }
     }
 
     // This helper function loads tensorflow lite model from "assets" directory.
