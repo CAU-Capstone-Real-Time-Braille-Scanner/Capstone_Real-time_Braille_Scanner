@@ -39,6 +39,11 @@ class BrailleAnalyzer(
     // 인터프리터에 전달할 모델
     private lateinit var tflitemodel: ByteBuffer
 
+    // TODO
+    // private val detector = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+
+    var currentTimestamp: Long = 0L
+
     init {
         // 인터프리터를 초기화하고 model.tflite 을 로드하는 코드
         try {
@@ -47,6 +52,9 @@ class BrailleAnalyzer(
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
+
+        // TODO
+        // lifecycle.addObserver(detector)
     }
 
     @androidx.camera.core.ExperimentalGetImage
