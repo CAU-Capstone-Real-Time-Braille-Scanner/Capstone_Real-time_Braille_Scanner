@@ -46,14 +46,14 @@ class BrailleAnalyzer(
     private lateinit var tflitemodel: ByteBuffer
 
     private val localModel = LocalModel.Builder()
-        .setAssetFilePath("model.tflite")
+        .setAssetFilePath("model_with_metadata.tflite")
         .build()
 
     private val customObjectDetectorOptions =
         CustomObjectDetectorOptions.Builder(localModel)
-            .setDetectorMode(CustomObjectDetectorOptions.STREAM_MODE)
-            .enableClassification()
+            .setDetectorMode(CustomObjectDetectorOptions.SINGLE_IMAGE_MODE)
             .enableMultipleObjects()
+            .enableClassification()
             .setClassificationConfidenceThreshold(0.5f)
             .setMaxPerObjectLabelCount(3)
             .build()
@@ -70,7 +70,6 @@ class BrailleAnalyzer(
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
-
         // TODO
         // lifecycle.addObserver(detector)
     }
@@ -134,15 +133,84 @@ class BrailleAnalyzer(
             .addOnSuccessListener { results ->
                 when (binding.mode.text) {
                     "1" -> { // 재생 버튼
+                        val recognizedText = StringBuilder()
+
                         for (detectedObject in results) {
                             val boundingBox = detectedObject.boundingBox
                             val trackingId = detectedObject.trackingId
                             for (label in detectedObject.labels) {
-                                val text = label.text
-                                val index = label.index
+                                val index = label.index // 0 ~ 63
                                 val confidence = label.confidence
+
+                                when (index) {
+                                    0 -> recognizedText.append("#")
+                                    1 -> recognizedText.append("⠠")
+                                    2 -> recognizedText.append("⠐")
+                                    3 -> recognizedText.append("⠰")
+                                    4 -> recognizedText.append("⠈")
+                                    5 -> recognizedText.append("⠨")
+                                    6 -> recognizedText.append("⠘")
+                                    7 -> recognizedText.append("⠸")
+                                    8 -> recognizedText.append("⠄")
+                                    9 -> recognizedText.append("⠤")
+                                    10 -> recognizedText.append("⠔")
+                                    11 -> recognizedText.append("⠴")
+                                    12 -> recognizedText.append("⠌")
+                                    13 -> recognizedText.append("⠬")
+                                    14 -> recognizedText.append("⠜")
+                                    15 -> recognizedText.append("⠼")
+                                    16 -> recognizedText.append("⠂")
+                                    17 -> recognizedText.append("⠢")
+                                    18 -> recognizedText.append("⠒")
+                                    19 -> recognizedText.append("⠲")
+                                    20 -> recognizedText.append("⠊")
+                                    21 -> recognizedText.append("⠪")
+                                    22 -> recognizedText.append("⠚")
+                                    23 -> recognizedText.append("⠺")
+                                    24 -> recognizedText.append("⠆")
+                                    25 -> recognizedText.append("⠦")
+                                    26 -> recognizedText.append("⠖")
+                                    27 -> recognizedText.append("⠶")
+                                    28 -> recognizedText.append("⠎")
+                                    29 -> recognizedText.append("⠮")
+                                    30 -> recognizedText.append("⠞")
+                                    31 -> recognizedText.append("⠾")
+                                    32 -> recognizedText.append("⠁")
+                                    33 -> recognizedText.append("⠡")
+                                    34 -> recognizedText.append("⠑")
+                                    35 -> recognizedText.append("⠱")
+                                    36 -> recognizedText.append("⠉")
+                                    37 -> recognizedText.append("⠩")
+                                    38 -> recognizedText.append("⠙")
+                                    39 -> recognizedText.append("⠹")
+                                    40 -> recognizedText.append("⠅")
+                                    41 -> recognizedText.append("⠥")
+                                    42 -> recognizedText.append("⠕")
+                                    43 -> recognizedText.append("⠵")
+                                    44 -> recognizedText.append("⠍")
+                                    45 -> recognizedText.append("⠭")
+                                    46 -> recognizedText.append("⠝")
+                                    47 -> recognizedText.append("⠽")
+                                    48 -> recognizedText.append("⠃")
+                                    49 -> recognizedText.append("⠣")
+                                    50 -> recognizedText.append("⠓")
+                                    51 -> recognizedText.append("⠳")
+                                    52 -> recognizedText.append("⠋")
+                                    53 -> recognizedText.append("⠫")
+                                    54 -> recognizedText.append("⠛")
+                                    55 -> recognizedText.append("⠻")
+                                    56 -> recognizedText.append("⠇")
+                                    57 -> recognizedText.append("⠧")
+                                    58 -> recognizedText.append("⠗")
+                                    59 -> recognizedText.append("⠷")
+                                    60 -> recognizedText.append("⠏")
+                                    61 -> recognizedText.append("⠯")
+                                    62 -> recognizedText.append("⠟")
+                                    63 -> recognizedText.append("⠿")
+                                }
                             }
                         }
+                        srcText.value = recognizedText.toString()
                     }
                     "2" -> { // 일시정지 버튼
                         // Do nothing.
