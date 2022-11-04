@@ -3,7 +3,6 @@ package com.example.realtimebraillescanner
 import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.*
-import android.media.Image
 import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.ImageAnalysis
@@ -16,10 +15,8 @@ import com.google.mlkit.common.MlKitException
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.ObjectDetection
-import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
 import org.tensorflow.lite.Interpreter
-import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
