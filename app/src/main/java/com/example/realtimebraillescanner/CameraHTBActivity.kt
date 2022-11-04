@@ -10,7 +10,7 @@ class CameraHTBActivity : AppCompatActivity() {
         setContentView(R.layout.camera_htb_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container_camera_activity, CameraHTBFragment.newInstance())
+                .replace(R.id.container_camera_activity1, CameraHTBFragment.newInstance())
                 .commitNow()
         }
     }
