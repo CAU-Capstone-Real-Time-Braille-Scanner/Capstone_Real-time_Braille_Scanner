@@ -11,11 +11,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
 import com.example.realtimebraillescanner.util.ImageUtils
+import com.google.android.gms.tasks.Task
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.objects.DetectedObject
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
 import java.nio.ByteBuffer
@@ -52,7 +58,7 @@ class BrailleAnalyzer(
     private val customObjectDetectorOptions =
         CustomObjectDetectorOptions.Builder(localModel)
             .setDetectorMode(CustomObjectDetectorOptions.SINGLE_IMAGE_MODE)
-            .enableMultipleObjects()
+            //.enableMultipleObjects()
             .enableClassification()
             .setClassificationConfidenceThreshold(0.5f)
             .setMaxPerObjectLabelCount(3)
@@ -65,13 +71,13 @@ class BrailleAnalyzer(
     init {
         // 인터프리터를 초기화하고 model.tflite 을 로드하는 코드
         try {
-            tflitemodel = loadModelFile(context.assets, "model.tflite")
+            tflitemodel = loadModelFile(context.assets, "model_with_metadata.tflite")
             tflite = Interpreter(tflitemodel)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
-        // TODO
-        // lifecycle.addObserver(detector)
+
+        lifecycle.addObserver(objectDetector)
     }
 
     // camera frame rate 에 맞게 호출되어 이미지 분석
@@ -119,15 +125,21 @@ class BrailleAnalyzer(
         val croppedBitmap =
             ImageUtils.rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect)
 
-        // TODO: recognizeBraille
-        val image = InputImage.fromBitmap(croppedBitmap, 0)
-        objectDetector
-            .process(image)
+        recognizeBraille(InputImage.fromBitmap(croppedBitmap, 0)).addOnCompleteListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(500 - (System.currentTimeMillis() - currentTimestamp))
+                imageProxy.close()
+            }
+        }
+    }
+
+    private fun recognizeBraille(image: InputImage): Task<MutableList<DetectedObject>> {
+        return objectDetector.process(image)
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Braille recognition error", exception)
                 val message = getErrorMessage(exception)
                 message?.let {
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnSuccessListener { results ->
@@ -138,6 +150,23 @@ class BrailleAnalyzer(
                         for (detectedObject in results) {
                             val boundingBox = detectedObject.boundingBox
                             val trackingId = detectedObject.trackingId
+
+                            /* ######################## */
+                            val rectLeft = boundingBox.left
+                            val rectTop = boundingBox.top
+                            val rectRight = boundingBox.right
+                            val rectBottom = boundingBox.bottom
+                            val rect = Rect(rectLeft, rectTop, rectRight, rectBottom)
+                            val canvas = binding.overlay.holder.lockCanvas()
+                            val rectPaint = Paint().apply {
+                                style = Paint.Style.STROKE
+                                color = Color.RED
+                                strokeWidth = 3f
+                            }
+                            canvas.drawRect(rect, rectPaint)
+                            binding.overlay.holder.unlockCanvasAndPost(canvas)
+
+                            /* ######################## */
                             for (label in detectedObject.labels) {
                                 val index = label.index // 0 ~ 63
                                 val confidence = label.confidence
@@ -217,38 +246,11 @@ class BrailleAnalyzer(
                     }
                     else -> {
                         // TODO
-                        binding.mode.text = "1"
+                        binding.mode.text = "0"
                     }
                 }
             }
-
-        imageProxy.close()
     }
-
-    /*
-    private fun imageToBitmap(image: Image): Bitmap {
-        val planes: Array<Image.Plane> = image.planes
-        val yBuffer: ByteBuffer = planes[0].buffer
-        val uBuffer: ByteBuffer = planes[1].buffer
-        val vBuffer: ByteBuffer = planes[2].buffer
-
-        val ySize: Int = yBuffer.remaining()
-        val uSize: Int = uBuffer.remaining()
-        val vSize: Int = vBuffer.remaining()
-
-        val nv21 = ByteArray(ySize + uSize + vSize)
-        yBuffer.get(nv21, 0, ySize)
-        vBuffer.get(nv21, ySize, vSize)
-        uBuffer.get(nv21, ySize + vSize, uSize)
-
-        val yuvImage  = YuvImage(nv21, ImageFormat.NV21, image.width, image.height, null)
-        val out = ByteArrayOutputStream()
-        yuvImage.compressToJpeg(Rect(0, 0, yuvImage.width, yuvImage.height), 75, out)
-
-        val imageBytes: ByteArray = out.toByteArray()
-        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-    }
-    */
 
     private fun getErrorMessage(exception: Exception): String? {
         val mlKitException = exception as? MlKitException ?: return exception.message
