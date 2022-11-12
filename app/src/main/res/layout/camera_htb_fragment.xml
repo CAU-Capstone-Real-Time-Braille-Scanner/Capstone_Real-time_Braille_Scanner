@@ -119,6 +119,18 @@
 <!--                app:layout_constraintTop_toTopOf="parent"-->
 <!--                app:layout_constraintBottom_toBottomOf="parent"-->
 <!--                app:layout_constraintStart_toEndOf="@id/hanToBraille"/>-->
+
+            <ImageView
+                android:id="@+id/speak"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                app:srcCompat="@drawable/speak_click"
+                android:layout_marginEnd="20dp"
+                android:clickable="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/voice"/>
+
             <ImageView
                 android:id="@+id/voice"
                 android:layout_width="42dp"
@@ -129,6 +141,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/highlight"/>
+
 
             <ImageView
                 android:id="@+id/highlight"
