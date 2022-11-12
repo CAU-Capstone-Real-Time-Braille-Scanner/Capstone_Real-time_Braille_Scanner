@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/chali/.gradle/caches/transforms-3/065dfa018132f0a621878cd66243e674/transformed/core-1.8.0/res/layout/custom_dialog.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/chali/.gradle/caches/transforms-3/065dfa018132f0a621878cd66243e674/transformed/core-1.8.0/res/layout/notification_action_tombstone.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1935" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/border.xml" value="0.25" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/converter_clicked.xml" value="0.2" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/converter_event.xml" value="0.197" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/converter_unclicked.xml" value="0.2" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/edit_click.xml" value="0.228" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/highlight_click.xml" value="0.25" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1935" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/pause_click.xml" value="0.228" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/play_click.xml" value="0.228" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/text_border.xml" value="0.25" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/drawable/voice_click.xml" value="0.228" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/activity_camera.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/activity_main.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/camera_activity.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/camera_fragment.xml" value="0.33" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/camera_htb_activity.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/camera_htb_fragment.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/main_activity.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/settings_activity.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/layout/splash_activity.xml" value="0.33" />
+        <entry key="..\:/Users/chali/AndroidStudioProjects/RealTimeBrailleScanner/app/src/main/res/mipmap-anydpi-v26/RealTimeBrailleScanner.xml" value="0.24" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/drawable/converter_clicked.xml" value="0.145" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/drawable/converter_event.xml" value="0.145" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/drawable/edit_click.xml" value="0.2995" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/drawable/highlight_click.xml" value="0.145" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/drawable/pause_click.xml" value="0.2995" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/drawable/play_click.xml" value="0.2995" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/drawable/speak_click.xml" value="0.2435" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/drawable/text_border.xml" value="0.2995" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/drawable/voice_click.xml" value="0.2995" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/layout/camera_bth_activity.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/layout/camera_bth_fragment.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/layout/camera_htb_activity.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/layout/camera_htb_fragment.xml" value="0.22" />
+        <entry key="..\:/Users/owner/Downloads/Capstone_Real-time_Braille_Scanner-main/app/src/main/res/layout/main_activity.xml" value="0.36614583333333334" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/drawable/converter_clicked.xml" value="0.255" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/drawable/converter_event.xml" value="0.255" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/activity_camera.xml" value="0.2210144927536232" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/activity_camera2.xml" value="0.264" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/activity_main.xml" value="0.24947916666666667" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/camera_activity.xml" value="0.24947916666666667" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/camera_bth_activity.xml" value="0.1" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/camera_bth_fragment.xml" value="0.2" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/camera_fragment.xml" value="0.2" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/camera_htb_activity.xml" value="0.1" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/camera_htb_fragment.xml" value="0.24947916666666667" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/main_activity.xml" value="0.213768115942029" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/settings_activity.xml" value="0.1" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/layout/splash_activity.xml" value="0.24947916666666667" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/xml/root_preferences.xml" value="0.2" />
+        <entry key="..\:/android-sdk/AndroidStudioProjects/Capstone_Real-time_Braille_Scanner/app/src/main/res/xml/settings_preference.xml" value="0.10503472222222222" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

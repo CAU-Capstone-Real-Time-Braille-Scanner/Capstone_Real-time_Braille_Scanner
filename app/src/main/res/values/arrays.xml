@@ -1,0 +1,25 @@
+<resources>
+    <string-array name="speed_entries">
+        <item>느림</item>
+        <item>중간</item>
+        <item>빠름</item>
+    </string-array>
+
+    <string-array name="speed_values">
+        <item>"느림"</item>
+        <item>"중간"</item>
+        <item>"빠름"</item>
+    </string-array>
+
+    <string-array name="font_size_entries">
+        <item>작게</item>
+        <item>중간</item>
+        <item>크게</item>
+    </string-array>
+
+    <string-array name="font_size_values">
+        <item>작게</item>
+        <item>중간</item>
+        <item>크게</item>
+    </string-array>
+</resources>
