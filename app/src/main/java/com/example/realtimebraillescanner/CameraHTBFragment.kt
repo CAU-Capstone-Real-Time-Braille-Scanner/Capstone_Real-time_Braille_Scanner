@@ -304,14 +304,10 @@ class CameraHTBFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (resultCode == Activity.RESULT_OK && requestCode == 100) {
             binding.srcText.text = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)!![0]
             binding.editSrcText.setText(binding.srcText.text.toString())
-            binding.srcText.visibility = View.GONE
-            binding.editSrcText.visibility = View.VISIBLE
-
-            binding.mode.setText("3")
+            binding.mode.setText("2")
         }
 
     }
