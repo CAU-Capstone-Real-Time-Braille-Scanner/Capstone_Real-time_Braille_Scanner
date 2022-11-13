@@ -107,11 +107,11 @@ class CameraHTBFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-		binding = CameraHtbFragmentBinding.inflate(inflater, container, false)
+        binding = CameraHtbFragmentBinding.inflate(inflater, container, false)
         initTTS()
-		initClickListener()
-		setIconBackground(0, 1, 0, 0, 1, 0)
-		return binding.root
+        initClickListener()
+        setIconBackground(0, 1, 1, 0, 1, 0)
+        return binding.root
     }
 
     override fun onDestroyView() {
@@ -295,9 +295,6 @@ class CameraHTBFragment : Fragment() {
             tts!!.speak(binding.srcText.text, TextToSpeech.QUEUE_FLUSH, tts_bundle, "") //tts 소리 출력
             if (binding.srcText.text.toString().trim().replace(" ", "").equals(""))
                 Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
-            while(tts!!.isSpeaking){
-                Handler().postDelayed({},100) //tts 기능 종료 시 pause 버튼 자동 클릭
-            }
             setIconBackground(2, 1, 1, 1, 1,1)
         }
     }
@@ -687,4 +684,3 @@ class CameraHTBFragment : Fragment() {
         ) == PackageManager.PERMISSION_GRANTED
     }
 }
-
