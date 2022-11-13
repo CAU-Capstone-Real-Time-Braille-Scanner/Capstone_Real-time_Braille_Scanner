@@ -1,8 +1,10 @@
 package com.example.realtimebraillescanner
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.realtimebraillescanner.databinding.SettingsActivityBinding
 
@@ -35,6 +37,11 @@ class SettingsActivity : AppCompatActivity() {
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.settings_preference, rootKey)
+
+            if (rootKey == null){
+                var sizePreference = findPreference<ListPreference>("font_size")!!
+                var speedPreference = findPreference<ListPreference>("speed_of_voice")!!
+            }
         }
     }
 }
