@@ -40,7 +40,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/middle"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </androidx.camera.view.PreviewView>
     <SurfaceView
         android:id="@+id/overlay"
         android:layout_width="match_parent"
@@ -55,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".5" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <!--    <TextView-->
     <!--        android:id="@+id/srcLang"-->
@@ -84,62 +86,103 @@
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
+            <!--            <TextView-->
+            <!--                android:id="@+id/hanToBraille"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="한글->점자"-->
+            <!--                android:textColor="@color/black"-->
+            <!--                android:textStyle="bold"-->
+            <!--                android:textSize="18sp"-->
+            <!--                android:background="@drawable/text_border"-->
+            <!--                android:gravity="center"-->
+            <!--                android:layout_marginLeft="20dp"-->
+            <!--                android:paddingHorizontal="5dp"-->
+            <!--                android:paddingVertical="10dp"-->
+            <!--                app:layout_constraintTop_toTopOf="parent"-->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"/>-->
+
+            <!--            <TextView-->
+            <!--                android:id="@+id/brailleToHan"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="점자->한글"-->
+            <!--                android:textColor="@color/black"-->
+            <!--                android:textStyle="bold"-->
+            <!--                android:textSize="18sp"-->
+            <!--                android:background="@drawable/text_border"-->
+            <!--                android:gravity="center"-->
+            <!--                android:layout_marginLeft="20dp"-->
+            <!--                android:paddingHorizontal="5dp"-->
+            <!--                android:paddingVertical="10dp"-->
+            <!--                app:layout_constraintTop_toTopOf="parent"-->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                app:layout_constraintStart_toEndOf="@id/hanToBraille"/>-->
+
             <ImageView
                 android:id="@+id/speak"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 app:srcCompat="@drawable/speak_click"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/voice"/>
 
             <ImageView
                 android:id="@+id/voice"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 app:srcCompat="@drawable/voice_click"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/highlight"/>
 
+
             <ImageView
                 android:id="@+id/highlight"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 app:srcCompat="@drawable/highlight_click"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/edit"/>
 
             <ImageView
                 android:id="@+id/edit"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 app:srcCompat="@drawable/edit_click"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/play"/>
 
             <ImageView
                 android:id="@+id/play"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 app:srcCompat="@drawable/play_click"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/pause"/>
 
             <ImageView
                 android:id="@+id/pause"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 app:srcCompat="@drawable/pause_click"
                 android:layout_marginRight="20dp"
+                android:clickable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
@@ -176,6 +219,7 @@
                 <TextView
                     android:id="@+id/srcText"
                     style="@style/SrcText"
+                    android:bufferType="spannable"
                     android:textSize="20sp"
                     android:textColor="@color/black"
                     android:layout_width="match_parent"
@@ -240,6 +284,7 @@
             <TextView
                 android:id="@+id/translatedText"
                 style="@style/TranslatedText"
+                android:bufferType="spannable"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_width="match_parent"
@@ -249,6 +294,11 @@
                 tools:text="translated text" />
 
         </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"/>
 
         <!--    <View-->
         <!--        android:id="@+id/divider2"-->
@@ -289,22 +339,3 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
