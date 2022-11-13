@@ -1,8 +1,10 @@
 package com.example.realtimebraillescanner
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.realtimebraillescanner.databinding.SettingsActivityBinding
 

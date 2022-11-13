@@ -52,6 +52,7 @@ import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.preference.PreferenceManager
 import com.example.realtimebraillescanner.CameraBTHFragment.Companion.text
 import com.example.realtimebraillescanner.databinding.CameraHtbFragmentBinding
 import com.example.realtimebraillescanner.util.ScopedExecutor
@@ -109,6 +110,7 @@ class CameraHTBFragment : Fragment() {
     ): View {
         binding = CameraHtbFragmentBinding.inflate(inflater, container, false)
         initTTS()
+        initSettings()
         initClickListener()
         setIconBackground(0, 1, 1, 0, 1, 0)
         return binding.root
@@ -227,6 +229,43 @@ class CameraHTBFragment : Fragment() {
                     //doSomething
                 }
             })
+    }
+
+    private fun initSettings(){
+        val sizePreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val speedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val size = sizePreferences.getString("font_size", "")
+        val speed = speedPreferences.getString("speed_of_voice", "")
+
+        if (size.equals("작게")){
+            setSize(14f)
+        }
+        else if (size.equals("크게")){
+            setSize(30f)
+        }
+        else{
+            setSize(22f)
+        }
+
+        if (speed.equals("느림")){
+            setSpeed(0.5f)
+        }
+        else if (speed.equals("빠름")){
+            setSpeed(1.5f)
+        }
+        else{
+            setSpeed(1.0f)
+        }
+    }
+
+    private fun setSize(size : Float){
+        binding.srcText.textSize = size
+        binding.translatedText.textSize = size
+        binding.editSrcText.textSize = size
+    }
+
+    private fun setSpeed(size : Float){
+        tts!!.setSpeechRate(size)
     }
 
     private fun initClickListener(){
