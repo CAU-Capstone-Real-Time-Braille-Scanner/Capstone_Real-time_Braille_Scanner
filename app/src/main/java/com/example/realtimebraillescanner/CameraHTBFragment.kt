@@ -318,7 +318,7 @@ class CameraHTBFragment : Fragment() {
             }, 100)
 
             if (binding.srcText.text.toString().trim().replace(" ", "").equals("")){
-                Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "하이라이트할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
             }
             else{
                 setIconBackground(1, 0, 0, 2, 0,
@@ -330,14 +330,13 @@ class CameraHTBFragment : Fragment() {
             val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")} //한국어로 녹음
             startActivityForResult(speechRecognizerIntent, 100)
-            setIconBackground(2, 1, 1, 1, 1,1)
         }
         binding.speak.setOnClickListener{
             var tts_bundle = Bundle()
             tts_bundle.putFloat(KEY_PARAM_VOLUME, 1.0F) //음량 최대로 설정
             tts!!.speak(srcTextWithoutLines(), TextToSpeech.QUEUE_FLUSH, tts_bundle, "") //tts 소리 출력
             if (binding.srcText.text.toString().trim().replace(" ", "").equals(""))
-                Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "음성 재생할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
             setIconBackground(2, 1, 1, 1, 1,1)
         }
     }
@@ -348,6 +347,8 @@ class CameraHTBFragment : Fragment() {
             binding.srcText.text = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)!![0]
             binding.editSrcText.setText(binding.srcText.text.toString())
             binding.mode.setText("2")
+
+            setIconBackground(2, 1, 1, 1, 1,1)
         }
 
     }
