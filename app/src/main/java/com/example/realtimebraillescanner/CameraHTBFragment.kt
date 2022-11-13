@@ -274,7 +274,7 @@ class CameraHTBFragment : Fragment() {
                 setTextHighlight()    //텍스트 하이라이트
             }, 100)
 
-            if (binding.srcText.text.equals(null)){
+            if (binding.srcText.text.toString().trim().replace(" ", "").equals("")){
                 Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
             }
             else{
@@ -293,7 +293,7 @@ class CameraHTBFragment : Fragment() {
             var tts_bundle = Bundle()
             tts_bundle.putFloat(KEY_PARAM_VOLUME, 1.0F) //음량 최대로 설정
             tts!!.speak(binding.srcText.text, TextToSpeech.QUEUE_FLUSH, tts_bundle, "") //tts 소리 출력
-            if (binding.srcText.text.equals(null))
+            if (binding.srcText.text.toString().trim().replace(" ", "").equals(""))
                 Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
             while(tts!!.isSpeaking){
                 Handler().postDelayed({},100) //tts 기능 종료 시 pause 버튼 자동 클릭
