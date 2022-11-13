@@ -37,11 +37,6 @@ class SettingsActivity : AppCompatActivity() {
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.settings_preference, rootKey)
-
-            if (rootKey == null){
-                var sizePreference = findPreference<ListPreference>("font_size")!!
-                var speedPreference = findPreference<ListPreference>("speed_of_voice")!!
-            }
         }
     }
 }

@@ -110,7 +110,7 @@ class CameraHTBFragment : Fragment() {
     ): View {
         binding = CameraHtbFragmentBinding.inflate(inflater, container, false)
         initTTS()
-        initTextSize()
+        initSettings()
         initClickListener()
         setIconBackground(0, 1, 1, 0, 1, 0)
         return binding.root
@@ -231,9 +231,11 @@ class CameraHTBFragment : Fragment() {
             })
     }
 
-    private fun initTextSize(){
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val size = sharedPreferences.getString("font_size", "")
+    private fun initSettings(){
+        val sizePreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val speedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val size = sizePreferences.getString("font_size", "")
+        val speed = speedPreferences.getString("speed_of_voice", "")
 
         if (size.equals("작게")){
             setSize(14f)
@@ -244,12 +246,26 @@ class CameraHTBFragment : Fragment() {
         else{
             setSize(22f)
         }
+
+        if (speed.equals("느림")){
+            setSpeed(0.5f)
+        }
+        else if (speed.equals("빠름")){
+            setSpeed(1.5f)
+        }
+        else{
+            setSpeed(1.0f)
+        }
     }
 
     private fun setSize(size : Float){
         binding.srcText.textSize = size
         binding.translatedText.textSize = size
         binding.editSrcText.textSize = size
+    }
+
+    private fun setSpeed(size : Float){
+        tts!!.setSpeechRate(size)
     }
 
     private fun initClickListener(){
