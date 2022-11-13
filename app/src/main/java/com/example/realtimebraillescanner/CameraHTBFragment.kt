@@ -19,10 +19,17 @@ package com.example.realtimebraillescanner
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.speech.tts.TextToSpeech
+import android.speech.tts.TextToSpeech.Engine.KEY_PARAM_VOLUME
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextPaint
@@ -38,16 +45,20 @@ import androidx.camera.core.Camera
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.example.realtimebraillescanner.CameraBTHFragment.Companion.text
 import com.example.realtimebraillescanner.databinding.CameraHtbFragmentBinding
 import com.example.realtimebraillescanner.util.ScopedExecutor
-import kotlinx.android.synthetic.main.camera_htb_fragment.*
+import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.max
@@ -85,6 +96,7 @@ class CameraHTBFragment : Fragment() {
     private lateinit var viewFinder: PreviewView
     private lateinit var textAnalyzer: TextAnalyzer
     private lateinit var binding : CameraHtbFragmentBinding
+    private var tts: TextToSpeech? = null
 
     /** Blocking camera operations are performed using this executor */
     private lateinit var cameraExecutor: ExecutorService
@@ -95,12 +107,11 @@ class CameraHTBFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        binding = CameraHtbFragmentBinding.inflate(inflater, container, false)
-        initClickListener()
-        setIconBackground(0, 1, 0, 0, 0)
-
-        return binding.root
+		binding = CameraHtbFragmentBinding.inflate(inflater, container, false)
+        initTTS()
+		initClickListener()
+		setIconBackground(0, 1, 0, 0, 1, 0)
+		return binding.root
     }
 
     override fun onDestroyView() {
@@ -178,7 +189,7 @@ class CameraHTBFragment : Fragment() {
 //            progressText.visibility = progressBar.visibility
 //        })
 
-        overlay.apply {
+        binding.overlay.apply {
             setZOrderOnTop(true)
             holder.setFormat(PixelFormat.TRANSPARENT)
             holder.addCallback(object : SurfaceHolder.Callback {
@@ -200,6 +211,23 @@ class CameraHTBFragment : Fragment() {
         }
 
     }
+    private fun initTTS(){
+        tts = TextToSpeech(requireContext(),
+            TextToSpeech.OnInitListener {
+                if (it == TextToSpeech.SUCCESS) {
+                    // set US English as language for tts
+                    val result = tts!!.setLanguage(Locale.KOREA)
+
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        //doSomething
+                    } else {
+                        //doSomething
+                    }
+                } else {
+                    //doSomething
+                }
+            })
+    }
 
     private fun initClickListener(){
         //각 버튼 케이스별 text 처리는 CameraFragment layout객체 TextAnalyzer로 넘겨줘서 처리
@@ -209,7 +237,7 @@ class CameraHTBFragment : Fragment() {
 
             binding.mode.setText("1")
 
-            setIconBackground(1, 2, 0, 0, 0)
+            setIconBackground(1, 2, 0, 0, 0,0)
         }
         binding.pause.setOnClickListener {
             binding.srcText.visibility = View.VISIBLE
@@ -217,19 +245,19 @@ class CameraHTBFragment : Fragment() {
 
             binding.mode.setText("2")
 
-            srcText.setText(srcText.text.toString() + " ")
-            translatedText.setText(translatedText.text.toString() + " ")
-            srcText.text.trim()
-            translatedText.text.trim()
+            binding.srcText.setText(binding.srcText.text.toString() + " ")
+            binding.translatedText.setText(binding.translatedText.text.toString() + " ")
+            binding.srcText.text.trim()
+            binding.translatedText.text.trim()
 
-            setIconBackground(2, 1, 1, 1, 1)
+            setIconBackground(2, 1, 1, 1, 1,1)
         }
         binding.edit.setOnClickListener {
-            if (srcText.text.equals(null)){
+            if (binding.srcText.text.equals(null)){
                 binding.editSrcText.setText("")
             }
             else{
-                binding.editSrcText.setText(srcText.text.toString())
+                binding.editSrcText.setText(binding.srcText.text.toString())
             }
 
             binding.srcText.visibility = View.GONE
@@ -237,7 +265,7 @@ class CameraHTBFragment : Fragment() {
 
             binding.mode.setText("3")
 
-            setIconBackground(1, 0, 2, 0, 0)
+            setIconBackground(1, 0, 2, 0, 0,0)
         }
         binding.highlight.setOnClickListener {
             binding.mode.setText("2")
@@ -246,21 +274,45 @@ class CameraHTBFragment : Fragment() {
                 setTextHighlight()    //텍스트 하이라이트
             }, 100)
 
-            if (srcText.text.equals(null)){
+            if (binding.srcText.text.equals(null)){
                 Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
             }
             else{
-                setIconBackground(1, 0, 0, 2, 0)
+                setIconBackground(1, 0, 0, 2, 0,
+                    0)
             }
         }
         binding.voice.setOnClickListener {
             binding.mode.setText("2")
-
-            setIconBackground(1, 0, 0, 0, 2)
+            val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")} //한국어로 녹음
+            startActivityForResult(speechRecognizerIntent, 100)
+            setIconBackground(2, 1, 1, 1, 1,1)
+        }
+        binding.speak.setOnClickListener{
+            var tts_bundle = Bundle()
+            tts_bundle.putFloat(KEY_PARAM_VOLUME, 1.0F) //음량 최대로 설정
+            tts!!.speak(binding.srcText.text, TextToSpeech.QUEUE_FLUSH, tts_bundle, "") //tts 소리 출력
+            if (binding.srcText.text.equals(null))
+                Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
+            while(tts!!.isSpeaking){
+                Handler().postDelayed({},100) //tts 기능 종료 시 pause 버튼 자동 클릭
+            }
+            setIconBackground(2, 1, 1, 1, 1,1)
         }
     }
 
-    private fun setIconBackground(pause : Int, play : Int, edit : Int, highlight : Int, voice : Int){
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == 100) {
+            binding.srcText.text = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)!![0]
+            binding.editSrcText.setText(binding.srcText.text.toString())
+            binding.mode.setText("2")
+        }
+
+    }
+
+    private fun setIconBackground(pause : Int, play : Int, edit : Int, highlight : Int, voice : Int, speak : Int){
 
         if (pause == 1){
             binding.pause.setImageDrawable(resources.getDrawable(R.drawable.pause_click))
@@ -326,6 +378,18 @@ class CameraHTBFragment : Fragment() {
             binding.voice.setImageDrawable(resources.getDrawable(R.drawable.voice_g))
             binding.voice.isClickable = false
         }
+        if (speak == 1){
+            binding.speak.setImageDrawable(resources.getDrawable(R.drawable.speak_click))
+            binding.speak.isClickable = true
+        }
+        else if (speak == 0){
+            binding.speak.setImageDrawable(resources.getDrawable(R.drawable.speak_d))
+            binding.speak.isClickable = false
+        }
+        else{
+            binding.speak.setImageDrawable(resources.getDrawable(R.drawable.speak_g))
+            binding.speak.isClickable = false
+        }
     }
 
     /** Initialize CameraX, and prepare to bind the camera use cases  */
@@ -384,16 +448,16 @@ class CameraHTBFragment : Fragment() {
                 )
             }
         viewModel.sourceText.observe(viewLifecycleOwner, Observer {
-            srcText.text = it
+            binding.srcText.text = it
         })
         viewModel.translatedText.observe(viewLifecycleOwner, Observer {
-            translatedText.text = it
+            binding.translatedText.text = it
         })
         viewModel.braille.observe(viewLifecycleOwner, Observer {
             braille = it
         })
         viewModel.imageCropPercentages.observe(viewLifecycleOwner,
-            Observer { drawOverlay(overlay.holder, it.first, it.second) })
+            Observer { drawOverlay(binding.overlay.holder, it.first, it.second) })
 
         // Select back camera since text detection does not work with front camera
         val cameraSelector =
@@ -422,7 +486,7 @@ class CameraHTBFragment : Fragment() {
                 return@setOnTouchListener true
             }
 
-            preview.setSurfaceProvider(viewFinder.createSurfaceProvider())
+            preview.setSurfaceProvider(viewFinder.surfaceProvider)
         } catch (exc: IllegalStateException) {
             Log.e(TAG, "Use case binding failed. This must be running on main thread.", exc)
         }
@@ -498,7 +562,7 @@ class CameraHTBFragment : Fragment() {
     }
 
     private fun setTextHighlight(){      //문장의 각 어절 클릭 시 대응하는 점자 highlight
-        val wordsTokens : List<String> = srcText.text.split("\n")   //줄바꿈 기준으로 문장 나누기
+        val wordsTokens : List<String> = binding.srcText.text.split("\n")   //줄바꿈 기준으로 문장 나누기
 
         var lenSentence = 0
         var lenSentenceList = ArrayList<Int>()
@@ -536,12 +600,12 @@ class CameraHTBFragment : Fragment() {
                     startBIdxList[i][j] = startBIdx
                 }
 
-                srcText.text.toSpannable().setSpan(object : ClickableSpan() {
+                binding.srcText.text.toSpannable().setSpan(object : ClickableSpan() {
 
                     override fun onClick(p0: View) {
                         //srcText 클릭 시 srcText 및 translatedText highlight 하기
-                        srcText.text = setHighlightWhenClicked(i, j, srcText.text, statePressed, startIdxList, lenSentenceList, lenWordList)
-                        translatedText.text = setHighlightWhenClicked(i, j, translatedText.text, stateBPressed, startBIdxList, lenBSentenceList, lenBWordList)
+                        binding.srcText.text = setHighlightWhenClicked(i, j, binding.srcText.text, statePressed, startIdxList, lenSentenceList, lenWordList)
+                        binding.translatedText.text = setHighlightWhenClicked(i, j, binding.translatedText.text, stateBPressed, startBIdxList, lenBSentenceList, lenBWordList)
 
                     }
 
@@ -561,8 +625,8 @@ class CameraHTBFragment : Fragment() {
             lenBSentenceList.add(lenBSentence)
         }
 
-        srcText.linksClickable = true
-        srcText.movementMethod = LinkMovementMethod.getInstance()
+        binding.srcText.linksClickable = true
+        binding.srcText.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun setHighlightWhenClicked(i:Int, j:Int, text:CharSequence, statePressed:Array<Array<Boolean>>, startIdxList:Array<Array<Int>>, lenSentenceList:ArrayList<Int>, lenWordList:Array<Array<Int>>):SpannableStringBuilder{
