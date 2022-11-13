@@ -268,6 +268,10 @@ class CameraHTBFragment : Fragment() {
         tts!!.setSpeechRate(size)
     }
 
+    private fun srcTextWithoutLines() : String{
+        return binding.srcText.text.toString().replace("\n", " ")
+    }
+
     private fun initClickListener(){
         //각 버튼 케이스별 text 처리는 CameraFragment layout객체 TextAnalyzer로 넘겨줘서 처리
         binding.play.setOnClickListener {
@@ -331,7 +335,7 @@ class CameraHTBFragment : Fragment() {
         binding.speak.setOnClickListener{
             var tts_bundle = Bundle()
             tts_bundle.putFloat(KEY_PARAM_VOLUME, 1.0F) //음량 최대로 설정
-            tts!!.speak(binding.srcText.text, TextToSpeech.QUEUE_FLUSH, tts_bundle, "") //tts 소리 출력
+            tts!!.speak(srcTextWithoutLines(), TextToSpeech.QUEUE_FLUSH, tts_bundle, "") //tts 소리 출력
             if (binding.srcText.text.toString().trim().replace(" ", "").equals(""))
                 Toast.makeText(requireContext(), "번역할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
             setIconBackground(2, 1, 1, 1, 1,1)
