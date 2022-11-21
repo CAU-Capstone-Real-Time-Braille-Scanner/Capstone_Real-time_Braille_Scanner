@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/container_main_activity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/main_background" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="322dp"
+        android:layout_height="182dp"
+        app:layout_constraintBottom_toTopOf="@+id/iv_converterBTH_main"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/title" />
+
+    <ImageView
+        android:id="@+id/iv_converterHTB_main"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="182dp"
+        android:layout_marginBottom="449dp"
+        android:src="@drawable/htb"
+        app:layout_constraintBottom_toBottomOf="@+id/container_main_activity"
+        app:layout_constraintEnd_toStartOf="@id/iv_converterBTH_main"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/container_main_activity" />
+
+    <TextView
+        android:id="@+id/tv_converterHTB_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="한글→점자"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:background="@drawable/converter_event"
+        app:layout_constraintTop_toBottomOf="@id/iv_converterHTB_main"
+        app:layout_constraintStart_toStartOf="@id/iv_converterHTB_main"
+        app:layout_constraintEnd_toEndOf="@id/iv_converterHTB_main"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="15dp"
+        android:layout_marginTop="15dp"/>
+
+    <ImageView
+        android:id="@+id/iv_converterBTH_main"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/bth"
+        app:layout_constraintTop_toTopOf="@id/iv_converterHTB_main"
+        app:layout_constraintBottom_toBottomOf="@id/iv_converterHTB_main"
+        app:layout_constraintStart_toEndOf="@id/iv_converterHTB_main"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_converterBTH_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="점자→한글"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:background="@drawable/converter_event"
+        app:layout_constraintTop_toBottomOf="@id/iv_converterBTH_main"
+        app:layout_constraintStart_toStartOf="@id/iv_converterBTH_main"
+        app:layout_constraintEnd_toEndOf="@id/iv_converterBTH_main"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="15dp"
+        android:layout_marginTop="15dp"/>
+
+    <ImageView
+        android:id="@+id/iv_setting_main"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/setting"
+        android:layout_marginTop="50dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_converterHTB_main"
+        app:layout_constraintStart_toStartOf="@id/iv_converterHTB_main" />
+
+    <TextView
+        android:id="@+id/tv_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/converter_event"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
+        android:text="설정"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@id/iv_setting_main"
+        app:layout_constraintStart_toStartOf="@id/iv_setting_main"
+        app:layout_constraintTop_toBottomOf="@id/iv_setting_main"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
