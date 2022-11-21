@@ -5,6 +5,7 @@
             app:defaultValue="중간"
             app:entries="@array/speed_entries"
             app:entryValues="@array/speed_values"
+            app:icon="@drawable/voice_speed"
             app:key="speed_of_voice"
             app:title="@string/speed_title"
             app:useSimpleSummaryProvider="true" />
@@ -13,6 +14,7 @@
             app:defaultValue="중간"
             app:entries="@array/font_size_entries"
             app:entryValues="@array/font_size_values"
+            app:icon="@drawable/text_size"
             app:key="font_size"
             app:title="@string/font_size_title"
             app:useSimpleSummaryProvider="true" />
