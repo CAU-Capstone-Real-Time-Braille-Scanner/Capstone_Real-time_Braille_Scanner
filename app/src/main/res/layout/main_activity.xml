@@ -12,35 +12,44 @@
         android:id="@+id/container_main_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity" />
+        tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/tv_title_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="실시간 점자 번역기"
-        android:textColor="@color/black"
-        android:textSize="36sp"
-        app:layout_constraintStart_toStartOf="parent"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/main_background" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="322dp"
+        android:layout_height="182dp"
+        app:layout_constraintBottom_toTopOf="@+id/iv_converterBTH_main"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="54dp"/>
+        app:srcCompat="@drawable/title" />
 
     <ImageView
         android:id="@+id/iv_converterHTB_main"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginTop="182dp"
+        android:layout_marginBottom="449dp"
         android:src="@drawable/htb"
-        app:layout_constraintTop_toBottomOf="@id/tv_title_main"
+        app:layout_constraintBottom_toBottomOf="@+id/container_main_activity"
         app:layout_constraintEnd_toStartOf="@id/iv_converterBTH_main"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="80dp"/>
+        app:layout_constraintTop_toTopOf="@+id/container_main_activity" />
 
     <TextView
         android:id="@+id/tv_converterHTB_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="번역하기"
+        android:text="한글→점자"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:background="@drawable/converter_event"
@@ -65,7 +74,7 @@
         android:id="@+id/tv_converterBTH_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="번역하기"
+        android:text="점자→한글"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:background="@drawable/converter_event"
