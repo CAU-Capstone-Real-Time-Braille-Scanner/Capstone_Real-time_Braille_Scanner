@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -14,13 +15,19 @@ import android.widget.Toast
 import androidx.camera.lifecycle.ProcessCameraProvider
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.view.PreviewView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.chaquo.python.PyObject
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
+import com.example.realtimebraillescanner.util.ImageUtils
 import com.example.realtimebraillescanner.util.ScopedExecutor
+import java.io.File
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.max
@@ -53,6 +60,7 @@ class CameraBTHFragment : Fragment() {
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
 
+    private var imageCapture: ImageCapture? = null
     private var displayId: Int = -1
     private val viewModel: BTHViewModel by viewModels()
     private lateinit var cameraProvider: ProcessCameraProvider
@@ -192,6 +200,36 @@ class CameraBTHFragment : Fragment() {
         }
     }
 
+    private fun takePhoto() {
+        // Get a stable reference of the modifiable image capture use case
+        val imageCapture = imageCapture ?: return
+
+        val photoFile = File(
+            "/data/data/com.example.realtimebraillescanner/files",
+            "pic.jpg"
+        )
+
+
+        // Create output options object which contains file + metadata
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        // Set up image capture listener, which is triggered after photo has
+        // been taken
+        imageCapture.takePicture(
+            outputOptions, ContextCompat.getMainExecutor(requireContext()), object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                }
+
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    val savedUri = Uri.fromFile(photoFile)
+                    val msg = "Photo capture succeeded: $savedUri"
+                    //Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, msg)
+                }
+            })
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -213,15 +251,21 @@ class CameraBTHFragment : Fragment() {
                 .setTargetAspectRatio(screenAspectRatio)
                 .setTargetRotation(rotation)
                 .build()
+                .also {
+                    it.setSurfaceProvider(viewFinder.surfaceProvider)
+                }
+
+            imageCapture = ImageCapture.Builder()
+                .build()
 
             brailleAnalyzer = BrailleAnalyzer(
                 requireContext(),
-                lifecycle,
                 viewModel.sourceText,
                 viewModel.translatedText,
                 viewModel.koreanText,
                 viewModel.imageCropPercentages,
-                binding
+                binding,
+                imageCapture
             )
 
             imageAnalyzer = ImageAnalysis.Builder()
@@ -307,20 +351,25 @@ class CameraBTHFragment : Fragment() {
         }
         val surfaceWidth = holder.surfaceFrame.width()
         val surfaceHeight = holder.surfaceFrame.height()
-        val cornerRadius = 25f
 
         // Set rect centered in frame
+        /*
         val rectTop = surfaceHeight * 70 / 2 / 100f
         val rectLeft = surfaceWidth * widthCropPercent / 2 / 100f
         val rectRight = surfaceWidth * (1 - widthCropPercent / 2 / 100f)
         val rectBottom = surfaceHeight * (1 - 70 / 2 / 100f)
-        val rect = RectF(rectLeft, rectTop, rectRight, rectBottom)
+        */
+        val rectTop = (surfaceHeight * 70 / 2 / 100f).toInt()
+        val rectLeft = holder.surfaceFrame.left
+        val rectRight = holder.surfaceFrame.right
+        val rectBottom = (surfaceHeight * (1 - 70 / 2 / 100f)).toInt()
+        val rect = Rect(rectLeft, rectTop, rectRight, rectBottom)
 
-        canvas.drawRoundRect(
-            rect, cornerRadius, cornerRadius, rectPaint
+        canvas.drawRect(
+            rect, rectPaint
         )
-        canvas.drawRoundRect(
-            rect, cornerRadius, cornerRadius, outLinePaint
+        canvas.drawRect(
+            rect, outLinePaint
         )
 
         val textPaint = Paint().apply {

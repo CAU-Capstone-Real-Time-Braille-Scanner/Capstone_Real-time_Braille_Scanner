@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br/>
+<nav>
+    <div  style="font-weight: bold; font-size: 120%;">
+        Видеоуроки:
+    </div>
+    <table>
+        <tr>
+            <td valign="top">
+                <a href="https://www.youtube.com/watch?v=5isJyUiZ3jk">Как пользоваться программой (1мин 40 сек)</a>
+            </td>
+            <td>
+                <a href="https://www.youtube.com/watch?v=5isJyUiZ3jk"><img src="/static/video_tutorial.png"></a>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <a href="https://www.youtube.com/watch?v=pswXs2p_Ynk">Как сделать иконку на смартфоне (12 сек)</a>
+            </td>
+            <td>
+                <a href="https://www.youtube.com/watch?v=pswXs2p_Ynk"><img src="/static/desktop_icon.png"></a>
+            </td>
+        </tr>
+    <table>
+    <div  style="font-weight: bold; font-size: 120%;">
+        <p/>Основные рекомендации:
+    </div>
+    <div>
+    Для распознавания надо сделать фото текста в свете, дающем контрастное изображение точек со светом и тенью, т.е. падающем спереди или из-за спины, но не сверху. <br>
+        Не рекомендуется, чтобы свет падал строго сбоку. <br>
+        Лист должен быть сфотографирован сверху. <br>
+        <br>
+        <table><tr>
+            <td width="300px" align="center">
+                <img src="/static/correct_light.png" style="width:100%; object-fit:contain" align="middle">
+            </td>
+            <td width="300px" align="center">
+                <img src="/static/wrong_light.png" style="width:100%; object-fit:contain"  align="middle">
+            </td>
+            <td width="300px" align="center">
+                <img src="/static/wrong_position.png" style="width:100%; object-fit:contain"  align="middle">
+            </td>
+        </tr><tr>
+            <td align="center">
+                <div style="color:green">Правильно</div>
+            </td>
+            <td align="center">
+                <div style="color:red">Неправильно</div> (свет падает сверху, сбоку или сзади)
+            </td>
+            <td align="center">
+                <div style="color:red">Неправильно</div> (фотографировать надо сверху)
+            </td>
+        </tr>
+        </table>
+        <br>
+        Разрешение не менее 1000 точек по вертикали и горизонтали (большинство мобильных и фотоаппаратов дают такое и лучшее разрешение).
+        <br>
+        <br>
+        <div  style="font-weight: bold; font-size: 120%;">
+            Пример правильно снятого текста
+        </div>
+        (хотя можно и еще ровнее):
+        <br>
+    </div>
+    <img src="/static/example.jpg" align="left">
+</nav>
+<div>
+    <a href="{{ url_for('results_demo') }}"> Распознать </a>
+</div>
+{% endblock %}

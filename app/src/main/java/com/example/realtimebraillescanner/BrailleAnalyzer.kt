@@ -1,32 +1,27 @@
 package com.example.realtimebraillescanner
 
 import android.content.Context
-import android.content.res.AssetManager
 import android.graphics.*
+import android.net.Uri
+import android.os.Looper
 import android.util.Log
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
+import com.chaquo.python.PyObject
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
 import com.example.realtimebraillescanner.util.ImageUtils
-import com.google.android.gms.tasks.Task
-import com.google.mlkit.common.MlKitException
-import com.google.mlkit.common.model.LocalModel
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.objects.DetectedObject
-import com.google.mlkit.vision.objects.ObjectDetection
-import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.tensorflow.lite.Interpreter
-import java.io.FileInputStream
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.channels.FileChannel
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
+import java.util.logging.Handler
 
 /**
  * Analyze the frames passed in from the camera and
@@ -34,50 +29,31 @@ import java.nio.channels.FileChannel
  */
 class BrailleAnalyzer(
     private val context: Context,
-    private val lifecycle: Lifecycle,
     private val srcText: MutableLiveData<String>,
     private val translatedText: MutableLiveData<String>,
     private val koreanText: MutableLiveData<String>,
     private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>,
-    private val binding: CameraBthFragmentBinding
-) : ImageAnalysis.Analyzer {
+    private val binding: CameraBthFragmentBinding,
+    private val imageCapture: ImageCapture?
+) : ImageAnalysis.Analyzer, AppCompatActivity() {
     companion object {
         private const val TAG = "BrailleAnalyzer"
     }
 
-    // 모든 작업을 수행할 인터프리터 객체
-    private lateinit var tflite: Interpreter
-
-    // 인터프리터에 전달할 모델
-    private lateinit var tflitemodel: ByteBuffer
-
-    private val localModel = LocalModel.Builder()
-        .setAssetFilePath("model_with_metadata.tflite")
-        .build()
-
-    private val customObjectDetectorOptions =
-        CustomObjectDetectorOptions.Builder(localModel)
-            .setDetectorMode(CustomObjectDetectorOptions.SINGLE_IMAGE_MODE)
-            //.enableMultipleObjects()
-            .enableClassification()
-            .setClassificationConfidenceThreshold(0.5f)
-            .setMaxPerObjectLabelCount(3)
-            .build()
-
-    private val objectDetector = ObjectDetection.getClient(customObjectDetectorOptions)
-
-    var currentTimestamp: Long = 0L
+    private val python: Python
+    private val pythonFile: PyObject
 
     init {
-        // 인터프리터를 초기화하고 model.tflite 을 로드하는 코드
-        try {
-            tflitemodel = loadModelFile(context.assets, "model_with_metadata.tflite")
-            tflite = Interpreter(tflitemodel)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
+        // "Context" must be an Activity, Service or Application object from your app.
+        // 1. Start the Python instance if it isn't already running.
+        if (!Python.isStarted()) {
+            Python.start(AndroidPlatform(context))
         }
 
-        lifecycle.addObserver(objectDetector)
+        // 2. Obtain the python instance
+        python = Python.getInstance()
+        pythonFile = python.getModule("braille_ocr_from_image")
+        pythonFile.callAttr("loadModel")
     }
 
     // camera frame rate 에 맞게 호출되어 이미지 분석
@@ -85,7 +61,7 @@ class BrailleAnalyzer(
     override fun analyze(imageProxy: ImageProxy) {
         val mediaImage = imageProxy.image ?: return
 
-        currentTimestamp = System.currentTimeMillis()
+        //currentTimestamp = System.currentTimeMillis()
         val rotationDegrees = imageProxy.imageInfo.rotationDegrees
         // We requested a setTargetAspectRatio, but it's not guaranteed that's what the camera
         // stack is able to support, so we calculate the actual ratio from the first frame to
@@ -94,6 +70,14 @@ class BrailleAnalyzer(
         val imageWidth = mediaImage.width
 
         val actualAspectRatio = imageWidth / imageHeight
+
+
+        val rectTop = (binding.overlay.holder.surfaceFrame.height() * 70 / 2 / 100f).toInt()
+        val rectLeft = binding.overlay.holder.surfaceFrame.left
+        val rectRight = binding.overlay.holder.surfaceFrame.right
+        val rectBottom = (binding.overlay.holder.surfaceFrame.height() * (1 - 70 / 2 / 100f)).toInt()
+        val rect = Rect(rectLeft, rectTop, rectRight, rectBottom)
+
 
         val convertImageToBitmap = ImageUtils.convertYuv420888ImageToBitmap(mediaImage)
         val cropRect = Rect(0, 0, imageWidth, imageHeight)
@@ -125,198 +109,50 @@ class BrailleAnalyzer(
         val croppedBitmap =
             ImageUtils.rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect)
 
-        recognizeBraille(InputImage.fromBitmap(croppedBitmap, 0)).addOnCompleteListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                delay(500 - (System.currentTimeMillis() - currentTimestamp))
-                imageProxy.close()
-            }
-        }
-    }
+        // TODO: 매 프레임마타 이미지 파일 저장해야 함.
+        // takePhoto()
 
-    private fun recognizeBraille(image: InputImage): Task<MutableList<DetectedObject>> {
-        return objectDetector.process(image)
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Braille recognition error", exception)
-                val message = getErrorMessage(exception)
-                message?.let {
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        val result = pythonFile.callAttr(
+            "getBrailleText",
+            "/data/data/com.example.realtimebraillescanner/files/pic.jpg")
+            .toJava(Array<String>::class.java)
+        runOnUiThread {
+            srcText.value = StringBuilder().apply {
+                for (line in result) {
+                    append(line)
                 }
-            }
-            .addOnSuccessListener { results ->
-                when (binding.mode.text) {
-                    "1" -> { // 재생 버튼
-                        val recognizedText = StringBuilder()
+            }.toString()
+        }
 
-                        for (detectedObject in results) {
-                            val boundingBox = detectedObject.boundingBox
-                            val trackingId = detectedObject.trackingId
+        imageProxy.close()
+    }
 
-                            /* ######################## */
-                            val rectLeft = boundingBox.left
-                            val rectTop = boundingBox.top
-                            val rectRight = boundingBox.right
-                            val rectBottom = boundingBox.bottom
-                            val rect = Rect(rectLeft, rectTop, rectRight, rectBottom)
-                            val canvas = binding.overlay.holder.lockCanvas()
-                            val rectPaint = Paint().apply {
-                                style = Paint.Style.STROKE
-                                color = Color.RED
-                                strokeWidth = 3f
-                            }
-                            canvas.drawRect(rect, rectPaint)
-                            binding.overlay.holder.unlockCanvasAndPost(canvas)
+    private fun takePhoto() {
+        // Get a stable reference of the modifiable image capture use case
+        val imageCapture = imageCapture ?: return
 
-                            /* ######################## */
-                            for (label in detectedObject.labels) {
-                                val index = label.index // 0 ~ 63
-                                val confidence = label.confidence
+        val photoFile = File(
+            "/data/data/com.example.realtimebraillescanner/files",
+            "pic.jpg"
+        )
 
-                                when (index) {
-                                    0 -> recognizedText.append("#")
-                                    1 -> recognizedText.append("⠠")
-                                    2 -> recognizedText.append("⠐")
-                                    3 -> recognizedText.append("⠰")
-                                    4 -> recognizedText.append("⠈")
-                                    5 -> recognizedText.append("⠨")
-                                    6 -> recognizedText.append("⠘")
-                                    7 -> recognizedText.append("⠸")
-                                    8 -> recognizedText.append("⠄")
-                                    9 -> recognizedText.append("⠤")
-                                    10 -> recognizedText.append("⠔")
-                                    11 -> recognizedText.append("⠴")
-                                    12 -> recognizedText.append("⠌")
-                                    13 -> recognizedText.append("⠬")
-                                    14 -> recognizedText.append("⠜")
-                                    15 -> recognizedText.append("⠼")
-                                    16 -> recognizedText.append("⠂")
-                                    17 -> recognizedText.append("⠢")
-                                    18 -> recognizedText.append("⠒")
-                                    19 -> recognizedText.append("⠲")
-                                    20 -> recognizedText.append("⠊")
-                                    21 -> recognizedText.append("⠪")
-                                    22 -> recognizedText.append("⠚")
-                                    23 -> recognizedText.append("⠺")
-                                    24 -> recognizedText.append("⠆")
-                                    25 -> recognizedText.append("⠦")
-                                    26 -> recognizedText.append("⠖")
-                                    27 -> recognizedText.append("⠶")
-                                    28 -> recognizedText.append("⠎")
-                                    29 -> recognizedText.append("⠮")
-                                    30 -> recognizedText.append("⠞")
-                                    31 -> recognizedText.append("⠾")
-                                    32 -> recognizedText.append("⠁")
-                                    33 -> recognizedText.append("⠡")
-                                    34 -> recognizedText.append("⠑")
-                                    35 -> recognizedText.append("⠱")
-                                    36 -> recognizedText.append("⠉")
-                                    37 -> recognizedText.append("⠩")
-                                    38 -> recognizedText.append("⠙")
-                                    39 -> recognizedText.append("⠹")
-                                    40 -> recognizedText.append("⠅")
-                                    41 -> recognizedText.append("⠥")
-                                    42 -> recognizedText.append("⠕")
-                                    43 -> recognizedText.append("⠵")
-                                    44 -> recognizedText.append("⠍")
-                                    45 -> recognizedText.append("⠭")
-                                    46 -> recognizedText.append("⠝")
-                                    47 -> recognizedText.append("⠽")
-                                    48 -> recognizedText.append("⠃")
-                                    49 -> recognizedText.append("⠣")
-                                    50 -> recognizedText.append("⠓")
-                                    51 -> recognizedText.append("⠳")
-                                    52 -> recognizedText.append("⠋")
-                                    53 -> recognizedText.append("⠫")
-                                    54 -> recognizedText.append("⠛")
-                                    55 -> recognizedText.append("⠻")
-                                    56 -> recognizedText.append("⠇")
-                                    57 -> recognizedText.append("⠧")
-                                    58 -> recognizedText.append("⠗")
-                                    59 -> recognizedText.append("⠷")
-                                    60 -> recognizedText.append("⠏")
-                                    61 -> recognizedText.append("⠯")
-                                    62 -> recognizedText.append("⠟")
-                                    63 -> recognizedText.append("⠿")
-                                }
-                            }
-                        }
-                        srcText.value = recognizedText.toString()
-                    }
-                    "2" -> { // 일시정지 버튼
-                        // Do nothing.
-                    }
-                    else -> {
-                        // TODO
-                        binding.mode.text = "0"
-                    }
+        // Create output options object which contains file + metadata
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        // Set up image capture listener, which is triggered after photo has
+        // been taken
+        imageCapture.takePicture(
+            outputOptions, ContextCompat.getMainExecutor(context), object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
-            }
-    }
 
-    private fun getErrorMessage(exception: Exception): String? {
-        val mlKitException = exception as? MlKitException ?: return exception.message
-        return if (mlKitException.errorCode == MlKitException.UNAVAILABLE) {
-            "종료중..."
-        } else {
-            exception.message
-        }
-    }
-
-    // This helper function loads tensorflow lite model from "assets" directory.
-    private fun loadModelFile(assetManager: AssetManager, modelPath: String): ByteBuffer {
-        val fileDescriptor = assetManager.openFd(modelPath)
-        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
-        val fileChannel = inputStream.channel
-        val startOffset = fileDescriptor.startOffset
-        val declaredLength = fileDescriptor.declaredLength
-
-        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
-    }
-
-    private fun doInference(bitmap: Bitmap): String {
-        val byteBuffer = ByteBuffer.allocateDirect(4 * 28 * 28 * 3)
-        byteBuffer.order(ByteOrder.nativeOrder())
-        val intValues = IntArray(28 * 28)  // 28 * 28 크기의 점자 이미지의 픽셀 값을 저장하는 배열
-        val result = Array(1) { FloatArray(64) }  // 해당 점자 이미지가 어떤 글자에 해당하는지를 나타내는 확률 배열. 이 중 값이 가장 높은 인덱스가 결과값이 된다.
-
-        val scaledBitmap: Bitmap = Bitmap.createScaledBitmap(bitmap, 28, 28, false)
-        scaledBitmap.getPixels(intValues, 0, 28, 0, 0, 28, 28)
-
-        var pixel = 0
-        for (i in 0 until 28) {
-            for (j in 0 until 28) {
-                val input = intValues[pixel++]
-                byteBuffer.putFloat(((input.shr(16) and 0xFF) / 1.0f))
-                byteBuffer.putFloat(((input.shr(8) and 0xFF) / 1.0f))
-                byteBuffer.putFloat(((input and 0xFF) / 1.0f))
-            }
-        }
-
-        tflite.run(byteBuffer, result)
-        var maxValue = 0.0f
-        var maxIndex = 0
-        for (i in result[0].indices) {
-            if (maxValue < result[0][i]) {
-                maxValue = result[0][i]
-                maxIndex = i
-            }
-        }
-
-        val answer = if (maxValue >= 0.5f) {
-            StringBuilder().apply {
-                for (i in 0 until 6) {
-                    if (maxIndex % 2 == 1) {
-                        maxIndex = (maxIndex - 1) / 2
-                        append("1")
-                    } else {
-                        maxIndex /= 2
-                        append("0")
-                    }
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    val savedUri = Uri.fromFile(photoFile)
+                    val msg = "Photo capture succeeded: $savedUri"
+                    //Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, msg)
                 }
-            }.toString().reversed()
-        } else {
-            "인식 불가"
-        }
-
-        return answer
+            })
     }
 }

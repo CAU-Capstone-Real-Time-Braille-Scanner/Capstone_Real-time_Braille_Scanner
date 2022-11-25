@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post" class="container" action="" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="wrapper">
+	    Если вы согласитесь на публикацию загруженного Вами текста,
+	    это поможет совершенствованию алгоритмов оптического распознавания Брайля 
+	    теми, кто захочет участвовать в разработке таких алгоритмов.<br>
+	    <br>
+	    Вы уверены, что возражаете? Можете поменять решение.
+    </div>
+    <div>
+        <table class="centered" width="100%"><tr>
+            <td>{{ form.agree() }} <label for="agree">{{ form.agree.label }}</label></td>
+            <td>{{ form.disgree() }} <label for="disgree">{{ form.disgree.label }}</label></td>
+        </tr></table>
+    </div>
+	{{ flashed_messages() }}
+    <div class="button_wrapper">
+    {{ form.submit(style="width:80%") }}
+	</div>
+
+</form>
+{% endblock %}
