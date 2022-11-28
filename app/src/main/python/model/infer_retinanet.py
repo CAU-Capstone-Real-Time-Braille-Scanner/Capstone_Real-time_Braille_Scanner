@@ -476,8 +476,8 @@ class BrailleInference:
         recognized_text_path = Path(results_dir) / (filename_stem + '.marked' + suff + '.txt')
         recognized_braille_path = Path(results_dir) / (filename_stem + '.marked' + suff + '.brl')
         #result_dict['labeled_image' + suff].save(marked_image_path)
-        for s in result_dict['braille' + suff]:
-            print(s)
+        #for s in result_dict['braille' + suff]:
+        #    print(s)
         #with open(recognized_text_path, encoding='utf-8', mode='w') as f:
         #    for s in result_dict['text' + suff]:
         #        f.write(s)

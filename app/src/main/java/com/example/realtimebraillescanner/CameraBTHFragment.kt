@@ -200,36 +200,6 @@ class CameraBTHFragment : Fragment() {
         }
     }
 
-    private fun takePhoto() {
-        // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
-
-        val photoFile = File(
-            "/data/data/com.example.realtimebraillescanner/files",
-            "pic.jpg"
-        )
-
-
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
-        imageCapture.takePicture(
-            outputOptions, ContextCompat.getMainExecutor(requireContext()), object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                }
-
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    //Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
-                }
-            })
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -261,8 +231,7 @@ class CameraBTHFragment : Fragment() {
                 viewModel.translatedText,
                 viewModel.koreanText,
                 viewModel.imageCropPercentages,
-                binding,
-                imageCapture
+                binding
             )
 
             imageAnalyzer = ImageAnalysis.Builder()
@@ -350,17 +319,11 @@ class CameraBTHFragment : Fragment() {
         val surfaceHeight = holder.surfaceFrame.height()
 
         // Set rect centered in frame
-        /*
         val rectTop = surfaceHeight * 70 / 2 / 100f
         val rectLeft = surfaceWidth * widthCropPercent / 2 / 100f
         val rectRight = surfaceWidth * (1 - widthCropPercent / 2 / 100f)
         val rectBottom = surfaceHeight * (1 - 70 / 2 / 100f)
-        */
-        val rectTop = (surfaceHeight * 70 / 2 / 100f).toInt()
-        val rectLeft = holder.surfaceFrame.left
-        val rectRight = holder.surfaceFrame.right
-        val rectBottom = (surfaceHeight * (1 - 70 / 2 / 100f)).toInt()
-        val rect = Rect(rectLeft, rectTop, rectRight, rectBottom)
+        val rect = RectF(rectLeft, rectTop, rectRight, rectBottom)
 
         canvas.drawRect(
             rect, rectPaint

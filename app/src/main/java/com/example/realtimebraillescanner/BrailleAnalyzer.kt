@@ -18,9 +18,7 @@ import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
 import com.example.realtimebraillescanner.util.ImageUtils
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
+import java.io.*
 import java.util.logging.Handler
 
 /**
@@ -34,7 +32,6 @@ class BrailleAnalyzer(
     private val koreanText: MutableLiveData<String>,
     private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>,
     private val binding: CameraBthFragmentBinding,
-    private val imageCapture: ImageCapture?
 ) : ImageAnalysis.Analyzer, AppCompatActivity() {
     companion object {
         private const val TAG = "BrailleAnalyzer"
@@ -42,6 +39,8 @@ class BrailleAnalyzer(
 
     private val python: Python
     private val pythonFile: PyObject
+
+    private var num = 1 // 프레임 속도를 위한 임시 코드
 
     init {
         // "Context" must be an Activity, Service or Application object from your app.
@@ -70,14 +69,6 @@ class BrailleAnalyzer(
         val imageWidth = mediaImage.width
 
         val actualAspectRatio = imageWidth / imageHeight
-
-
-        val rectTop = (binding.overlay.holder.surfaceFrame.height() * 70 / 2 / 100f).toInt()
-        val rectLeft = binding.overlay.holder.surfaceFrame.left
-        val rectRight = binding.overlay.holder.surfaceFrame.right
-        val rectBottom = (binding.overlay.holder.surfaceFrame.height() * (1 - 70 / 2 / 100f)).toInt()
-        val rect = Rect(rectLeft, rectTop, rectRight, rectBottom)
-
 
         val convertImageToBitmap = ImageUtils.convertYuv420888ImageToBitmap(mediaImage)
         val cropRect = Rect(0, 0, imageWidth, imageHeight)
@@ -109,49 +100,38 @@ class BrailleAnalyzer(
         val croppedBitmap =
             ImageUtils.rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect)
 
-        takePhoto()
+        takePhoto(croppedBitmap)
 
         val result = pythonFile.callAttr(
             "getBrailleText",
-            "/data/data/com.example.realtimebraillescanner/files/pic.jpg")
+            "/data/data/com.example.realtimebraillescanner/files/pic.png")
             .toJava(Array<String>::class.java)
+
         runOnUiThread {
             srcText.value = StringBuilder().apply {
                 for (line in result) {
                     append(line)
                 }
             }.toString()
+
+            translatedText.value = "프레임 Number: ${num}"
+            num++
         }
 
         imageProxy.close()
     }
 
-    private fun takePhoto() {
-        // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
-
+    private fun takePhoto(photo: Bitmap) {
+        val bytes = ByteArrayOutputStream()
+        photo.compress(Bitmap.CompressFormat.PNG, 100, bytes)
         val photoFile = File(
             "/data/data/com.example.realtimebraillescanner/files",
-            "pic.jpg"
+            "pic.png"
         )
-
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
-        imageCapture.takePicture(
-            outputOptions, ContextCompat.getMainExecutor(context), object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                }
-
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    //Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
-                }
-            })
+        photoFile.createNewFile()
+        val fo = FileOutputStream(photoFile)
+        fo.write(bytes.toByteArray())
+        fo.close()
+        // Log.d(TAG, "Capture image successfully")
     }
 }
