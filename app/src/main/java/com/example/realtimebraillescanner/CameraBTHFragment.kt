@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -14,13 +15,19 @@ import android.widget.Toast
 import androidx.camera.lifecycle.ProcessCameraProvider
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.view.PreviewView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.chaquo.python.PyObject
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
+import com.example.realtimebraillescanner.util.ImageUtils
 import com.example.realtimebraillescanner.util.ScopedExecutor
+import java.io.File
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.max
@@ -53,6 +60,7 @@ class CameraBTHFragment : Fragment() {
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
 
+    private var imageCapture: ImageCapture? = null
     private var displayId: Int = -1
     private val viewModel: BTHViewModel by viewModels()
     private lateinit var cameraProvider: ProcessCameraProvider
@@ -214,9 +222,11 @@ class CameraBTHFragment : Fragment() {
                 .setTargetRotation(rotation)
                 .build()
 
+            imageCapture = ImageCapture.Builder()
+                .build()
+
             brailleAnalyzer = BrailleAnalyzer(
                 requireContext(),
-                lifecycle,
                 viewModel.sourceText,
                 viewModel.translatedText,
                 viewModel.koreanText,
@@ -258,7 +268,7 @@ class CameraBTHFragment : Fragment() {
 
                 // Bind use cases to camera
                 val camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageAnalyzer
+                    this, cameraSelector, preview, imageAnalyzer, imageCapture
                 )
 
                 // Zoom settings
@@ -307,7 +317,6 @@ class CameraBTHFragment : Fragment() {
         }
         val surfaceWidth = holder.surfaceFrame.width()
         val surfaceHeight = holder.surfaceFrame.height()
-        val cornerRadius = 25f
 
         // Set rect centered in frame
         val rectTop = surfaceHeight * 70 / 2 / 100f
@@ -316,11 +325,11 @@ class CameraBTHFragment : Fragment() {
         val rectBottom = surfaceHeight * (1 - 70 / 2 / 100f)
         val rect = RectF(rectLeft, rectTop, rectRight, rectBottom)
 
-        canvas.drawRoundRect(
-            rect, cornerRadius, cornerRadius, rectPaint
+        canvas.drawRect(
+            rect, rectPaint
         )
-        canvas.drawRoundRect(
-            rect, cornerRadius, cornerRadius, outLinePaint
+        canvas.drawRect(
+            rect, outLinePaint
         )
 
         val textPaint = Paint().apply {

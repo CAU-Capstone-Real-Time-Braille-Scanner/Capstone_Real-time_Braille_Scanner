@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form  class="container" action="" method="post">
+    {{ form.hidden_tag() }}
+   	<div class="title">Зарегистрироваться как новый пользователь:</div>
+    <div class="wrapper" style="font-size: 80%;">
+        Регистрация нужна исключительно чтобы иметь обратную связь о ходе тестирования.<br/> Пароль пока не предусмотрен.<p/>
+    </div>
+    <div class="wrapper">
+		<div>{{ form.e_mail.label }}</div>
+	    <div>{{ form.e_mail() }}</div>
+	</div>
+    <div class="wrapper">
+		<div>{{ form.username.label }}</div>
+		<div>{{ form.username() }}</div>
+	</div>
+    <div class="wrapper">
+	    {{ form.remember_me() }}
+    	<label for="remember_me">{{ form.remember_me.label }}</label>
+	</div>
+	{{ flashed_messages() }}
+    <div class="button_wrapper">{{ form.submit(style="width:80%") }}</div>
+</form>
+
+{% endblock %}

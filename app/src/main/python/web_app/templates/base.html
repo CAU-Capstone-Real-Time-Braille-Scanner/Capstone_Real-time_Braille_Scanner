@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> Angelina Braille Reader </title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}">
+    <!-- <link rel="stylessheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"> -->
+    <style>
+        * {
+            margin: 0 0 0 0;
+            padding: 0 0 0 0;
+            <!-- outline: 1px #ff00002b solid; -->
+        }
+
+        body {
+            background-color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: large;
+        }
+
+        .header_footer {
+            background-color:rgb(248,238,210);
+			width: 100%
+        }
+
+        .menu_item {
+            padding: 0px 2% 0px 2%
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .title {
+            font-size: 150%;
+            font-weight: bold;
+            color: black;
+            padding: 20px 20px 20px 20px;
+        }
+
+		.wrapper {
+			{% if request.MOBILE %}
+    	    padding: 4px 20px 4px 20px;
+			{% else %}
+            padding: 20px 20px 20px 20px;
+			{% endif %}
+        }
+
+		.button_wrapper {
+			{% if request.MOBILE %}
+            padding: 10px 20px 4px 0;
+			{% else %}
+            padding: 20px 20px 20px 20px;
+			{% endif %}
+			text-align: center;
+			margin: auto;
+        }
+
+        input:hover {
+            color: blue;
+            transition: 0.3s;
+        }
+
+        .container {
+            min-width: 240px;
+            max-width: 1000px;
+            align: center;
+            margin: auto;
+        }
+
+        .centered {
+            text-align: center;
+            margin: auto;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(2);
+            margin: 10px;
+        }
+		
+		input[type="button"] {
+            font-size: 150%;
+            color: black;
+		    white-space: normal;
+		    width: 40%;
+			margin: 1%
+		}
+
+		input[type="submit"] {
+            font-size: 150%;
+            color: black;
+		    white-space: normal;
+		    width: 40%;
+			margin: 1%
+        }
+
+		input[type="text"] {
+            font-size: 150%;
+            color: black;
+		}
+
+        img {
+            text-align: center;
+        }
+
+    </style>
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+       ym(70206349, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true
+       });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/70206349" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
+</head>
+
+{% from 'flashed_messages_macro.html' import flashed_messages %}
+<body>
+    <div class="header_footer" style="padding-top:1%">
+        {% if config['DEBUG'] %}
+            <div style="color: blue; text-align: center; font-size: 80%;">Angelina Braille Reader
+            <span style="color: red; text-align: center; font-size: 180%;">(DEBUG)</span></div>
+        {% else %}
+            <div style="color: blue; text-align: center; font-size: 180%;">Angelina Braille Reader</div>
+        {% endif %}
+    <div width="800" style="color: #fff; background-color: #08730d; text-align: center; font-size: 180%;">
+        Запущена новая версия сайта!<p/>
+    </div>
+    <div width="800" style="color: #fff; background-color: #08730d; text-align: center;">
+        (потребуется повторная регистрация)<p/>
+        Присылайте отзывы и замечания на <a href="mailto:admin@angelina-reader.com" style="white-space: nowrap">admin@angelina-reader.com</a>
+    </div>
+    <div width="800" style="text-align: center; font-size: 250%;">
+        <a href="https://angelina-reader.com">ПЕРЕЙТИ</a><p/>
+    </div>
+        <table width="100%">
+        <tr>
+        <td valign="top">
+        <a href="{{ url_for('index') }}" class="menu_item"> Главная </a>
+        <a href="{{ url_for('help') }}" class="menu_item"> Помощь </a>
+        <a href="{{ url_for('donate') }}" class="menu_item">Поддержать</a>
+        {% if current_user.is_anonymous  %}
+            <a href="{{ url_for('login') }}" style="float:right;" class="menu_item"> Войти </a>
+            <a href="{{ url_for('register') }}" style="float:right;" class="menu_item"> Зарегистрироваться </a>
+        {% else %}
+            <a href="{{ url_for('logout') }}" class="menu_item" style="float:right;"> Выйти </a>
+            <span class="menu_item" style="float:right;">{{ current_user.name }}</span>
+        {% endif %}
+        </td>
+        </tr>
+        </table>
+    </div>
+
+    {% block content %} {% endblock %}
+
+    <div class="wrapper">
+        <br/><br/><br/>
+    </div>
+    <div class="header_footer" style="text-align: center; position:fixed; bottom:0px; padding:1% 2% 1% 2%">
+        <table width="100%" valign="center">
+        <tr>
+            <td width="50%" valign="center" align="center">
+                Для предложений и замечаний: <a href="mailto:admin@angelina-reader.com" style="white-space: nowrap">admin@angelina-reader.com</a>
+            </td>
+            <td width="25%" valign="center" align="center">
+                <a href="{{ url_for('donate') }}" style="white-space: nowrap">Поддержать</a>
+            </td>
+            <td width="25%" valign="center" align="center">
+                Помочь в разработке: <a href=https://github.com/IlyaOvodov/AngelinaReader style="white-space: nowrap">GitHub</a>
+            </td>
+        </tr>
+        </table>
+    </div>
+</body>
+</html>
