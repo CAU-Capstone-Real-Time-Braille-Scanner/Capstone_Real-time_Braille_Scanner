@@ -45,7 +45,6 @@ android {
                 install "wtforms==2.2.1"
                 install "scikit-build"
                 install "albumentations==0.4.5"
-                //install "PyMuPDF"
             }
         }
 

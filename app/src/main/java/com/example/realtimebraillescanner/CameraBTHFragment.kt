@@ -251,9 +251,6 @@ class CameraBTHFragment : Fragment() {
                 .setTargetAspectRatio(screenAspectRatio)
                 .setTargetRotation(rotation)
                 .build()
-                .also {
-                    it.setSurfaceProvider(viewFinder.surfaceProvider)
-                }
 
             imageCapture = ImageCapture.Builder()
                 .build()
@@ -302,7 +299,7 @@ class CameraBTHFragment : Fragment() {
 
                 // Bind use cases to camera
                 val camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageAnalyzer
+                    this, cameraSelector, preview, imageAnalyzer, imageCapture
                 )
 
                 // Zoom settings

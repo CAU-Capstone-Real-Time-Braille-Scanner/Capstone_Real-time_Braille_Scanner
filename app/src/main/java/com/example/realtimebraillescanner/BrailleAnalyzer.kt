@@ -109,8 +109,7 @@ class BrailleAnalyzer(
         val croppedBitmap =
             ImageUtils.rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect)
 
-        // TODO: 매 프레임마타 이미지 파일 저장해야 함.
-        // takePhoto()
+        takePhoto()
 
         val result = pythonFile.callAttr(
             "getBrailleText",

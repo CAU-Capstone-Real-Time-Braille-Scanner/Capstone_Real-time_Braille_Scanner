@@ -35,6 +35,6 @@ def getBrailleText(path):
                                            repeat_on_aligned=False,
                                            save_development_info=False)
     if result is None:
-        return list()
+        return ['인식불가']
     else:
         return result
