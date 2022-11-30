@@ -102,19 +102,27 @@ class BrailleAnalyzer(
 
         takePhoto(croppedBitmap)
 
-        val result = pythonFile.callAttr(
+        val obj: List<PyObject> = pythonFile.callAttr(
             "getBrailleText",
-            "/data/data/com.example.realtimebraillescanner/files/pic.png")
-            .toJava(Array<String>::class.java)
+            "/data/data/com.example.realtimebraillescanner/files/pic4.jpg")
+            .asList()
+        val result1 = obj.get(0).toJava(Array<String>::class.java)
+        val result2 = obj.get(1).toJava(Array<String>::class.java)
 
         runOnUiThread {
             srcText.value = StringBuilder().apply {
-                for (line in result) {
+                for (line in result1) {
                     append(line)
                 }
             }.toString()
 
-            translatedText.value = "프레임 Number: ${num}"
+            translatedText.value = StringBuilder().apply {
+                for (line in result2) {
+                    append(line)
+                }
+                append("\n")
+                append("프레임: $num")
+            }.toString()
             num++
         }
 

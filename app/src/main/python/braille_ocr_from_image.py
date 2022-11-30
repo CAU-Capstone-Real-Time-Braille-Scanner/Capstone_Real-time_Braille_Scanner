@@ -11,6 +11,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 from pathlib import Path
 import local_config
 import model.infer_retinanet as infer_retinanet
+from BrailleToKor import BrailleToKor
 
 recognizer = ""
 
@@ -37,4 +38,7 @@ def getBrailleText(path):
     if result is None:
         return ['인식불가']
     else:
-        return result
+        translatedResult = []
+        for line in result:
+            translatedResult.append(BrailleToKor().translation(line))
+        return result, translatedResult
