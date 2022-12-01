@@ -29,14 +29,25 @@ class MainActivity : AppCompatActivity() {
         binding.tvConverterHTBMain.setOnClickListener {
             checkRunTimePermission()
         }
+        binding.ivConverterHTBMain.setOnClickListener{
+            checkRunTimePermission()
+        }
 
         binding.tvSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+
+        }
+        binding.ivSettingMain.setOnClickListener{
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         binding.tvConverterBTHMain.setOnClickListener {
             checkRunTimePermission2()
         }
+        binding.ivConverterBTHMain.setOnClickListener {
+            checkRunTimePermission2()
+        }
+
     }
 
     override fun onRequestPermissionsResult(
