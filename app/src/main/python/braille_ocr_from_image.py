@@ -36,7 +36,31 @@ def getBrailleText(path):
                                            repeat_on_aligned=False,
                                            save_development_info=False)
     if result is None:
-        return ['인식불가']
+        return ['인식불가'], ['인식불가']
+    else:
+        translatedResult = []
+        for line in result:
+            translatedResult.append(BrailleToKor().translation(line))
+        return result, translatedResult
+
+def doInference(path):
+    model_weights = 'model.t7'
+    recognizer = infer_retinanet.BrailleInference(
+            params_fn=os.path.join(local_config.data_path, 'weights', 'param.txt'),
+            model_weights_fn=os.path.join(local_config.data_path, 'weights', model_weights),
+            create_script=None)
+    results_dir = Path(path).parent
+    result = recognizer.run_and_getBrailleText(path, results_dir, target_stem=None,
+                                           lang='EN', extra_info=None,
+                                           draw_refined=recognizer.DRAW_NONE,
+                                           remove_labeled_from_filename=False,
+                                           find_orientation=False,
+                                           align_results=True,
+                                           process_2_sides=False,
+                                           repeat_on_aligned=False,
+                                           save_development_info=False)
+    if result is None:
+        return ['인식불가'], ['인식불가']
     else:
         translatedResult = []
         for line in result:

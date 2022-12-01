@@ -2,16 +2,10 @@ package com.example.realtimebraillescanner
 
 import android.content.Context
 import android.graphics.*
-import android.net.Uri
-import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
@@ -19,7 +13,6 @@ import com.chaquo.python.android.AndroidPlatform
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
 import com.example.realtimebraillescanner.util.ImageUtils
 import java.io.*
-import java.util.logging.Handler
 
 /**
  * Analyze the frames passed in from the camera and
@@ -104,10 +97,10 @@ class BrailleAnalyzer(
 
         val obj: List<PyObject> = pythonFile.callAttr(
             "getBrailleText",
-            "/data/data/com.example.realtimebraillescanner/files/pic4.jpg")
+            "/data/data/com.example.realtimebraillescanner/files/pic.png")
             .asList()
-        val result1 = obj.get(0).toJava(Array<String>::class.java)
-        val result2 = obj.get(1).toJava(Array<String>::class.java)
+        val result1 = obj[0].toJava(Array<String>::class.java)
+        val result2 = obj[1].toJava(Array<String>::class.java)
 
         runOnUiThread {
             srcText.value = StringBuilder().apply {
@@ -140,6 +133,6 @@ class BrailleAnalyzer(
         val fo = FileOutputStream(photoFile)
         fo.write(bytes.toByteArray())
         fo.close()
-        // Log.d(TAG, "Capture image successfully")
+        Log.d(TAG, "Capture image successfully")
     }
 }
