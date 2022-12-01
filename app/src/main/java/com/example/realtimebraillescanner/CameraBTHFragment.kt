@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.*
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -15,19 +14,13 @@ import android.widget.Toast
 import androidx.camera.lifecycle.ProcessCameraProvider
 import android.util.Log
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.view.PreviewView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.chaquo.python.PyObject
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
-import com.example.realtimebraillescanner.util.ImageUtils
 import com.example.realtimebraillescanner.util.ScopedExecutor
-import java.io.File
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.max
@@ -38,7 +31,6 @@ class CameraBTHFragment : Fragment() {
         fun newInstance() = CameraBTHFragment()
 
         private const val TAG = "CameraBTHActivity"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
             mutableListOf (
@@ -77,7 +69,7 @@ class CameraBTHFragment : Fragment() {
     ): View {
         binding = CameraBthFragmentBinding.inflate(inflater, container, false)
         initClickListener()
-        setIconBackground(0, 1, 0)
+        setIconBackground(0, 1)
         return binding.root
     }
 
@@ -132,7 +124,7 @@ class CameraBTHFragment : Fragment() {
             binding.recognizedText.visibility = View.GONE
             binding.mode.text = "1"
 
-            setIconBackground(1, 2, 0)
+            setIconBackground(1, 2)
         }
         binding.pause.setOnClickListener {
             binding.srcText.visibility = View.VISIBLE
@@ -144,16 +136,11 @@ class CameraBTHFragment : Fragment() {
             binding.srcText.text.trim()
             binding.translatedText.text.trim()
 
-            setIconBackground(2, 1, 1)
-        }
-        binding.voice.setOnClickListener {
-            binding.mode.text = "2"
-
-            setIconBackground(1, 0, 2)
+            setIconBackground(2, 1)
         }
     }
 
-    private fun setIconBackground(pause : Int, play : Int, voice : Int){
+    private fun setIconBackground(pause : Int, play : Int){
         when (pause) {
             1 -> {
                 binding.pause.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.pause_click, null))
@@ -181,21 +168,6 @@ class CameraBTHFragment : Fragment() {
             else -> {
                 binding.play.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.play_g, null))
                 binding.play.isClickable = false
-            }
-        }
-
-        when (voice) {
-            1 -> {
-                binding.voice.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.voice_click, null))
-                binding.voice.isClickable = true
-            }
-            0 -> {
-                binding.voice.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.voice_d, null))
-                binding.voice.isClickable = false
-            }
-            else -> {
-                binding.voice.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.voice_g, null))
-                binding.voice.isClickable = false
             }
         }
     }
