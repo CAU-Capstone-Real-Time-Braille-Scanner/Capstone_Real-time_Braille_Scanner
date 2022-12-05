@@ -7,9 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.lifecycle.MutableLiveData
-import com.chaquo.python.PyObject
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
 import com.example.realtimebraillescanner.util.ImageUtils
 import java.io.*
@@ -30,12 +27,15 @@ class BrailleAnalyzer(
         private const val TAG = "BrailleAnalyzer"
     }
 
+    /*
     private val python: Python
     private val pythonFile: PyObject
+    */
 
     private var num = 1 // 프레임 속도 측정을 위한 임시 코드
 
     init {
+        /*
         // "Context" must be an Activity, Service or Application object from your app.
         // 1. Start the Python instance if it isn't already running.
         if (!Python.isStarted()) {
@@ -46,6 +46,7 @@ class BrailleAnalyzer(
         python = Python.getInstance()
         pythonFile = python.getModule("braille_ocr_from_image")
         pythonFile.callAttr("loadModel")
+        */
     }
 
     // camera frame rate 에 맞게 호출되어 이미지 분석
@@ -95,6 +96,7 @@ class BrailleAnalyzer(
 
         takePhoto(croppedBitmap)
 
+        /*
         val obj: List<PyObject> = pythonFile.callAttr(
             "getBrailleText",
             "/data/data/com.example.realtimebraillescanner/files/pic.png")
@@ -118,6 +120,7 @@ class BrailleAnalyzer(
             }.toString()
             num++
         }
+        */
 
         imageProxy.close()
     }
