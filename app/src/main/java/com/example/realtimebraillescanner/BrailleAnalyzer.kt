@@ -33,7 +33,7 @@ class BrailleAnalyzer(
     private val python: Python
     private val pythonFile: PyObject
 
-    private var num = 1 // 프레임 속도를 위한 임시 코드
+    private var num = 1 // 프레임 속도 측정을 위한 임시 코드
 
     init {
         // "Context" must be an Activity, Service or Application object from your app.
