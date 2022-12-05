@@ -122,4 +122,11 @@ dependencies {
 
     // Object detection & tracking feature with custom bundled model
     implementation 'com.google.mlkit:object-detection-custom:17.0.0'
+
+    // retrofit2
+    implementation 'com.squareup.retrofit2:retrofit2:2.9.0'
+
+    // Gson 변환기
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
 }
