@@ -8,7 +8,16 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.lifecycle.MutableLiveData
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
+import com.example.realtimebraillescanner.retrofit_util.DataModel
+import com.example.realtimebraillescanner.retrofit_util.RetrofitClient
+import com.example.realtimebraillescanner.retrofit_util.RetrofitInterface
 import com.example.realtimebraillescanner.util.ImageUtils
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.*
 
 /**
@@ -31,6 +40,8 @@ class BrailleAnalyzer(
     private val python: Python
     private val pythonFile: PyObject
     */
+
+    private val service = RetrofitClient.getApiService()
 
     private var num = 1 // 프레임 속도 측정을 위한 임시 코드
 
@@ -95,6 +106,33 @@ class BrailleAnalyzer(
             ImageUtils.rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect)
 
         takePhoto(croppedBitmap)
+
+        var result: DataModel? = null
+        val file = File("/data/data/com.example.realtimebraillescanner/files/pic.png")
+        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val body = MultipartBody.Part.createFormData("uploaded_file", file.name, requestFile)
+
+        service.getResult(body).enqueue(object : Callback<DataModel> {
+            override fun onResponse(call: Call<DataModel>, response: Response<DataModel>) {
+                if (response.isSuccessful) {
+                    result = response.body()
+                } else {
+                    // 통신이 실패한 경우
+                    Log.d(TAG, "onResponse 실패")
+                }
+            }
+
+            override fun onFailure(call: Call<DataModel>, t: Throwable) {
+                // 통신 실패 (인터넷 끊김, 예외 발생 들 시스템적인 이유)
+                Log.d(TAG, "onFailure 에러: " + t.message.toString())
+            }
+        })
+
+        runOnUiThread {
+            srcText.value = result?.srcText ?: ""
+            translatedText.value = num.toString() // TODO: 수정 필요
+            num++
+        }
 
         /*
         val obj: List<PyObject> = pythonFile.callAttr(
