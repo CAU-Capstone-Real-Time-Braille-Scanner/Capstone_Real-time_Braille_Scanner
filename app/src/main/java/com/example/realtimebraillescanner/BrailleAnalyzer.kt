@@ -58,6 +58,21 @@ class BrailleAnalyzer(
         pythonFile = python.getModule("braille_ocr_from_image")
         pythonFile.callAttr("loadModel")
         */
+        service.loadModel().enqueue(object : Callback<String>{
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "####################\n\n\nloadModel() 성공\n\n\n######################")
+                } else {
+                    // 통신이 실패한 경우
+                    Log.d(TAG, "####################\n\n\nloadModel() 실패1\n\n\n#####################")
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                // 통신 실패 (인터넷 끊김, 예외 발생 등 시스템적인 이유)
+                Log.d(TAG, "###########################\n\n\nloadModel() 실패2\n\n\n###################3")
+            }
+        })
     }
 
     // camera frame rate 에 맞게 호출되어 이미지 분석
@@ -107,6 +122,7 @@ class BrailleAnalyzer(
 
         takePhoto(croppedBitmap)
 
+        /*
         var result: DataModel? = null
         val file = File("/data/data/com.example.realtimebraillescanner/files/pic.png")
         val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
@@ -133,6 +149,7 @@ class BrailleAnalyzer(
             translatedText.value = num.toString() // TODO: 수정 필요
             num++
         }
+        */
 
         /*
         val obj: List<PyObject> = pythonFile.callAttr(
