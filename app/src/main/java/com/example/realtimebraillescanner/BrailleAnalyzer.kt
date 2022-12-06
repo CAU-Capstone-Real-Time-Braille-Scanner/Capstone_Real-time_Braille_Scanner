@@ -7,11 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.lifecycle.MutableLiveData
-import com.chaquo.python.PyObject
-import com.chaquo.python.Python
-import com.chaquo.python.android.AndroidPlatform
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
+import com.example.realtimebraillescanner.retrofit_util.DataModel
+import com.example.realtimebraillescanner.retrofit_util.RetrofitClient
+import com.example.realtimebraillescanner.retrofit_util.RetrofitInterface
 import com.example.realtimebraillescanner.util.ImageUtils
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.*
 
 /**
@@ -30,12 +36,17 @@ class BrailleAnalyzer(
         private const val TAG = "BrailleAnalyzer"
     }
 
+    /*
     private val python: Python
     private val pythonFile: PyObject
+    */
 
-    private var num = 1 // 프레임 속도를 위한 임시 코드
+    private val service = RetrofitClient.getApiService()
+
+    private var num = 1 // 프레임 속도 측정을 위한 임시 코드
 
     init {
+        /*
         // "Context" must be an Activity, Service or Application object from your app.
         // 1. Start the Python instance if it isn't already running.
         if (!Python.isStarted()) {
@@ -46,6 +57,22 @@ class BrailleAnalyzer(
         python = Python.getInstance()
         pythonFile = python.getModule("braille_ocr_from_image")
         pythonFile.callAttr("loadModel")
+        */
+        service.loadModel().enqueue(object : Callback<String>{
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "####################\n\n\nloadModel() 성공\n\n\n######################")
+                } else {
+                    // 통신이 실패한 경우
+                    Log.d(TAG, "####################\n\n\nloadModel() 실패1\n\n\n#####################")
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                // 통신 실패 (인터넷 끊김, 예외 발생 등 시스템적인 이유)
+                Log.d(TAG, "###########################\n\n\nloadModel() 실패2\n\n\n###################3")
+            }
+        })
     }
 
     // camera frame rate 에 맞게 호출되어 이미지 분석
@@ -95,6 +122,36 @@ class BrailleAnalyzer(
 
         takePhoto(croppedBitmap)
 
+        /*
+        var result: DataModel? = null
+        val file = File("/data/data/com.example.realtimebraillescanner/files/pic.png")
+        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val body = MultipartBody.Part.createFormData("uploaded_file", file.name, requestFile)
+
+        service.getResult(body).enqueue(object : Callback<DataModel> {
+            override fun onResponse(call: Call<DataModel>, response: Response<DataModel>) {
+                if (response.isSuccessful) {
+                    result = response.body()
+                } else {
+                    // 통신이 실패한 경우
+                    Log.d(TAG, "onResponse 실패")
+                }
+            }
+
+            override fun onFailure(call: Call<DataModel>, t: Throwable) {
+                // 통신 실패 (인터넷 끊김, 예외 발생 들 시스템적인 이유)
+                Log.d(TAG, "onFailure 에러: " + t.message.toString())
+            }
+        })
+
+        runOnUiThread {
+            srcText.value = result?.srcText ?: ""
+            translatedText.value = num.toString() // TODO: 수정 필요
+            num++
+        }
+        */
+
+        /*
         val obj: List<PyObject> = pythonFile.callAttr(
             "getBrailleText",
             "/data/data/com.example.realtimebraillescanner/files/pic.png")
@@ -118,6 +175,7 @@ class BrailleAnalyzer(
             }.toString()
             num++
         }
+        */
 
         imageProxy.close()
     }
