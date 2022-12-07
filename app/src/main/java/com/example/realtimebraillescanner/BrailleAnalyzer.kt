@@ -1,8 +1,8 @@
 package com.example.realtimebraillescanner
 
-import android.content.Context
 import android.graphics.*
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -10,14 +10,10 @@ import androidx.lifecycle.MutableLiveData
 import com.example.realtimebraillescanner.databinding.CameraBthFragmentBinding
 import com.example.realtimebraillescanner.retrofit_util.DataModel
 import com.example.realtimebraillescanner.retrofit_util.RetrofitClient
-import com.example.realtimebraillescanner.retrofit_util.RetrofitInterface
 import com.example.realtimebraillescanner.util.ImageUtils
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.*
 
 /**
@@ -25,54 +21,33 @@ import java.io.*
  * return any detected braille within the requested crop region
  */
 class BrailleAnalyzer(
-    private val context: Context,
     private val srcText: MutableLiveData<String>,
     private val translatedText: MutableLiveData<String>,
-    private val koreanText: MutableLiveData<String>,
     private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>,
-    private val binding: CameraBthFragmentBinding,
+    private val binding: CameraBthFragmentBinding
 ) : ImageAnalysis.Analyzer, AppCompatActivity() {
     companion object {
         private const val TAG = "BrailleAnalyzer"
     }
 
-    /*
-    private val python: Python
-    private val pythonFile: PyObject
-    */
-
-    private val service = RetrofitClient.getApiService()
-
-    private var num = 1 // 프레임 속도 측정을 위한 임시 코드
+    private val service1 = RetrofitClient.getApiService1()
+    private val service2 = RetrofitClient.getApiService2()
 
     init {
-        /*
-        // "Context" must be an Activity, Service or Application object from your app.
-        // 1. Start the Python instance if it isn't already running.
-        if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(context))
-        }
-
-        // 2. Obtain the python instance
-        python = Python.getInstance()
-        pythonFile = python.getModule("braille_ocr_from_image")
-        pythonFile.callAttr("loadModel")
-        */
-        service.loadModel().enqueue(object : Callback<String>{
-            override fun onResponse(call: Call<String>, response: Response<String>) {
+        Thread {
+            try {
+                val response = service1.loadModel().execute()
                 if (response.isSuccessful) {
-                    Log.d(TAG, "####################\n\n\nloadModel() 성공\n\n\n######################")
+                    Log.d(TAG, "loadModel() 성공")
                 } else {
                     // 통신이 실패한 경우
-                    Log.d(TAG, "####################\n\n\nloadModel() 실패1\n\n\n#####################")
+                    Log.d(TAG, "loadModel() 실패1: ${response.message()}")
                 }
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
+            } catch (e: Exception) {
                 // 통신 실패 (인터넷 끊김, 예외 발생 등 시스템적인 이유)
-                Log.d(TAG, "###########################\n\n\nloadModel() 실패2\n\n\n###################3")
+                Log.d(TAG, "loadModel() 실패2: ${e.message.toString()}")
             }
-        })
+        }.start()
     }
 
     // camera frame rate 에 맞게 호출되어 이미지 분석
@@ -122,60 +97,32 @@ class BrailleAnalyzer(
 
         takePhoto(croppedBitmap)
 
-        /*
-        var result: DataModel? = null
-        val file = File("/data/data/com.example.realtimebraillescanner/files/pic.png")
-        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-        val body = MultipartBody.Part.createFormData("uploaded_file", file.name, requestFile)
+        // 재생 버튼
+        if (binding.mode.text.equals("1")) {
+            var result: DataModel? = null
+            val file = File("/data/data/com.example.realtimebraillescanner/files/pic.png")
+            val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+            val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
-        service.getResult(body).enqueue(object : Callback<DataModel> {
-            override fun onResponse(call: Call<DataModel>, response: Response<DataModel>) {
+            try {
+                val response = service2.getResult(body).execute()
                 if (response.isSuccessful) {
                     result = response.body()
                 } else {
                     // 통신이 실패한 경우
-                    Log.d(TAG, "onResponse 실패")
+                    Log.d(TAG, "onResponse 실패: ${response.message()}")
                 }
+            } catch (e: Exception) {
+                // 통신 실패 (인터넷 끊김, 예외 발생 등 시스템적인 이유)
+                Log.d(TAG, "onFailure 에러: " + e.message.toString())
+                e.printStackTrace()
             }
 
-            override fun onFailure(call: Call<DataModel>, t: Throwable) {
-                // 통신 실패 (인터넷 끊김, 예외 발생 들 시스템적인 이유)
-                Log.d(TAG, "onFailure 에러: " + t.message.toString())
+            runOnUiThread {
+                srcText.value = result?.srcText ?: ""
+                translatedText.value = result?.translatedText ?: ""
             }
-        })
-
-        runOnUiThread {
-            srcText.value = result?.srcText ?: ""
-            translatedText.value = num.toString() // TODO: 수정 필요
-            num++
         }
-        */
-
-        /*
-        val obj: List<PyObject> = pythonFile.callAttr(
-            "getBrailleText",
-            "/data/data/com.example.realtimebraillescanner/files/pic.png")
-            .asList()
-        val result1 = obj[0].toJava(Array<String>::class.java)
-        val result2 = obj[1].toJava(Array<String>::class.java)
-
-        runOnUiThread {
-            srcText.value = StringBuilder().apply {
-                for (line in result1) {
-                    append(line)
-                }
-            }.toString()
-
-            translatedText.value = StringBuilder().apply {
-                for (line in result2) {
-                    append(line)
-                }
-                append("\n")
-                append("프레임: $num")
-            }.toString()
-            num++
-        }
-        */
 
         imageProxy.close()
     }

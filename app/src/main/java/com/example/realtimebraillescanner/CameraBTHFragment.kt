@@ -41,8 +41,6 @@ class CameraBTHFragment : Fragment() {
                 }
             }.toTypedArray()
 
-        var text : String = ""
-
         // We only need to analyze the part of the image that has text, so we set crop percentages
         // to avoid analyze the entire image from the live camera feed.
         const val DESIRED_WIDTH_CROP_PERCENT = 8
@@ -124,19 +122,19 @@ class CameraBTHFragment : Fragment() {
             binding.recognizedText.visibility = View.GONE
             binding.mode.text = "1"
 
-            setIconBackground(1, 2)
+            setIconBackground(1, 0)
         }
         binding.pause.setOnClickListener {
             binding.srcText.visibility = View.VISIBLE
             binding.recognizedText.visibility = View.GONE
-            binding.mode.text = "2"
+            binding.mode.text = "0"
 
             binding.srcText.text = binding.srcText.text.toString()
             binding.translatedText.text = binding.translatedText.text.toString()
             binding.srcText.text.trim()
             binding.translatedText.text.trim()
 
-            setIconBackground(2, 1)
+            setIconBackground(0, 1)
         }
     }
 
@@ -145,10 +143,6 @@ class CameraBTHFragment : Fragment() {
             1 -> {
                 binding.pause.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.pause_click, null))
                 binding.pause.isClickable = true
-            }
-            0 -> {
-                binding.pause.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.pause_d, null))
-                binding.pause.isClickable = false
             }
             else -> {
                 binding.pause.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.pause_g, null))
@@ -160,10 +154,6 @@ class CameraBTHFragment : Fragment() {
             1 -> {
                 binding.play.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.play_click, null))
                 binding.play.isClickable = true
-            }
-            0 -> {
-                binding.play.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.play_d, null))
-                binding.play.isClickable = false
             }
             else -> {
                 binding.play.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.play_g, null))
@@ -198,10 +188,8 @@ class CameraBTHFragment : Fragment() {
                 .build()
 
             brailleAnalyzer = BrailleAnalyzer(
-                requireContext(),
                 viewModel.sourceText,
                 viewModel.translatedText,
-                viewModel.koreanText,
                 viewModel.imageCropPercentages,
                 binding
             )
@@ -223,9 +211,6 @@ class CameraBTHFragment : Fragment() {
             }
             viewModel.translatedText.observe(viewLifecycleOwner) {
                 binding.translatedText.text = it
-            }
-            viewModel.koreanText.observe(viewLifecycleOwner) {
-                text = it
             }
             viewModel.imageCropPercentages.observe(viewLifecycleOwner) {
                 drawOverlay(binding.overlay.holder, it.first, it.second)

@@ -3,14 +3,22 @@ package com.example.realtimebraillescanner.retrofit_util
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object RetrofitClient {
     /**
-     * IP주소: 52.79.233.83
+     * IP 주소: 52.79.233.83
      */
     const val BASE_URL = "http://52.79.233.83:8080/"
 
-    fun getInstance(): Retrofit {
+    private fun getInstance1(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+    }
+
+    private fun getInstance2(): Retrofit {
         val gson = GsonBuilder().setLenient().create()
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -18,5 +26,7 @@ object RetrofitClient {
             .build()
     }
 
-    fun getApiService() = getInstance().create(RetrofitInterface::class.java)
+    fun getApiService1(): RetrofitInterface = getInstance1().create(RetrofitInterface::class.java)
+
+    fun getApiService2(): RetrofitInterface = getInstance2().create(RetrofitInterface::class.java)
 }
