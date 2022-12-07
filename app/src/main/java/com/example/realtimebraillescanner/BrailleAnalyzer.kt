@@ -40,11 +40,13 @@ class BrailleAnalyzer(
                     Log.d(TAG, "loadModel() 성공")
                 } else {
                     // 통신이 실패한 경우
-                    Log.d(TAG, "loadModel() 실패1: ${response.message()}")
+                    Log.d(TAG, "##########################################\n\n\nloadModel() 실패1: ${response.message()}")
+                    print(response.message().toString())
                 }
             } catch (e: Exception) {
                 // 통신 실패 (인터넷 끊김, 예외 발생 등 시스템적인 이유)
-                Log.d(TAG, "loadModel() 실패2: ${e.message.toString()}")
+                Log.d(TAG, "############################################\n\n\nloadModel() 실패2: ${e.message.toString()}")
+                e.printStackTrace()
             }
         }.start()
     }

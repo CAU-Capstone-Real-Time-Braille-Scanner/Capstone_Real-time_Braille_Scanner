@@ -7,9 +7,9 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object RetrofitClient {
     /**
-     * IP 주소: 52.79.233.83
+     * IP 주소: 3.34.188.255
      */
-    private const val BASE_URL = "http://52.79.233.83:8080/"
+    private const val BASE_URL = "http://3.34.188.255:8080/"
 
     private fun getInstance1(): Retrofit {
         return Retrofit.Builder()
