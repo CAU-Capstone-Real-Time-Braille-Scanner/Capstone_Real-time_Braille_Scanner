@@ -22,5 +22,4 @@ class BTHViewModel(application: Application): AndroidViewModel(application) {
     val imageCropPercentages = MutableLiveData<Pair<Int, Int>>()
         .apply { value = Pair(DESIRED_HEIGHT_CROP_PERCENT, DESIRED_WIDTH_CROP_PERCENT) }
     val translatedText = SmoothedMutableLiveData<String>(SMOOTHING_DURATION)
-    val koreanText = SmoothedMutableLiveData<String>(SMOOTHING_DURATION)
 }

@@ -9,8 +9,6 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-apply plugin: 'com.chaquo.python'
-
 android {
     compileSdk 32
 
@@ -25,31 +23,6 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
-
-        ndk {
-            abiFilters "arm64-v8a", "x86", "x86_64"
-        }
-
-        /*
-        python {
-            version "3.8"
-
-            pip {
-                install "torch==1.8.1"
-                install "torchvision"
-                install "werkzeug==0.14.1"
-                install "flask==0.12"
-                install "flask_login==0.4.1"
-                install "flask_wtf==0.14.2"
-                install "flask_uploads==0.2.1"
-                install "flask_mobility==0.1.1"
-                install "wtforms==2.2.1"
-                install "scikit-build"
-                install "albumentations==0.4.5"
-            }
-        }
-        */
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -131,4 +104,5 @@ dependencies {
     // Gson 변환기
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
 }
