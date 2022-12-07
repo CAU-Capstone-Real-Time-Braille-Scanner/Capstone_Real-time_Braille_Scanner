@@ -29,27 +29,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="invisible"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.camera.view.PreviewView
         android:id="@+id/viewfinder"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/middle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/middle"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
     </androidx.camera.view.PreviewView>
+
     <SurfaceView
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="@id/viewfinder"
-        app:layout_constraintEnd_toEndOf="@id/viewfinder"
         app:layout_constraintBottom_toBottomOf="@id/viewfinder"
+        app:layout_constraintEnd_toEndOf="@id/viewfinder"
+        app:layout_constraintStart_toStartOf="@id/viewfinder"
         app:layout_constraintTop_toTopOf="@id/viewfinder" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -74,7 +75,7 @@
     <!--        app:layout_constraintTop_toBottomOf="@id/middle"-->
     <!--        tools:text="source lang" />-->
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -82,210 +83,235 @@
         app:layout_constraintTop_toBottomOf="@id/overlay"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ImageView
+            android:id="@+id/imageView8"
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="wrap_content"
+            android:alpha="0.4"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/basic_bg" />
 
-            <!--            <TextView-->
-            <!--                android:id="@+id/hanToBraille"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:text="한글->점자"-->
-            <!--                android:textColor="@color/black"-->
-            <!--                android:textStyle="bold"-->
-            <!--                android:textSize="18sp"-->
-            <!--                android:background="@drawable/text_border"-->
-            <!--                android:gravity="center"-->
-            <!--                android:layout_marginLeft="20dp"-->
-            <!--                android:paddingHorizontal="5dp"-->
-            <!--                android:paddingVertical="10dp"-->
-            <!--                app:layout_constraintTop_toTopOf="parent"-->
-            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                app:layout_constraintStart_toStartOf="parent"/>-->
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/brailleToHan"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:text="점자->한글"-->
-            <!--                android:textColor="@color/black"-->
-            <!--                android:textStyle="bold"-->
-            <!--                android:textSize="18sp"-->
-            <!--                android:background="@drawable/text_border"-->
-            <!--                android:gravity="center"-->
-            <!--                android:layout_marginLeft="20dp"-->
-            <!--                android:paddingHorizontal="5dp"-->
-            <!--                android:paddingVertical="10dp"-->
-            <!--                app:layout_constraintTop_toTopOf="parent"-->
-            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                app:layout_constraintStart_toEndOf="@id/hanToBraille"/>-->
-
-            <ImageView
-                android:id="@+id/play"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_marginRight="20dp"
-                android:clickable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/pause"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/play_click" />
-
-            <ImageView
-                android:id="@+id/pause"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_marginRight="20dp"
-                android:clickable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/pause_click" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:id="@+id/viewline"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/pause" />
-
-        <ScrollView
-            android:id="@+id/srcTextScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:fillViewport="true"
-            android:scrollbars="vertical"
-            android:layout_weight="1"
-            app:layout_constraintBottom_toTopOf="@+id/translatedTextScrollView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/middle">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="50dp">
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/hanToBraille"-->
+                <!--                android:layout_width="wrap_content"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:text="한글->점자"-->
+                <!--                android:textColor="@color/black"-->
+                <!--                android:textStyle="bold"-->
+                <!--                android:textSize="18sp"-->
+                <!--                android:background="@drawable/text_border"-->
+                <!--                android:gravity="center"-->
+                <!--                android:layout_marginLeft="20dp"-->
+                <!--                android:paddingHorizontal="5dp"-->
+                <!--                android:paddingVertical="10dp"-->
+                <!--                app:layout_constraintTop_toTopOf="parent"-->
+                <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                app:layout_constraintStart_toStartOf="parent"/>-->
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/brailleToHan"-->
+                <!--                android:layout_width="wrap_content"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:text="점자->한글"-->
+                <!--                android:textColor="@color/black"-->
+                <!--                android:textStyle="bold"-->
+                <!--                android:textSize="18sp"-->
+                <!--                android:background="@drawable/text_border"-->
+                <!--                android:gravity="center"-->
+                <!--                android:layout_marginLeft="20dp"-->
+                <!--                android:paddingHorizontal="5dp"-->
+                <!--                android:paddingVertical="10dp"-->
+                <!--                app:layout_constraintTop_toTopOf="parent"-->
+                <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                app:layout_constraintStart_toEndOf="@id/hanToBraille"/>-->
+
+                <ImageView
+                    android:id="@+id/play"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginRight="20dp"
+                    android:clickable="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/pause"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/play_click" />
+
+                <ImageView
+                    android:id="@+id/pause"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginRight="20dp"
+                    android:clickable="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/pause_click" />
+
+                <ImageView
+                    android:id="@+id/speak"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginRight="20dp"
+                    android:clickable="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/play"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/speak_click" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/viewline"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="@id/pause"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ScrollView
+                android:id="@+id/srcTextScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fillViewport="true"
+                android:scrollbars="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/translatedTextScrollView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/middle">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/srcText"
+                        style="@style/SrcText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:bufferType="spannable"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="source text" />
+
+                    <TextView
+                        android:id="@+id/recognizedText"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/srcText"
+                        app:layout_constraintStart_toStartOf="@+id/srcText"
+                        app:layout_constraintTop_toBottomOf="@+id/srcText" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </ScrollView>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/srcTextScrollView" />
+
+            <!--    <Spinner-->
+            <!--        android:id="@+id/targetLangSelector"-->
+            <!--        android:layout_width="0dp"-->
+            <!--        android:layout_height="wrap_content"-->
+            <!--        android:layout_marginStart="20dp"-->
+            <!--        app:layout_constraintStart_toStartOf="parent"-->
+            <!--        app:layout_constraintTop_toBottomOf="@id/divider" />-->
+
+            <ScrollView
+                android:id="@+id/translatedTextScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:fillViewport="true"
+                android:scrollbars="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider">
 
                 <TextView
-                    android:id="@+id/srcText"
-                    style="@style/SrcText"
-                    android:bufferType="spannable"
-                    android:textSize="20sp"
-                    android:textColor="@color/black"
+                    android:id="@+id/translatedText"
+                    style="@style/TranslatedText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:visibility="visible"
-                    tools:text="source text" />
+                    android:bufferType="spannable"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    tools:text="translated text" />
 
-                <TextView
-                    android:id="@+id/recognizedText"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/srcText"
-                    app:layout_constraintStart_toStartOf="@+id/srcText"
-                    app:layout_constraintTop_toBottomOf="@+id/srcText" />
+            </ScrollView>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="10dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/srcTextScrollView" />
-
-        <!--    <Spinner-->
-        <!--        android:id="@+id/targetLangSelector"-->
-        <!--        android:layout_width="0dp"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:layout_marginStart="20dp"-->
-        <!--        app:layout_constraintStart_toStartOf="parent"-->
-        <!--        app:layout_constraintTop_toBottomOf="@id/divider" />-->
-
-        <ScrollView
-            android:id="@+id/translatedTextScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:fillViewport="true"
-            android:scrollbars="vertical"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider">
-
-            <TextView
-                android:id="@+id/translatedText"
-                style="@style/TranslatedText"
-                android:bufferType="spannable"
-                android:textSize="20sp"
-                android:textColor="@color/black"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                tools:text="translated text" />
+                android:orientation="horizontal" />
 
-        </ScrollView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"/>
-
-        <!--    <View-->
-        <!--        android:id="@+id/divider2"-->
-        <!--        android:layout_width="match_parent"-->
-        <!--        android:layout_height="1dp"-->
-        <!--        android:layout_marginStart="20dp"-->
-        <!--        android:layout_marginTop="4dp"-->
-        <!--        android:layout_marginEnd="20dp"-->
-        <!--        android:layout_marginBottom="10dp"-->
-        <!--        android:background="?android:attr/listDivider"-->
-        <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--        app:layout_constraintStart_toStartOf="parent"/>-->
+            <!--    <View-->
+            <!--        android:id="@+id/divider2"-->
+            <!--        android:layout_width="match_parent"-->
+            <!--        android:layout_height="1dp"-->
+            <!--        android:layout_marginStart="20dp"-->
+            <!--        android:layout_marginTop="4dp"-->
+            <!--        android:layout_marginEnd="20dp"-->
+            <!--        android:layout_marginBottom="10dp"-->
+            <!--        android:background="?android:attr/listDivider"-->
+            <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--        app:layout_constraintEnd_toEndOf="parent"-->
+            <!--        app:layout_constraintStart_toStartOf="parent"/>-->
 
 
-        <!--    <ProgressBar-->
-        <!--        android:id="@+id/progressBar"-->
-        <!--        style="?android:attr/progressBarStyle"-->
-        <!--        android:layout_width="30dp"-->
-        <!--        android:layout_height="30dp"-->
-        <!--        android:visibility="invisible"-->
-        <!--        app:layout_constraintStart_toEndOf="@+id/targetLangSelector"-->
-        <!--        app:layout_constraintTop_toTopOf="@id/targetLangSelector"-->
-        <!--        app:layout_constraintBottom_toBottomOf="@id/targetLangSelector" />-->
+            <!--    <ProgressBar-->
+            <!--        android:id="@+id/progressBar"-->
+            <!--        style="?android:attr/progressBarStyle"-->
+            <!--        android:layout_width="30dp"-->
+            <!--        android:layout_height="30dp"-->
+            <!--        android:visibility="invisible"-->
+            <!--        app:layout_constraintStart_toEndOf="@+id/targetLangSelector"-->
+            <!--        app:layout_constraintTop_toTopOf="@id/targetLangSelector"-->
+            <!--        app:layout_constraintBottom_toBottomOf="@id/targetLangSelector" />-->
 
-        <!--    <TextView-->
-        <!--        android:id="@+id/progressText"-->
-        <!--        android:layout_width="0dp"-->
-        <!--        android:layout_height="0dp"-->
-        <!--        android:text="Downloading model files..."-->
-        <!--        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--        app:layout_constraintStart_toEndOf="@+id/progressBar"-->
-        <!--        app:layout_constraintBottom_toBottomOf="@id/progressBar"-->
-        <!--        android:gravity="center_vertical"-->
-        <!--        app:layout_constraintTop_toTopOf="@id/progressBar" />-->
+            <!--    <TextView-->
+            <!--        android:id="@+id/progressText"-->
+            <!--        android:layout_width="0dp"-->
+            <!--        android:layout_height="0dp"-->
+            <!--        android:text="Downloading model files..."-->
+            <!--        app:layout_constraintEnd_toEndOf="parent"-->
+            <!--        app:layout_constraintStart_toEndOf="@+id/progressBar"-->
+            <!--        app:layout_constraintBottom_toBottomOf="@id/progressBar"-->
+            <!--        android:gravity="center_vertical"-->
+            <!--        app:layout_constraintTop_toTopOf="@id/progressBar" />-->
 
-    </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
