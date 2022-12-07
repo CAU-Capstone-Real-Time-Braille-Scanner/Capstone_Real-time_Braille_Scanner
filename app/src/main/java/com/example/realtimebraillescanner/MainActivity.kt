@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             when (switch) {
 				1 -> startActivity(Intent(this, CameraHTBActivity::class.java))
-				2 -> startActivity(Intent(this, CameraBTHFragment::class.java))
+				2 -> startActivity(Intent(this, CameraBTHActivity::class.java))
 			}
 		}
     }
