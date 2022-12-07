@@ -2,7 +2,6 @@ package com.example.realtimebraillescanner
 
 import android.graphics.*
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
