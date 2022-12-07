@@ -118,9 +118,11 @@ class BrailleAnalyzer(
                 e.printStackTrace()
             }
 
-            runOnUiThread {
-                srcText.value = result?.srcText ?: ""
-                translatedText.value = result?.translatedText ?: ""
+            if (binding.mode.text.equals("1")) {
+                runOnUiThread {
+                    srcText.value = result?.srcText ?: ""
+                    translatedText.value = result?.translatedText ?: ""
+                }
             }
         }
 
