@@ -25,6 +25,12 @@ import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.max
 import kotlin.math.min
+import android.speech.RecognizerIntent
+import android.speech.tts.TextToSpeech
+import android.speech.tts.TextToSpeech.Engine.KEY_PARAM_VOLUME
+import androidx.preference.PreferenceManager
+import kotlinx.android.synthetic.main.camera_bth_fragment.*
+import java.util.*
 
 class CameraBTHFragment : Fragment() {
     companion object {
@@ -60,14 +66,17 @@ class CameraBTHFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var scopedExecutor: ScopedExecutor
     private lateinit var binding: CameraBthFragmentBinding
+    private var tts: TextToSpeech? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = CameraBthFragmentBinding.inflate(inflater, container, false)
+        initTTS()
+        initSettings()
         initClickListener()
-        setIconBackground(0, 1)
+        setIconBackground(0, 1, 0)
         return binding.root
     }
 
@@ -116,13 +125,67 @@ class CameraBTHFragment : Fragment() {
         }
     }
 
+    private fun initTTS(){
+        tts = TextToSpeech(requireContext(),
+            TextToSpeech.OnInitListener {
+                if (it == TextToSpeech.SUCCESS) {
+                    // set US English as language for tts
+                    val result = tts!!.setLanguage(Locale.KOREA)
+
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        //doSomething
+                    } else {
+                        //doSomething
+                    }
+                } else {
+                    //doSomething
+                }
+            })
+    }
+
+    private fun initSettings(){
+        val sizePreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val speedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val size = sizePreferences.getString("font_size", "")
+        val speed = speedPreferences.getString("speed_of_voice", "")
+
+        if (size.equals("작게")){
+            setSize(14f)
+        }
+        else if (size.equals("크게")){
+            setSize(30f)
+        }
+        else{
+            setSize(22f)
+        }
+
+        if (speed.equals("느림")){
+            setSpeed(0.5f)
+        }
+        else if (speed.equals("빠름")){
+            setSpeed(1.5f)
+        }
+        else{
+            setSpeed(1.0f)
+        }
+    }
+
+    private fun setSize(size : Float){
+        binding.srcText.textSize = size
+        binding.translatedText.textSize = size
+    }
+
+    private fun setSpeed(size : Float){
+        tts!!.setSpeechRate(size)
+    }
+
     private fun initClickListener() {
         binding.play.setOnClickListener {
             binding.srcText.visibility = View.VISIBLE
             binding.recognizedText.visibility = View.GONE
             binding.mode.text = "1"
 
-            setIconBackground(1, 0)
+            setIconBackground(1, 2, 0)
         }
         binding.pause.setOnClickListener {
             binding.srcText.visibility = View.VISIBLE
@@ -134,31 +197,56 @@ class CameraBTHFragment : Fragment() {
             binding.srcText.text.trim()
             binding.translatedText.text.trim()
 
-            setIconBackground(0, 1)
+            setIconBackground(2, 1, 1)
+        }
+        binding.speak.setOnClickListener{
+            var tts_bundle = Bundle()
+            tts_bundle.putFloat(KEY_PARAM_VOLUME, 1.0F) //음량 최대로 설정
+            tts!!.speak(translatedText.text, TextToSpeech.QUEUE_FLUSH, tts_bundle, "") //tts 소리 출력
+            if (binding.translatedText.text.toString().trim().replace(" ", "").equals(""))
+                Toast.makeText(requireContext(), "음성 재생할 텍스트를 먼저 촬영해주세요", Toast.LENGTH_SHORT).show()
+            setIconBackground(2, 1, 1)
         }
     }
 
-    private fun setIconBackground(pause : Int, play : Int){
-        when (pause) {
-            1 -> {
-                binding.pause.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.pause_click, null))
-                binding.pause.isClickable = true
-            }
-            else -> {
-                binding.pause.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.pause_g, null))
-                binding.pause.isClickable = false
-            }
+    private fun setIconBackground(pause : Int, play : Int, speak : Int){
+        if (pause == 1){
+            binding.pause.setImageDrawable(resources.getDrawable(R.drawable.pause_click))
+            binding.pause.isClickable = true
+        }
+        else if (pause == 0){
+            binding.pause.setImageDrawable(resources.getDrawable(R.drawable.pause_d))
+            binding.pause.isClickable = false
+        }
+        else{
+            binding.pause.setImageDrawable(resources.getDrawable(R.drawable.pause_g))
+            binding.pause.isClickable = false
         }
 
-        when (play) {
-            1 -> {
-                binding.play.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.play_click, null))
-                binding.play.isClickable = true
-            }
-            else -> {
-                binding.play.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.play_g, null))
-                binding.play.isClickable = false
-            }
+        if (play == 1){
+            binding.play.setImageDrawable(resources.getDrawable(R.drawable.play_click))
+            binding.play.isClickable = true
+        }
+        else if (play == 0){
+            binding.play.setImageDrawable(resources.getDrawable(R.drawable.play_d))
+            binding.play.isClickable = false
+        }
+        else{
+            binding.play.setImageDrawable(resources.getDrawable(R.drawable.play_g))
+            binding.play.isClickable = false
+        }
+
+        if (speak == 1){
+            binding.speak.setImageDrawable(resources.getDrawable(R.drawable.speak_click))
+            binding.speak.isClickable = true
+        }
+        else if (speak == 0){
+            binding.speak.setImageDrawable(resources.getDrawable(R.drawable.speak_d))
+            binding.speak.isClickable = false
+        }
+        else{
+            binding.speak.setImageDrawable(resources.getDrawable(R.drawable.speak_g))
+            binding.speak.isClickable = false
         }
     }
 
