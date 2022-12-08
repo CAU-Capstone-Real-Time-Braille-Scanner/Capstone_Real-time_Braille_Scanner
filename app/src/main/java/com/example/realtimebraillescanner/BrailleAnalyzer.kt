@@ -101,7 +101,7 @@ class BrailleAnalyzer(
         // 재생 버튼
         if (binding.mode.text.equals("1")) {
             var result: DataModel? = null
-            val file = File("/data/data/com.example.realtimebraillescanner/files/pic.png")
+            val file = File("/data/data/com.example.realtimebraillescanner/pic.png")
             val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
             val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
@@ -134,7 +134,7 @@ class BrailleAnalyzer(
         val bytes = ByteArrayOutputStream()
         photo.compress(Bitmap.CompressFormat.PNG, 100, bytes)
         val photoFile = File(
-            "/data/data/com.example.realtimebraillescanner/files",
+            "/data/data/com.example.realtimebraillescanner/",
             "pic.png"
         )
         photoFile.createNewFile()
