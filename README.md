@@ -80,7 +80,7 @@
 <img src="image/python.png" height="100"/>
 
   1. 토치를 이용해서 데이터를 학습시키는 데에 효과적인 언어입니다. 
-  2. 
+  2. Flask를 이용한 웹 서버 구축에 효과적입니다.
 
 * Flask Library
 
@@ -99,9 +99,9 @@
 
 ### 2.3. 프론트엔드
 
-* Typescript
+* Camera X
 
-  ![typescript](images/typescript.png)
+<img src="image/camerax.png" height="100"/>
 
   1. 타입스크립트는 자바스크립트의 수퍼셋으로, 코드의 가독성과 생산성을 높여줍니다.
   2. 라이브러리 등에서 직접 지원하는 경우가 많습니다.
