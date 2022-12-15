@@ -227,4 +227,4 @@
 ----------
 ## 5. 스케줄
 
-<img src="image/schedule.png" height="300"/>
+<img src="image/schedule1.png" height="300"/>
