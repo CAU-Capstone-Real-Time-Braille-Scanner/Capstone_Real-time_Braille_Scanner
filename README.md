@@ -70,6 +70,8 @@
 
 * Torch
 
+<img src="image/torch.png" height="100"/>
+
   1. 점자 인식 데이터들을 Torch를 통해 이미지 기반으로 학습시켜 모델을 구축했습니다.
   2. 현재 널리 사용중인 PyTorch의 근간이 되는 모델입니다.
 
