@@ -70,7 +70,7 @@
 
 * Torch
 
-<img src="image/torch.png" height="100"/>
+<img src="image/torch1.png" height="100"/>
 
   1. 점자 인식 데이터들을 Torch를 통해 이미지 기반으로 학습시켜 모델을 구축했습니다.
   2. 현재 널리 사용중인 PyTorch의 근간이 되는 모델입니다.
@@ -101,38 +101,42 @@
 
 ### 2.3. 프론트엔드
 
+* Kotlin
+
+<img src="image/kotlin.png" height="100"/>
+
+  1. 코틀린 언어를 이용해서 프론트엔드 개발을 진행하였습니다.
+  2. JAVA보다 더 간결한 문장과 다양한 기능을 제공하는 언어입니다.
+  3. 안드로이드 개발 환경에서 가장 널리 쓰이는 언어입니다.
+
 * Camera X
 
 <img src="image/camerax.png" height="100"/>
 
-  1. 타입스크립트는 자바스크립트의 수퍼셋으로, 코드의 가독성과 생산성을 높여줍니다.
-  2. 라이브러리 등에서 직접 지원하는 경우가 많습니다.
-  3. 산업군에서 많이 채택하고 있는 환경입니다.
+  1. 카메라 앱 개발을 쉽게 하기 위해 개발된 Jetpack 라이브러리입니다.
+  2. 한글과 점자 간의 실시간 번역을 위한 input image로 사용됩니다.
 
-* React.js
+* Google Text-To-Speech API
 
-  ![react](images/react.png)
+<img src="image/tts.png" height="100"/>
 
-  1. Vue와 함께 최고 점유율 라이브러리
-  2. 강력한 상태관리와 타입스크립트 친화적 환경
-
-* Redux
-
-* Materialize
-
-  ![materialize](images/materialize.png)
-
-  1. 컴포넌트 단순함
-  2. css 전처리기가 없어서 커스터마이징 자유도 높음
+  1. 한글로 쓰여진 내용을 음성으로 출력해주는 안드로이드 엔진입니다.
+  2. 추가로 STT 기능도 탑재하여 음성을 한글로 출력하는 기능도 구현되었습니다.
 
 ### 2.4. 배포
 
 * AWS EC2
-* Docker
-* Nginx
+
+<img src="image/aws.png" height="100"/>
+
+  1. 서버에서 자동적으로 트래픽을 관리하기 때문에 사용이 효과적입니다.
+  2. 실무에서 가장 널리 쓰이는 클라우드 컴퓨팅 서비스입니다.
+  3. 목적에 따라 다양한 서비스와 라이브러리를 제공합니다.
 
 ### 2.4. 프로젝트 관리
 
-* Git
-* Notion
-* Jira
+* Github
+
+<img src="image/github.jpeg" height="100"/>
+
+  1. Github 환경에서 작업물을 실시간으로 공유하며 작업하였습니다. 
