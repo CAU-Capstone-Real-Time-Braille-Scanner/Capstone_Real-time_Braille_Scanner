@@ -94,7 +94,7 @@
 
 <img src="image/mlkit.png" height="100"/>
 
-  1. 한글을 촬영할 때 이를 인식하여 텍스트 형태로 전환하기 위해, 구글에서 제공하는 ML Kit을 사용하였습니다.
+  1. 한글을 촬영할 때 이를 인식하여 텍스트 형태로 전환하기 위해, 구글에서 제공하는 ML Kit의 com.google.mlkit:text-recognition-korean 라이브러리를 사용하였습니다.
   2. Android와의 호환성이 높기 때문에 앱 개발에 효과적입니다. 
 
 ### 2.3. 프론트엔드
