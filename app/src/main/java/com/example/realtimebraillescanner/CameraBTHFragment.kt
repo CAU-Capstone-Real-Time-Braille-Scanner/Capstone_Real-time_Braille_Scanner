@@ -279,7 +279,8 @@ class CameraBTHFragment : Fragment() {
                 viewModel.sourceText,
                 viewModel.translatedText,
                 viewModel.imageCropPercentages,
-                binding
+                binding,
+                arguments?.getString("hashValue") ?: "uniqueIDNotFound"
             )
 
             imageAnalyzer = ImageAnalysis.Builder()

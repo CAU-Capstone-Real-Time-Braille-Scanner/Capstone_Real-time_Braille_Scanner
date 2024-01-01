@@ -25,7 +25,8 @@ class BrailleAnalyzer(
     private val srcText: MutableLiveData<String>,
     private val translatedText: MutableLiveData<String>,
     private val imageCropPercentages: MutableLiveData<Pair<Int, Int>>,
-    private val binding: CameraBthFragmentBinding
+    private val binding: CameraBthFragmentBinding,
+    private val hashValue: String
 ) : ImageAnalysis.Analyzer, AppCompatActivity() {
     companion object {
         private const val TAG = "BrailleAnalyzer"
@@ -33,10 +34,6 @@ class BrailleAnalyzer(
 
     private val service1 = RetrofitClient.getApiService1()
     private val service2 = RetrofitClient.getApiService2()
-    private val hashValue = getSharedPreferences("UUID", Activity.MODE_PRIVATE)
-        .getString("id", "uniqueIDNotFound")
-        .hashCode()
-        .toString()
 
     init {
         Thread {
