@@ -7,9 +7,9 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object RetrofitClient {
     /**
-     * IP 주소: 3.34.188.255
+     * IP 주소: IPAddress.kt 파일에 정의되어 있는 BASE_URL 참조.
      */
-    private const val BASE_URL = "http://3.34.188.255:8080/"
+    //private const val BASE_URL = "http://???.???.??.???:????/"
 
     private fun getInstance1(): Retrofit {
         return Retrofit.Builder()
