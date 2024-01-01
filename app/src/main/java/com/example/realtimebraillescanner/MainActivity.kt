@@ -12,10 +12,13 @@ import com.example.realtimebraillescanner.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainActivityBinding
-    private var REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-    private val PERMISSIONS_REQUEST_CODE = 100
-    private val PERMISSIONS_REQUEST_CODE2 = 101
+    private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     private var permissionToCamera = false
+
+    companion object {
+        private const val PERMISSIONS_REQUEST_CODE = 100
+        private const val PERMISSIONS_REQUEST_CODE2 = 101
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

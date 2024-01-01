@@ -1,5 +1,6 @@
 package com.example.realtimebraillescanner
 
+import android.app.Activity
 import android.graphics.*
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,7 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.*
+import java.util.UUID
 
 /**
  * Analyze the frames passed in from the camera and
@@ -31,6 +33,10 @@ class BrailleAnalyzer(
 
     private val service1 = RetrofitClient.getApiService1()
     private val service2 = RetrofitClient.getApiService2()
+    private val hashValue = getSharedPreferences("UUID", Activity.MODE_PRIVATE)
+        .getString("id", "uniqueIDNotFound")
+        .hashCode()
+        .toString()
 
     init {
         Thread {
@@ -40,12 +46,13 @@ class BrailleAnalyzer(
                     Log.d(TAG, "loadModel() 성공")
                 } else {
                     // 통신이 실패한 경우
-                    Log.d(TAG, "##########################################\n\n\nloadModel() 실패1: ${response.message()}")
+                    Log.d(TAG, "loadModel() 실패1: ${response.message()}")
                     print(response.message().toString())
+
                 }
             } catch (e: Exception) {
                 // 통신 실패 (인터넷 끊김, 예외 발생 등 시스템적인 이유)
-                Log.d(TAG, "############################################\n\n\nloadModel() 실패2: ${e.message.toString()}")
+                Log.d(TAG, "loadModel() 실패2: ${e.message.toString()}")
                 e.printStackTrace()
             }
         }.start()
@@ -101,7 +108,7 @@ class BrailleAnalyzer(
         // 재생 버튼
         if (binding.mode.text.equals("1")) {
             var result: DataModel? = null
-            val file = File("/data/data/com.example.realtimebraillescanner/pic.png")
+            val file = File("/data/data/com.example.realtimebraillescanner/${hashValue}.png")
             val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
             val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
@@ -135,7 +142,7 @@ class BrailleAnalyzer(
         photo.compress(Bitmap.CompressFormat.PNG, 100, bytes)
         val photoFile = File(
             "/data/data/com.example.realtimebraillescanner/",
-            "pic.png"
+            "${hashValue}.png"
         )
         photoFile.createNewFile()
         val fo = FileOutputStream(photoFile)
